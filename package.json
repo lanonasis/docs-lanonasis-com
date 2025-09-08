@@ -12,7 +12,11 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "index:maas": "ts-node scripts/index-docs-to-maas.ts",
+    "index:single": "ts-node scripts/index-docs-to-maas.ts --file",
+    "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
+    "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",
