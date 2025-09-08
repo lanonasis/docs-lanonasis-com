@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # MeiliSearch - Self-hosted search engine
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: docs-search
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=your_master_key_here_change_this
+      - MEILI_ENV=production
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_DB_PATH=/meili_data
+    volumes:
+      - ./meili_data:/meili_data
+    restart: unless-stopped
+    networks:
+      - docs-network
+
+  # Documentation site
+  docs:
+    build: .
+    container_name: docs-site
+    ports:
+      - "3000:80"
+    depends_on:
+      - meilisearch
+    environment:
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      - MEILISEARCH_API_KEY=your_master_key_here_change_this
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - docs-network
+
+  # Plausible Analytics - Self-hosted, privacy-first analytics
+  plausible_db:
+    image: postgres:14-alpine
+    container_name: plausible-db
+    restart: unless-stopped
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - docs-network
+
+  plausible_events_db:
+    image: clickhouse/clickhouse-server:22.6-alpine
+    container_name: plausible-events-db
+    restart: unless-stopped
+    volumes:
+      - ./clickhouse-data:/var/lib/clickhouse
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - docs-network
+
+  plausible:
+    image: plausible/analytics:latest
+    container_name: docs-analytics
+    restart: unless-stopped
+    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
+    depends_on:
+      - plausible_db
+      - plausible_events_db
+    ports:
+      - "8000:8000"
+    environment:
+      - BASE_URL=http://analytics.lanonasis.local
+      - SECRET_KEY_BASE=your_64_character_secret_key_base_here_change_this
+      - DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      - CLICKHOUSE_DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      - DISABLE_REGISTRATION=true
+      - MAILER_ADAPTER=Bamboo.SMTPAdapter
+      - SMTP_HOST_ADDR=localhost
+      - SMTP_HOST_PORT=25
+    networks:
+      - docs-network
+
+  # Gitea - Self-hosted Git server
+  gitea:
+    image: gitea/gitea:latest
+    container_name: docs-git
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__database__PATH=/data/gitea.db
+      - GITEA__server__DOMAIN=git.lanonasis.local
+      - GITEA__server__SSH_DOMAIN=git.lanonasis.local
+      - GITEA__server__ROOT_URL=http://git.lanonasis.local:3001
+    restart: unless-stopped
+    networks:
+      - docs-network
+    volumes:
+      - ./gitea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3001:3000"
+      - "222:22"
+
+networks:
+  docs-network:
+    driver: bridge

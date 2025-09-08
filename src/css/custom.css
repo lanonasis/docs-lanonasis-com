@@ -1,0 +1,238 @@
+/**
+ * Warp-inspired documentation theme
+ * Clean, modern, and professional design
+ */
+
+/* Import Inter font for better readability */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Light mode variables - Warp-inspired */
+:root {
+  --ifm-color-primary: #4F46E5;
+  --ifm-color-primary-dark: #4338CA;
+  --ifm-color-primary-darker: #3730A3;
+  --ifm-color-primary-darkest: #312E81;
+  --ifm-color-primary-light: #6366F1;
+  --ifm-color-primary-lighter: #818CF8;
+  --ifm-color-primary-lightest: #A5B4FC;
+  
+  --ifm-code-font-size: 14px;
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --ifm-navbar-height: 3.5rem;
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #f9fafb;
+  
+  --ifm-heading-font-weight: 600;
+  --ifm-font-weight-bold: 600;
+  
+  --docusaurus-highlighted-code-line-bg: rgba(79, 70, 229, 0.1);
+  
+  --ifm-menu-link-padding-horizontal: 0.75rem;
+  --ifm-menu-link-padding-vertical: 0.375rem;
+  
+  --ifm-toc-border-color: #e5e7eb;
+  --ifm-color-emphasis-300: #e5e7eb;
+}
+
+/* Dark mode - Warp-inspired dark theme */
+[data-theme='dark'] {
+  --ifm-color-primary: #818CF8;
+  --ifm-color-primary-dark: #6366F1;
+  --ifm-color-primary-darker: #4F46E5;
+  --ifm-color-primary-darkest: #4338CA;
+  --ifm-color-primary-light: #A5B4FC;
+  --ifm-color-primary-lighter: #C7D2FE;
+  --ifm-color-primary-lightest: #E0E7FF;
+  
+  --ifm-background-color: #0F172A;
+  --ifm-background-surface-color: #1E293B;
+  
+  --ifm-navbar-background-color: #0F172A;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  
+  --docusaurus-highlighted-code-line-bg: rgba(129, 140, 248, 0.2);
+  
+  --ifm-toc-border-color: #334155;
+  --ifm-color-emphasis-300: #334155;
+}
+
+/* Typography improvements */
+body {
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Navbar styling - Warp-like */
+.navbar {
+  padding: 0 2rem;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.navbar__title {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.navbar__link {
+  font-weight: 500;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s;
+}
+
+.navbar__link:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* Sidebar improvements */
+.menu {
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.menu__link {
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  color: var(--ifm-menu-color);
+}
+
+.menu__link:hover {
+  background: var(--ifm-color-emphasis-100);
+  text-decoration: none;
+}
+
+.menu__link--active {
+  background: var(--ifm-color-primary);
+  color: white;
+}
+
+.menu__link--active:hover {
+  background: var(--ifm-color-primary-dark);
+  color: white;
+}
+
+/* Code blocks - Warp style */
+pre {
+  border-radius: 0.5rem;
+  border: 1px solid var(--ifm-toc-border-color);
+}
+
+code {
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
+  font-size: 0.875em;
+}
+
+/* Article styling */
+article {
+  max-width: 48rem;
+}
+
+article h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+article h2 {
+  font-size: 1.875rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+article h3 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Cards and callouts */
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Admonitions - Warp style */
+.admonition {
+  border-radius: 0.5rem;
+  border-left-width: 4px;
+}
+
+/* Tables */
+table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--ifm-toc-border-color);
+}
+
+thead {
+  background: var(--ifm-background-surface-color);
+}
+
+th {
+  font-weight: 600;
+}
+
+/* Footer */
+.footer {
+  background: var(--ifm-background-surface-color);
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+/* Search box styling */
+.DocSearch-Button {
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-toc-border-color);
+}
+
+.DocSearch-Button:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* Custom API endpoint styling */
+.api-endpoint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--ifm-background-surface-color);
+  border-radius: 0.5rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  margin: 1rem 0;
+}
+
+.api-endpoint .badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.badge-success { background: #10b981; color: white; }
+.badge-primary { background: #3b82f6; color: white; }
+.badge-warning { background: #f59e0b; color: white; }
+.badge-danger { background: #ef4444; color: white; }
