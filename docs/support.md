@@ -14,21 +14,19 @@ sidebar_position: 101
 ## 📚 Documentation Resources
 
 ### Getting Started
-- [Quick Start Guide](/getting-started/quick-start)
-- [Installation](/docs/installation)
-- [First Memory](/docs/tutorials/first-memory)
+- 📖 [Installation Guide](/getting-started/installation)
+- 🎯 [Quick Start Guide](/getting-started/quick-start)
+- 🔧 [API Overview](/api/overview)
 
 ### Troubleshooting
-- [Common Issues](/docs/troubleshooting/common-issues)
 - [Error Codes](/api/error-codes)
 - [Performance Tips](/guides/performance)
 
 ## 🐛 Reporting Issues
 
 ### Before Reporting
-1. Check [Known Issues](/docs/troubleshooting/known-issues)
-2. Search [existing GitHub issues](https://github.com/lanonasis/issues)
-3. Review [FAQ](/docs/faq)
+1. Check our documentation
+2. Search existing GitHub issues
 
 ### How to Report
 
