@@ -11,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Intelligent Memory Management',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        LanOnasis provides advanced vector search and semantic understanding
+        to help you store, organize, and retrieve information intelligently.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Real-time Synchronization',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Keep your memories synchronized across all platforms and devices with
+        real-time updates and conflict resolution.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Enterprise Ready',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Built for scale with enterprise-grade security, compliance features,
+        and seamless integration with your existing workflow.
       </>
     ),
   },

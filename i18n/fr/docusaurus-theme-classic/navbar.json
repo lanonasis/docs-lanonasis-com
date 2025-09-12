@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "LanOnasis Docs",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "LanOnasis Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Getting Started": {
+    "message": "Getting Started",
+    "description": "Navbar item with label Getting Started"
+  },
+  "item.label.API Reference": {
+    "message": "API Reference",
+    "description": "Navbar item with label API Reference"
+  },
+  "item.label.SDKs": {
+    "message": "SDKs",
+    "description": "Navbar item with label SDKs"
+  },
+  "item.label.Dashboard": {
+    "message": "Dashboard",
+    "description": "Navbar item with label Dashboard"
+  }
+}
