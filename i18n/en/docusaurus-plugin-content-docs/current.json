@@ -1,0 +1,46 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Tutorial - Basics": {
+    "message": "Tutorial - Basics",
+    "description": "The label for category Tutorial - Basics in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Tutorial - Basics.link.generated-index.description": {
+    "message": "5 minutes to learn the most important Docusaurus concepts.",
+    "description": "The generated-index page description for category Tutorial - Basics in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Tutorial - Extras": {
+    "message": "Tutorial - Extras",
+    "description": "The label for category Tutorial - Extras in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.api": {
+    "message": "api",
+    "description": "The label for category api in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.endpoints": {
+    "message": "endpoints",
+    "description": "The label for category endpoints in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.getting-started": {
+    "message": "getting-started",
+    "description": "The label for category getting-started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.guides": {
+    "message": "guides",
+    "description": "The label for category guides in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.sdks": {
+    "message": "sdks",
+    "description": "The label for category sdks in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.typescript": {
+    "message": "typescript",
+    "description": "The label for category typescript in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.use-cases": {
+    "message": "use-cases",
+    "description": "The label for category use-cases in sidebar tutorialSidebar"
+  }
+}

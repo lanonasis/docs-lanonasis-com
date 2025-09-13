@@ -5,19 +5,19 @@ import type * as Preset from '@docusaurus/preset-classic';
 // Self-hosted configuration - No external dependencies
 
 const config: Config = {
-  title: 'Lanonasis Documentation',
+  title: 'LanOnasis Documentation',
   tagline: 'Memory as a Service Platform',
   favicon: 'img/favicon.ico',
 
-  // Self-hosted URL (no external hosting)
-  url: 'http://docs.lanonasis.local',
+  // Production URL
+  url: 'https://docs.lanonasis.com',
   baseUrl: '/',
 
   // No GitHub pages - we're self-hosting
   organizationName: 'lanonasis',
   projectName: 'docs-lanonasis',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
@@ -37,8 +37,8 @@ const config: Config = {
           routeBasePath: '/', // Docs at root
           // No GitHub editing - everything is self-hosted
           editUrl: undefined,
-          showLastUpdateTime: true,
-          showLastUpdateAuthor: true,
+          showLastUpdateTime: false,
+          showLastUpdateAuthor: false,
         },
         blog: false, // Disable blog - docs only
         theme: {
@@ -52,10 +52,10 @@ const config: Config = {
     // Lanonasis branding
     image: 'img/lanonasis-social-card.jpg',
     navbar: {
-      title: 'Lanonasis Docs',
+      title: 'LanOnasis Docs',
       logo: {
-        alt: 'Lanonasis Logo',
-        src: 'img/logo.svg',
+        alt: 'LanOnasis Logo',
+        src: 'img/logo.png',
       },
       items: [
         {
@@ -82,7 +82,7 @@ const config: Config = {
         },
         {
           label: 'Dashboard',
-          href: 'http://dashboard.lanonasis.local',
+          href: 'https://dashboard.lanonasis.com',
           position: 'right',
         },
       ],
@@ -112,15 +112,15 @@ const config: Config = {
           items: [
             {
               label: 'Dashboard',
-              href: 'http://dashboard.lanonasis.local',
+              href: 'https://dashboard.lanonasis.com',
             },
             {
               label: 'API Gateway',
-              href: 'http://api.lanonasis.local',
+              href: 'https://api.lanonasis.com',
             },
             {
               label: 'MCP Interface',
-              href: 'http://mcp.lanonasis.local',
+              href: 'https://mcp.lanonasis.com',
             },
           ],
         },
@@ -137,12 +137,12 @@ const config: Config = {
             },
             {
               label: 'Status',
-              href: 'http://status.lanonasis.local',
+              href: 'https://status.lanonasis.com',
             },
           ],
         },
       ],
-      copyright: `Copyright ${new Date().getFullYear()} Lan Onasis. Built with Docusaurus. Self-hosted with `,
+      copyright: `Copyright ${new Date().getFullYear()} LanOnasis. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

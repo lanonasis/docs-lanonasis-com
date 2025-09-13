@@ -20,8 +20,8 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            to="/intro">
+            Get Started with LanOnasis - 5min ⏱️
           </Link>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      description="Welcome to the official documentation for LanOnasis Memory-as-a-Service platform - your intelligent memory management solution.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
