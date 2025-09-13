@@ -1,5 +1,6 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "dist",
-  "framework": null
+  "buildCommand": "bun run build",
+  "outputDirectory": "build",
+  "framework": null,
+  "installCommand": "bun install"
 }

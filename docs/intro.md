@@ -82,7 +82,7 @@ Seamless integration with Model Context Protocol for AI applications.
 <div className="card">
   <h3>📚 Getting Started</h3>
   <p>Learn the basics and set up your first project</p>
-  <a href="/getting-started/quick-start">Quick Start Guide →</a>
+  - [📚 Getting Started](/getting-started/installation)
 </div>
 
 <div className="card">
@@ -100,12 +100,12 @@ Seamless integration with Model Context Protocol for AI applications.
 <div className="card">
   <h3>💡 Use Cases</h3>
   <p>Real-world examples and tutorials</p>
-  <a href="/use-cases/overview">Explore Use Cases →</a>
+  - [💡 Use Cases](/use-cases/personal-knowledge)
 </div>
 
 ## Need Help?
 
-- 📖 Browse our [comprehensive guides](/guides)
+- 📖 Browse our [comprehensive guides](/guides/index)
 - 🐛 Report issues in our [feedback system](/support)
 - 💬 Join our community discussions
 - 📧 Contact support at support@lanonasis.local
