@@ -38,7 +38,7 @@ Your documentation now uses **your own MaaS platform** for semantic search, demo
 Create `.env.local`:
 ```env
 # MaaS Configuration (your own platform!)
-NEXT_PUBLIC_MAAS_ENDPOINT=http://api.lanonasis.local
+NEXT_PUBLIC_MAAS_ENDPOINT=http://api.LanOnasis.local
 NEXT_PUBLIC_MAAS_DOCS_KEY=your_docs_api_key
 MAAS_ADMIN_KEY=your_admin_key
 
@@ -54,7 +54,7 @@ NEXT_PUBLIC_MEILISEARCH_KEY=your_meili_key
 bun install
 
 # Install additional search dependencies
-bun add @lanonasis/memory-sdk meilisearch gray-matter remark strip-markdown
+bun add @LanOnasis/memory-sdk meilisearch gray-matter remark strip-markdown
 ```
 
 ### Step 3: Index Documentation to MaaS
@@ -91,7 +91,7 @@ services:
   
   # Add your MaaS service if not already running
   maas:
-    image: lanonasis/memory-service:latest
+    image: LanOnasis/memory-service:latest
     ports:
       - "8080:8080"
     environment:
@@ -161,7 +161,7 @@ await memoryClient.track({
 ### View Analytics Dashboard
 ```bash
 # MaaS analytics
-curl http://api.lanonasis.local/analytics/searches
+curl http://api.LanOnasis.local/analytics/searches
 
 # Plausible analytics  
 open http://localhost:8000
@@ -201,7 +201,7 @@ await memoryClient.upsert({
 ### Test MaaS Search
 ```bash
 # Direct MaaS query
-curl -X POST http://api.lanonasis.local/api/v1/search \
+curl -X POST http://api.LanOnasis.local/api/v1/search \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -231,11 +231,11 @@ console.log(results);
 ### MaaS Connection Issues
 ```bash
 # Check MaaS health
-curl http://api.lanonasis.local/health
+curl http://api.LanOnasis.local/health
 
 # Verify API key
 curl -H "Authorization: Bearer YOUR_KEY" \
-  http://api.lanonasis.local/api/v1/memories
+  http://api.LanOnasis.local/api/v1/memories
 ```
 
 ### Indexing Problems
@@ -244,7 +244,7 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 DEBUG=* npm run index:maas
 
 # Check indexed documents
-curl http://api.lanonasis.local/api/v1/memories?namespace=documentation
+curl http://api.LanOnasis.local/api/v1/memories?namespace=documentation
 ```
 
 ### Search Not Working
@@ -355,4 +355,4 @@ Your documentation is now:
 - ✅ Privacy-first with no external dependencies
 - ✅ A live demo of your product
 
-**Your documentation has become a powerful showcase of Lanonasis MaaS capabilities!**
+**Your documentation has become a powerful showcase of LanOnasis MaaS capabilities!**

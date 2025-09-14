@@ -3,7 +3,7 @@ title: Vector Search Guide
 sidebar_label: Vector Search
 ---
 
-# Understanding Vector Search in Lanonasis
+# Understanding Vector Search in LanOnasis
 
 ## What is Vector Search?
 
