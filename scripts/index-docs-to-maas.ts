@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@LanOnasis/memory-sdk';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -12,7 +12,7 @@ const DOCS_DIR = './docs';
 const CHUNK_SIZE = 500; // Optimal chunk size for semantic search
 
 const memoryClient = new MemoryClient({
-  endpoint: process.env.MAAS_ENDPOINT || 'http://api.lanonasis.local',
+  endpoint: process.env.MAAS_ENDPOINT || 'http://api.LanOnasis.local',
   apiKey: process.env.MAAS_ADMIN_KEY || ''
 });
 

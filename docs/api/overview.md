@@ -5,11 +5,11 @@ sidebar_position: 1
 
 # API Reference
 
-Welcome to the Lanonasis API documentation. Our REST API provides complete access to the Memory-as-a-Service platform.
+Welcome to the LanOnasis API documentation. Our REST API provides complete access to the Memory-as-a-Service platform.
 
 ## Base URL
 ```
-http://api.lanonasis.local/v1
+http://api.LanOnasis.local/v1
 ```
 
 ## Authentication
@@ -18,7 +18,7 @@ All API requests require authentication using an API key:
 
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  http://api.lanonasis.local/v1/memories
+  http://api.LanOnasis.local/v1/memories
 ```
 
 ## Available Endpoints

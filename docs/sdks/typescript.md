@@ -9,17 +9,17 @@ Official TypeScript SDK for LanOnasis Memory-as-a-Service.
 ## Installation
 
 ```bash
-npm install @lanonasis/sdk
+npm install @LanOnasis/sdk
 # or
-yarn add @lanonasis/sdk
+yarn add @LanOnasis/sdk
 # or
-bun add @lanonasis/sdk
+bun add @LanOnasis/sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { LanOnasisClient } from '@lanonasis/sdk';
+import { LanOnasisClient } from '@LanOnasis/sdk';
 
 const client = new LanOnasisClient({
   apiKey: process.env.LANONASIS_API_KEY
