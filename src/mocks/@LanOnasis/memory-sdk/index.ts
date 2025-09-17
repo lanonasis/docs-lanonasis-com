@@ -40,7 +40,7 @@ export class MemoryClient {
     return { results: [], query };
   }
 
-  rerank?: (data: any) => Promise<any> = async (data: any) => {
+  async rerank(data: any): Promise<any> {
     return data.results || [];
   }
 }
