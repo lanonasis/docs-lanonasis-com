@@ -3,7 +3,7 @@ title: Personal Knowledge Management
 sidebar_label: Personal Knowledge
 ---
 
-# Personal Knowledge Management with Lanonasis
+# Personal Knowledge Management with LanOnasis
 
 Build a powerful personal knowledge base that learns from your notes, documents, and thoughts.
 
@@ -12,7 +12,7 @@ Build a powerful personal knowledge base that learns from your notes, documents,
 ### Complete Implementation
 
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { MemoryClient } from '@LanOnasis/memory-client';
 
 class JournalApp {
   private client: MemoryClient;
@@ -406,7 +406,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
 ### Obsidian Plugin
 
 ```typescript
-// Sync Obsidian notes with Lanonasis
+// Sync Obsidian notes with LanOnasis
 class ObsidianSync {
   async syncVault(vaultPath: string) {
     const files = await this.getMarkdownFiles(vaultPath);

@@ -143,7 +143,7 @@ export function MaaSSearchUI() {
 
         <div className="search-footer">
           <div className="search-powered-by">
-            <span>🧠 Powered by Lanonasis MaaS</span>
+            <span>🧠 Powered by LanOnasis MaaS</span>
             <span className="demo-badge">Live Demo</span>
           </div>
           <div className="search-tips">

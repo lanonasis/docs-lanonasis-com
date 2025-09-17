@@ -5,12 +5,12 @@ sidebar_position: 1
 
 # Quick Start Guide
 
-Get up and running with Lanonasis in 5 minutes.
+Get up and running with LanOnasis in 5 minutes.
 
 ## Prerequisites
 
 - Node.js 18+ or Python 3.8+
-- An API key (get one from the [Dashboard](http://dashboard.lanonasis.local))
+- An API key (get one from the [Dashboard](http://dashboard.LanOnasis.local))
 
 ## Installation
 
@@ -19,13 +19,13 @@ Choose your preferred SDK:
 ### TypeScript/JavaScript
 
 ```bash
-npm install @lanonasis/memory-sdk
+npm install @LanOnasis/memory-sdk
 ```
 
 ### Python
 
 ```bash
-pip install lanonasis
+pip install LanOnasis
 ```
 
 ## Your First Memory
@@ -33,7 +33,7 @@ pip install lanonasis
 ### JavaScript Example
 
 ```javascript
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@LanOnasis/memory-sdk';
 
 const client = new MemoryClient({
   apiKey: process.env.LANONASIS_API_KEY
@@ -55,7 +55,7 @@ const results = await client.search({
 ### Python Example
 
 ```python
-from lanonasis import MemoryClient
+from LanOnasis import MemoryClient
 
 client = MemoryClient(api_key="your-api-key")
 

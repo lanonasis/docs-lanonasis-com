@@ -5,11 +5,11 @@ sidebar_position: 2
 
 # 🔗 MCP Remote Connection Guide
 
-Connect external MCP clients (like Claude Desktop) to your Lanonasis Memory Service via `mcp.lanonasis.com/sse`.
+Connect external MCP clients (like Claude Desktop) to your LanOnasis Memory Service via `mcp.LanOnasis.com/sse`.
 
 ## 🎯 **Overview**
 
-The MCP Remote SSE endpoint enables external clients to connect to your Memory Service using Lanonasis API keys for authentication. This allows tools like Claude Desktop to access your memory data remotely.
+The MCP Remote SSE endpoint enables external clients to connect to your Memory Service using LanOnasis API keys for authentication. This allows tools like Claude Desktop to access your memory data remotely.
 
 ## 🔧 **Configuration**
 
@@ -20,14 +20,14 @@ Add this configuration to your Claude Desktop MCP settings:
 ```json
 {
   "mcpServers": {
-    "lanonasis-memory": {
+    "LanOnasis-memory": {
       "command": "npx",
       "args": [
         "@modelcontextprotocol/server-sse",
-        "https://mcp.lanonasis.com/sse"
+        "https://mcp.LanOnasis.com/sse"
       ],
       "env": {
-        "MCP_API_KEY": "your-lanonasis-api-key-here"
+        "MCP_API_KEY": "your-LanOnasis-api-key-here"
       }
     }
   }
@@ -40,10 +40,10 @@ Connect to the SSE endpoint with API key authentication:
 
 ```javascript
 const eventSource = new EventSource(
-  'https://mcp.lanonasis.com/sse?client_id=my-client',
+  'https://mcp.LanOnasis.com/sse?client_id=my-client',
   {
     headers: {
-      'X-API-Key': 'your-lanonasis-api-key'
+      'X-API-Key': 'your-LanOnasis-api-key'
     }
   }
 );
@@ -58,7 +58,7 @@ eventSource.onmessage = (event) => {
 
 ### **Getting Your API Key**
 
-1. Visit the [Lanonasis Dashboard](https://api.lanonasis.com/dashboard)
+1. Visit the [LanOnasis Dashboard](https://api.LanOnasis.com/dashboard)
 2. Navigate to **API Keys** section
 3. Click **Generate New Key**
 4. Copy your API key for MCP configuration
@@ -69,12 +69,12 @@ The MCP SSE endpoint supports two authentication methods:
 
 1. **Header Authentication** (Recommended):
    ```
-   X-API-Key: your-lanonasis-api-key
+   X-API-Key: your-LanOnasis-api-key
    ```
 
 2. **Query Parameter Authentication**:
    ```
-   https://mcp.lanonasis.com/sse?api_key=your-lanonasis-api-key
+   https://mcp.LanOnasis.com/sse?api_key=your-LanOnasis-api-key
    ```
 
 ## 📡 **MCP Protocol Support**
@@ -104,7 +104,7 @@ The endpoint implements MCP 2024-11-05 protocol:
       "logging": {}
     },
     "serverInfo": {
-      "name": "lanonasis-memory-service",
+      "name": "LanOnasis-memory-service",
       "version": "1.0.0"
     }
   }
@@ -173,9 +173,9 @@ Once deployed, your MCP remote connection will be available at:
 
 | Endpoint | Purpose | Authentication |
 |----------|---------|----------------|
-| `https://mcp.lanonasis.com/sse` | MCP SSE Connection | API Key |
-| `https://api.lanonasis.com/dashboard` | API Key Management | JWT |
-| `https://docs.lanonasis.com` | Documentation | None |
+| `https://mcp.LanOnasis.com/sse` | MCP SSE Connection | API Key |
+| `https://api.LanOnasis.com/dashboard` | API Key Management | JWT |
+| `https://docs.LanOnasis.com` | Documentation | None |
 
 ## 📋 **Example Usage**
 
@@ -190,7 +190,7 @@ Once deployed, your MCP remote connection will be available at:
 
 ```javascript
 // Connect to MCP SSE
-const mcp = new EventSource('https://mcp.lanonasis.com/sse', {
+const mcp = new EventSource('https://mcp.LanOnasis.com/sse', {
   headers: { 'X-API-Key': 'your-key' }
 });
 
@@ -206,7 +206,7 @@ mcp.addEventListener('message', (event) => {
 
 // Send tool requests (via separate HTTP requests)
 async function searchMemories(query) {
-  const response = await fetch('https://api.lanonasis.com/api/v1/memory/search', {
+  const response = await fetch('https://api.LanOnasis.com/api/v1/memory/search', {
     method: 'POST',
     headers: {
       'X-API-Key': 'your-key',
@@ -221,6 +221,6 @@ async function searchMemories(query) {
 
 ## 🎉 **Ready to Connect**
 
-Your Lanonasis Memory Service now supports remote MCP connections! External clients can connect using your API keys and access your memory data in real-time.
+Your LanOnasis Memory Service now supports remote MCP connections! External clients can connect using your API keys and access your memory data in real-time.
 
 **Start connecting your tools and enjoy seamless memory integration across all your applications!**

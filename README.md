@@ -2,11 +2,11 @@
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-## Lanonasis Documentation - 100% Self-Hosted Solution
+## LanOnasis Documentation - 100% Self-Hosted Solution
 
 ## Overview
 
-A beautiful, searchable, and interactive documentation site for Lanonasis Memory Service - completely self-hosted with **ZERO external dependencies**.
+A beautiful, searchable, and interactive documentation site for LanOnasis Memory Service - completely self-hosted with **ZERO external dependencies**.
 
 ```bash
 yarn start

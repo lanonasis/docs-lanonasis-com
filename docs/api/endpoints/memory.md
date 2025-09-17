@@ -91,7 +91,7 @@ X-Workspace-ID: workspace_123 (optional)
 #### cURL
 
 ```bash
-curl -X POST http://api.lanonasis.local/api/v1/memory \
+curl -X POST http://api.LanOnasis.local/api/v1/memory \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

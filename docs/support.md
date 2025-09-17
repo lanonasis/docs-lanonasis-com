@@ -7,9 +7,9 @@ sidebar_position: 101
 
 ## 🎯 Quick Links
 
-- **Status Page**: [status.lanonasis.local](http://status.lanonasis.local)
+- **Status Page**: [status.LanOnasis.local](http://status.LanOnasis.local)
 - **API Status**: Real-time monitoring available
-- **Community Discord**: [Join our Discord](https://discord.gg/lanonasis)
+- **Community Discord**: [Join our Discord](https://discord.gg/LanOnasis)
 
 ## 📚 Documentation Resources
 
@@ -62,10 +62,10 @@ sidebar_position: 101
 ### Community Support (Free)
 - **Discord**: Best for quick questions
 - **GitHub Discussions**: Technical discussions
-- **Stack Overflow**: Tag with `lanonasis`
+- **Stack Overflow**: Tag with `LanOnasis`
 
 ### Professional Support (Paid Plans)
-- **Email**: support@lanonasis.local
+- **Email**: support@LanOnasis.local
 - **Response Time**: 
   - Pro: 24 hours
   - Enterprise: 4 hours
@@ -123,10 +123,10 @@ lan-onasis delete --id memory-id --confirm
 
 ## 📖 Additional Resources
 
-- [Video Tutorials](https://youtube.com/@lanonasis)
-- [Blog](https://blog.lanonasis.local)
+- [Video Tutorials](https://youtube.com/@LanOnasis)
+- [Blog](https://blog.LanOnasis.local)
 - [Case Studies](/use-cases)
-- [Roadmap](https://github.com/lanonasis/roadmap)
+- [Roadmap](https://github.com/LanOnasis/roadmap)
 
 ## 🔍 Debugging Tips
 
@@ -164,13 +164,13 @@ client = MemoryClient(
 
 ```bash
 # Check API health
-curl http://api.lanonasis.local/health
+curl http://api.LanOnasis.local/health
 
 # Check search service
-curl http://api.lanonasis.local/health/search
+curl http://api.LanOnasis.local/health/search
 
 # Check embeddings service
-curl http://api.lanonasis.local/health/embeddings
+curl http://api.LanOnasis.local/health/embeddings
 ```
 
 ## 📊 Service Level Agreement (SLA)
@@ -187,7 +187,7 @@ curl http://api.lanonasis.local/health/embeddings
 
 ## 🔐 Security Concerns
 
-For security-related issues, please email security@lanonasis.local directly. Do not post security vulnerabilities publicly.
+For security-related issues, please email security@LanOnasis.local directly. Do not post security vulnerabilities publicly.
 
 ### Responsible Disclosure
 1. Email details to security team

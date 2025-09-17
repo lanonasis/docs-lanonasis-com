@@ -1,21 +1,27 @@
 /**
- * Warp-inspired documentation theme
- * Clean, modern, and professional design
+ * LanOnasis brand-aligned documentation theme
+ * Using official brand colors: Navy (#1B365D) and Green (#00D4AA)
  */
 
 /* Import Inter font for better readability */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* Light mode variables - Warp-inspired */
+/* Light mode variables - LanOnasis brand colors */
 :root {
-  --ifm-color-primary: #4F46E5;
-  --ifm-color-primary-dark: #4338CA;
-  --ifm-color-primary-darker: #3730A3;
-  --ifm-color-primary-darkest: #312E81;
-  --ifm-color-primary-light: #6366F1;
-  --ifm-color-primary-lighter: #818CF8;
-  --ifm-color-primary-lightest: #A5B4FC;
+  --ifm-color-primary: #00D4AA; /* Brand Green */
+  --ifm-color-primary-dark: #00B894;
+  --ifm-color-primary-darker: #00A082;
+  --ifm-color-primary-darkest: #008870;
+  --ifm-color-primary-light: #1ADD8C;
+  --ifm-color-primary-lighter: #33E19A;
+  --ifm-color-primary-lightest: #4DE5A8;
+  
+  --ifm-color-secondary: #1B365D; /* Brand Navy */
+  --ifm-color-success: #00D4AA; /* Brand Green */
+  --ifm-color-info: #1B365D; /* Brand Navy */
+  --ifm-color-warning: #FFD700; /* Brand Gold */
+  --ifm-color-danger: #FF6B6B;
   
   --ifm-code-font-size: 14px;
   --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
@@ -23,40 +29,46 @@
   
   --ifm-navbar-height: 3.5rem;
   --ifm-navbar-background-color: #ffffff;
-  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(27, 54, 93, 0.1); /* Brand Navy with opacity */
   
   --ifm-background-color: #ffffff;
-  --ifm-background-surface-color: #f9fafb;
+  --ifm-background-surface-color: #f8f9fa;
   
   --ifm-heading-font-weight: 600;
   --ifm-font-weight-bold: 600;
   
-  --docusaurus-highlighted-code-line-bg: rgba(79, 70, 229, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 212, 170, 0.1); /* Brand Green with opacity */
   
   --ifm-menu-link-padding-horizontal: 0.75rem;
   --ifm-menu-link-padding-vertical: 0.375rem;
   
-  --ifm-toc-border-color: #e5e7eb;
-  --ifm-color-emphasis-300: #e5e7eb;
+  --ifm-toc-border-color: #e2e8f0;
+  --ifm-color-emphasis-300: #e2e8f0;
 }
 
-/* Dark mode - Warp-inspired dark theme */
+/* Dark mode - LanOnasis brand colors */
 [data-theme='dark'] {
-  --ifm-color-primary: #818CF8;
-  --ifm-color-primary-dark: #6366F1;
-  --ifm-color-primary-darker: #4F46E5;
-  --ifm-color-primary-darkest: #4338CA;
-  --ifm-color-primary-light: #A5B4FC;
-  --ifm-color-primary-lighter: #C7D2FE;
-  --ifm-color-primary-lightest: #E0E7FF;
+  --ifm-color-primary: #00D4AA; /* Brand Green */
+  --ifm-color-primary-dark: #00B894;
+  --ifm-color-primary-darker: #00A082;
+  --ifm-color-primary-darkest: #008870;
+  --ifm-color-primary-light: #1ADD8C;
+  --ifm-color-primary-lighter: #33E19A;
+  --ifm-color-primary-lightest: #4DE5A8;
   
-  --ifm-background-color: #0F172A;
-  --ifm-background-surface-color: #1E293B;
+  --ifm-color-secondary: #1B365D; /* Brand Navy */
+  --ifm-color-success: #00D4AA; /* Brand Green */
+  --ifm-color-info: #1B365D; /* Brand Navy */
+  --ifm-color-warning: #FFD700; /* Brand Gold */
+  --ifm-color-danger: #FF6B6B;
   
-  --ifm-navbar-background-color: #0F172A;
+  --ifm-background-color: #0f172a; /* Dark version of Brand Navy */
+  --ifm-background-surface-color: #1e293b;
+  
+  --ifm-navbar-background-color: #0f172a;
   --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   
-  --docusaurus-highlighted-code-line-bg: rgba(129, 140, 248, 0.2);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 212, 170, 0.2); /* Brand Green with opacity */
   
   --ifm-toc-border-color: #334155;
   --ifm-color-emphasis-300: #334155;
@@ -70,7 +82,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Navbar styling - Warp-like */
+/* Navbar styling - Brand aligned */
 .navbar {
   padding: 0 2rem;
   backdrop-filter: blur(8px);
@@ -80,6 +92,11 @@ body {
 .navbar__title {
   font-weight: 600;
   font-size: 1.125rem;
+  color: #1B365D; /* Brand Navy */
+}
+
+[data-theme='dark'] .navbar__title {
+  color: #00D4AA; /* Brand Green */
 }
 
 .navbar__link {
@@ -111,7 +128,7 @@ body {
 }
 
 .menu__link--active {
-  background: var(--ifm-color-primary);
+  background: var(--ifm-color-primary); /* Brand Green */
   color: white;
 }
 
@@ -120,7 +137,7 @@ body {
   color: white;
 }
 
-/* Code blocks - Warp style */
+/* Code blocks - Brand style */
 pre {
   border-radius: 0.5rem;
   border: 1px solid var(--ifm-toc-border-color);
@@ -141,6 +158,11 @@ article {
 article h1 {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  color: #1B365D; /* Brand Navy */
+}
+
+[data-theme='dark'] article h1 {
+  color: #00D4AA; /* Brand Green */
 }
 
 article h2 {
@@ -149,12 +171,22 @@ article h2 {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--ifm-toc-border-color);
+  color: #1B365D; /* Brand Navy */
+}
+
+[data-theme='dark'] article h2 {
+  color: #00D4AA; /* Brand Green */
 }
 
 article h3 {
   font-size: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
+  color: #1B365D; /* Brand Navy */
+}
+
+[data-theme='dark'] article h3 {
+  color: #00D4AA; /* Brand Green */
 }
 
 /* Cards and callouts */
@@ -173,10 +205,22 @@ article h3 {
   transform: translateY(-2px);
 }
 
-/* Admonitions - Warp style */
+/* Admonitions - Brand style */
 .admonition {
   border-radius: 0.5rem;
   border-left-width: 4px;
+}
+
+.admonition.admonition-note {
+  border-left-color: #00D4AA; /* Brand Green */
+}
+
+.admonition.admonition-tip {
+  border-left-color: #1B365D; /* Brand Navy */
+}
+
+.admonition.admonition-warning {
+  border-left-color: #FFD700; /* Brand Gold */
 }
 
 /* Tables */
@@ -232,7 +276,7 @@ th {
   text-transform: uppercase;
 }
 
-.badge-success { background: #10b981; color: white; }
-.badge-primary { background: #3b82f6; color: white; }
-.badge-warning { background: #f59e0b; color: white; }
+.badge-success { background: #00D4AA; color: white; } /* Brand Green */
+.badge-primary { background: #1B365D; color: white; } /* Brand Navy */
+.badge-warning { background: #FFD700; color: black; } /* Brand Gold */
 .badge-danger { background: #ef4444; color: white; }

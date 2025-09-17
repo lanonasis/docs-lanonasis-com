@@ -9,23 +9,23 @@ Official command-line interface for LanOnasis Memory-as-a-Service.
 ## Installation
 
 ```bash
-npm install -g @lanonasis/cli
+npm install -g @LanOnasis/cli
 ```
 
 ## Usage
 
 ```bash
 # Login
-lanonasis auth login
+LanOnasis auth login
 
 # Create a memory
-lanonasis memory create --title "My Note" --content "Important information"
+LanOnasis memory create --title "My Note" --content "Important information"
 
 # Search memories
-lanonasis memory search "query"
+LanOnasis memory search "query"
 
 # List memories
-lanonasis memory list --limit 10
+LanOnasis memory list --limit 10
 ```
 
 ## Commands

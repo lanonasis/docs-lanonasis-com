@@ -1,15 +1,15 @@
 ---
-title: Welcome to Lanonasis
+title: Welcome to LanOnasis
 sidebar_position: 1
 ---
 
-# Lanonasis Memory Service Documentation
+# LanOnasis Memory Service Documentation
 
-Welcome to the official documentation for **Lanonasis Memory-as-a-Service** platform - your intelligent memory management solution.
+Welcome to the official documentation for **LanOnasis Memory-as-a-Service** platform - your intelligent memory management solution.
 
-## 🚀 What is Lanonasis?
+## 🚀 What is LanOnasis?
 
-Lanonasis is a cutting-edge Memory-as-a-Service (MaaS) platform that provides:
+LanOnasis is a cutting-edge Memory-as-a-Service (MaaS) platform that provides:
 
 - 🧠 **Intelligent Memory Management** - Advanced vector storage and retrieval
 - 🔒 **Enterprise Security** - SOC 2 compliant with end-to-end encryption  
@@ -20,29 +20,29 @@ Lanonasis is a cutting-edge Memory-as-a-Service (MaaS) platform that provides:
 
 ## Quick Start
 
-Get started with Lanonasis in minutes:
+Get started with LanOnasis in minutes:
 
 ### 1. Install the SDK
 
 ```bash
 # TypeScript/JavaScript
-npm install @lanonasis/memory-sdk
+npm install @LanOnasis/memory-sdk
 
 # Python
-pip install lanonasis
+pip install LanOnasis
 
 # CLI Tool
-npm install -g @lanonasis/cli
+npm install -g @LanOnasis/cli
 ```
 
 ### 2. Initialize the Client
 
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@LanOnasis/memory-sdk';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',
-  endpoint: 'http://api.lanonasis.local' // Self-hosted endpoint
+  endpoint: 'http://api.LanOnasis.local' // Self-hosted endpoint
 });
 ```
 
@@ -108,8 +108,8 @@ Seamless integration with Model Context Protocol for AI applications.
 - 📖 Browse our [comprehensive guides](/guides/index)
 - 🐛 Report issues in our [feedback system](/support)
 - 💬 Join our community discussions
-- 📧 Contact support at support@lanonasis.local
+- 📧 Contact support at support@LanOnasis.local
 
 ---
 
-*Built with ❤️ by the Lanonasis team. Self-hosted and secure.*
+*Built with ❤️ by the LanOnasis team. Self-hosted and secure.*

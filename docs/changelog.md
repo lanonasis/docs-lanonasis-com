@@ -5,7 +5,7 @@ sidebar_position: 100
 
 # Changelog
 
-All notable changes to the Lanonasis platform will be documented here.
+All notable changes to the LanOnasis platform will be documented here.
 
 ## [1.2.0] - 2024-01-15
 
