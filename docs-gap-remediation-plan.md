@@ -8,7 +8,7 @@
 
 ```bash
 # Generate from your existing API routes
-cd /Users/onasis/dev-hub/lan-onasis-monorepo/apps/docs-lanonasis
+cd /Users/onasis/dev-hub/lan-onasis-monorepo/apps/docs-LanOnasis
 
 # Create endpoint documentation structure
 mkdir -p docs/api/endpoints/{auth,memory,search,streaming,embeddings}
@@ -102,7 +102,7 @@ X-Workspace-ID: workspace_123 (optional)
 
 ### cURL
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory \
+curl -X POST https://api.LanOnasis.com/api/v1/memory \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -170,7 +170,7 @@ sidebar_position: 2
 ## Installation
 
 ```bash
-npm install @lanonasis/memory-client
+npm install @LanOnasis/memory-client
 ```
 
 ## Configuration
@@ -179,12 +179,12 @@ npm install @lanonasis/memory-client
 ```env
 LANONASIS_API_KEY=your_api_key_here
 LANONASIS_WORKSPACE_ID=workspace_123
-LANONASIS_API_URL=https://api.lanonasis.com # Optional
+LANONASIS_API_URL=https://api.LanOnasis.com # Optional
 ```
 
 ### Client Initialization
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client'
+import { MemoryClient } from '@LanOnasis/memory-client'
 
 // Option 1: Auto-config from environment
 const client = new MemoryClient()
@@ -193,7 +193,7 @@ const client = new MemoryClient()
 const client = new MemoryClient({
   apiKey: 'your_api_key',
   workspaceId: 'workspace_123',
-  baseUrl: 'https://api.lanonasis.com', // Optional
+  baseUrl: 'https://api.LanOnasis.com', // Optional
   timeout: 30000, // Optional: 30 seconds
   maxRetries: 3 // Optional
 })
@@ -324,7 +324,7 @@ import {
   APIError, 
   RateLimitError, 
   ValidationError 
-} from '@lanonasis/memory-client'
+} from '@LanOnasis/memory-client'
 
 try {
   const result = await client.upsert({ text: "..." })
@@ -369,7 +369,7 @@ interface SearchOptions {
 
 ### Day 5: Guides and Tutorials
 
-**3. Create Lanonasis-Specific Tutorials**
+**3. Create LanOnasis-Specific Tutorials**
 
 **Vector Search Guide** (`docs/guides/vector-search.md`):
 
@@ -379,7 +379,7 @@ title: Vector Search Guide
 sidebar_label: Vector Search
 ---
 
-# Understanding Vector Search in Lanonasis
+# Understanding Vector Search in LanOnasis
 
 ## What is Vector Search?
 
@@ -677,7 +677,7 @@ sidebar_position: 100
 
 # Changelog
 
-All notable changes to the Lanonasis platform will be documented here.
+All notable changes to the LanOnasis platform will be documented here.
 
 ## [1.2.0] - 2024-01-15
 
@@ -724,9 +724,9 @@ sidebar_position: 101
 
 ## 🎯 Quick Links
 
-- **Status Page**: [status.lanonasis.com](https://status.lanonasis.com)
+- **Status Page**: [status.LanOnasis.com](https://status.LanOnasis.com)
 - **API Status**: Real-time monitoring available
-- **Community Discord**: [Join our Discord](https://discord.gg/lanonasis)
+- **Community Discord**: [Join our Discord](https://discord.gg/LanOnasis)
 
 ## 📚 Documentation Resources
 
@@ -744,7 +744,7 @@ sidebar_position: 101
 
 ### Before Reporting
 1. Check [Known Issues](/docs/troubleshooting/known-issues)
-2. Search [existing GitHub issues](https://github.com/lanonasis/issues)
+2. Search [existing GitHub issues](https://github.com/LanOnasis/issues)
 3. Review [FAQ](/docs/faq)
 
 ### How to Report
@@ -781,10 +781,10 @@ sidebar_position: 101
 ### Community Support (Free)
 - **Discord**: Best for quick questions
 - **GitHub Discussions**: Technical discussions
-- **Stack Overflow**: Tag with `lanonasis`
+- **Stack Overflow**: Tag with `LanOnasis`
 
 ### Professional Support (Paid Plans)
-- **Email**: support@lanonasis.com
+- **Email**: support@LanOnasis.com
 - **Response Time**: 
   - Pro: 24 hours
   - Enterprise: 4 hours
@@ -821,10 +821,10 @@ lan-onasis limits
 
 ## 📖 Additional Resources
 
-- [Video Tutorials](https://youtube.com/@lanonasis)
-- [Blog](https://blog.lanonasis.com)
+- [Video Tutorials](https://youtube.com/@LanOnasis)
+- [Blog](https://blog.LanOnasis.com)
 - [Case Studies](/docs/case-studies)
-- [Roadmap](https://github.com/lanonasis/roadmap)
+- [Roadmap](https://github.com/LanOnasis/roadmap)
 ```
 
 ### Day 8: Automation Scripts
@@ -871,7 +871,7 @@ echo "✅ Documentation generation complete!"
 ## Final Structure
 
 ```
-docs-lanonasis/
+docs-LanOnasis/
 ├── docs/
 │   ├── intro.md ✅
 │   ├── quickstart.md (NEW)

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import MeiliSearch from 'meilisearch';
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@LanOnasis/memory-sdk';
 
 interface SearchResult {
   id: string;
@@ -17,7 +17,7 @@ const meiliClient = new MeiliSearch({
 });
 
 const memoryClient = new MemoryClient({
-  endpoint: process.env.NEXT_PUBLIC_MAAS_ENDPOINT || 'http://api.lanonasis.local',
+  endpoint: process.env.NEXT_PUBLIC_MAAS_ENDPOINT || 'http://api.LanOnasis.local',
   apiKey: process.env.NEXT_PUBLIC_MAAS_DOCS_KEY || ''
 });
 

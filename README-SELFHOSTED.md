@@ -1,8 +1,8 @@
-# Lanonasis Documentation - 100% Self-Hosted Solution
+# LanOnasis Documentation - 100% Self-Hosted Solution
 
 ## 🎯 Overview
 
-A beautiful, searchable, and interactive documentation site for Lanonasis Memory Service - completely self-hosted with **ZERO external dependencies**.
+A beautiful, searchable, and interactive documentation site for LanOnasis Memory Service - completely self-hosted with **ZERO external dependencies**.
 
 ## ✅ What We've Eliminated
 
@@ -71,7 +71,7 @@ docker-compose logs    # View logs
 ## 📁 Project Structure
 
 ```
-docs-lanonasis/
+docs-LanOnasis/
 ├── docs/              # Documentation content
 │   ├── intro.md       # Landing page
 │   ├── api/           # API documentation
@@ -186,4 +186,4 @@ MIT - Use freely for your documentation needs.
 
 ---
 
-**Built with ❤️ by the Lanonasis team - 100% self-hosted, no compromises!**
+**Built with ❤️ by the LanOnasis team - 100% self-hosted, no compromises!**

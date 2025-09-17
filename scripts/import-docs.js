@@ -58,11 +58,11 @@ sidebar_position: 1
 
 # API Reference
 
-Welcome to the Lanonasis API documentation. Our REST API provides complete access to the Memory-as-a-Service platform.
+Welcome to the LanOnasis API documentation. Our REST API provides complete access to the Memory-as-a-Service platform.
 
 ## Base URL
 \`\`\`
-http://api.lanonasis.local/v1
+http://api.LanOnasis.local/v1
 \`\`\`
 
 ## Authentication
@@ -71,7 +71,7 @@ All API requests require authentication using an API key:
 
 \`\`\`bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  http://api.lanonasis.local/v1/memories
+  http://api.LanOnasis.local/v1/memories
 \`\`\`
 
 ## Available Endpoints
@@ -102,12 +102,12 @@ sidebar_position: 1
 
 # Official SDKs
 
-Lanonasis provides official SDKs for multiple programming languages:
+LanOnasis provides official SDKs for multiple programming languages:
 
 ## TypeScript/JavaScript
 
 \`\`\`bash
-npm install @lanonasis/memory-sdk
+npm install @LanOnasis/memory-sdk
 \`\`\`
 
 [View TypeScript SDK Documentation →](/sdks/typescript)
@@ -115,7 +115,7 @@ npm install @lanonasis/memory-sdk
 ## Python
 
 \`\`\`bash
-pip install lanonasis
+pip install LanOnasis
 \`\`\`
 
 [View Python SDK Documentation →](/sdks/python)
@@ -123,16 +123,16 @@ pip install lanonasis
 ## CLI Tool
 
 \`\`\`bash
-npm install -g @lanonasis/cli
+npm install -g @LanOnasis/cli
 \`\`\`
 
 [View CLI Documentation →](/sdks/cli)
 
 ## Community SDKs
 
-- **Go**: [lanonasis-go](https://github.com/community/lanonasis-go)
-- **Rust**: [lanonasis-rs](https://github.com/community/lanonasis-rs)
-- **Ruby**: [lanonasis-ruby](https://github.com/community/lanonasis-ruby)
+- **Go**: [LanOnasis-go](https://github.com/community/LanOnasis-go)
+- **Rust**: [LanOnasis-rs](https://github.com/community/LanOnasis-rs)
+- **Ruby**: [LanOnasis-ruby](https://github.com/community/LanOnasis-ruby)
 `;
   
   fs.writeFileSync('docs/sdks/overview.md', sdksOverview);
@@ -146,12 +146,12 @@ sidebar_position: 1
 
 # Quick Start Guide
 
-Get up and running with Lanonasis in 5 minutes.
+Get up and running with LanOnasis in 5 minutes.
 
 ## Prerequisites
 
 - Node.js 18+ or Python 3.8+
-- An API key (get one from the [Dashboard](http://dashboard.lanonasis.local))
+- An API key (get one from the [Dashboard](http://dashboard.LanOnasis.local))
 
 ## Installation
 
@@ -160,13 +160,13 @@ Choose your preferred SDK:
 ### TypeScript/JavaScript
 
 \`\`\`bash
-npm install @lanonasis/memory-sdk
+npm install @LanOnasis/memory-sdk
 \`\`\`
 
 ### Python
 
 \`\`\`bash
-pip install lanonasis
+pip install LanOnasis
 \`\`\`
 
 ## Your First Memory
@@ -174,7 +174,7 @@ pip install lanonasis
 ### JavaScript Example
 
 \`\`\`javascript
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@LanOnasis/memory-sdk';
 
 const client = new MemoryClient({
   apiKey: process.env.LANONASIS_API_KEY
@@ -196,7 +196,7 @@ const results = await client.search({
 ### Python Example
 
 \`\`\`python
-from lanonasis import MemoryClient
+from LanOnasis import MemoryClient
 
 client = MemoryClient(api_key="your-api-key")
 

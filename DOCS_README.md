@@ -32,20 +32,20 @@
 - **Interactive Components** - Live API explorers and code examples
 
 ## 🚀 Deployment
-- **Domain**: docs.lanonasis.com
+- **Domain**: docs.LanOnasis.com
 - **Platform**: Vercel/Netlify (static site deployment)
 - **Build**: `npm run build` or `bun run build`
 - **Dev**: `npm run dev` or `bun run dev`
 
 ## 🔗 Referenced Services
-- **API Gateway**: api.lanonasis.com
-- **Dashboard**: dashboard.lanonasis.com  
-- **MCP Interface**: mcp.lanonasis.com
-- **Main Site**: lanonasis.com
+- **API Gateway**: api.LanOnasis.com
+- **Dashboard**: dashboard.LanOnasis.com  
+- **MCP Interface**: mcp.LanOnasis.com
+- **Main Site**: LanOnasis.com
 
 ## 📱 Social Media
-- **Twitter/X**: [@lanonasis](https://twitter.com/lanonasis)
-- **Instagram**: [@lanonasis](https://instagram.com/lanonasis)
+- **Twitter/X**: [@LanOnasis](https://twitter.com/LanOnasis)
+- **Instagram**: [@LanOnasis](https://instagram.com/LanOnasis)
 
 ## 📝 Contributing
 - **Content Guidelines** - Standards for documentation quality

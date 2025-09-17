@@ -10,12 +10,12 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Production URL
-  url: 'https://docs.lanonasis.com',
+  url: 'https://docs.LanOnasis.com',
   baseUrl: '/',
 
   // No GitHub pages - we're self-hosting
-  organizationName: 'lanonasis',
-  projectName: 'docs-lanonasis',
+  organizationName: 'LanOnasis',
+  projectName: 'docs-LanOnasis',
 
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
@@ -49,8 +49,8 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Lanonasis branding
-    image: 'img/lanonasis-social-card.jpg',
+    // LanOnasis branding
+    image: 'img/LanOnasis-social-card.jpg',
     navbar: {
       title: 'LanOnasis Docs',
       logo: {
@@ -82,7 +82,7 @@ const config: Config = {
         },
         {
           label: 'Dashboard',
-          href: 'https://dashboard.lanonasis.com',
+          href: 'https://dashboard.LanOnasis.com',
           position: 'right',
         },
       ],
@@ -112,15 +112,15 @@ const config: Config = {
           items: [
             {
               label: 'Dashboard',
-              href: 'https://dashboard.lanonasis.com',
+              href: 'https://dashboard.LanOnasis.com',
             },
             {
               label: 'API Gateway',
-              href: 'https://api.lanonasis.com',
+              href: 'https://api.LanOnasis.com',
             },
             {
               label: 'MCP Interface',
-              href: 'https://mcp.lanonasis.com',
+              href: 'https://mcp.LanOnasis.com',
             },
           ],
         },
@@ -137,7 +137,7 @@ const config: Config = {
             },
             {
               label: 'Status',
-              href: 'https://status.lanonasis.com',
+              href: 'https://status.LanOnasis.com',
             },
           ],
         },
