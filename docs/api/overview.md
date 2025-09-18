@@ -53,7 +53,7 @@ curl -X POST https://api.lanonasis.com/v1/memories \
 ### 🔍 Search & Discovery
 - [`GET /search`](./search#semantic-search) - Semantic search across memories
 - [`POST /search/vector`](./search#vector-search) - Vector similarity search
-- [`GET /search/suggestions`](./search#autocomplete) - Search autocomplete
+- [`GET /search/suggestions`](./search#search-suggestions) - Search autocomplete
 
 ### 🔐 Authentication
 - [`POST /auth/keys`](./authentication#create-api-key) - Create API key
