@@ -3,16 +3,5 @@
   "outputDirectory": "build",
   "framework": "docusaurus",
   "installCommand": "bun install",
-  "devCommand": "bun run start",
-  "functions": {
-    "api/**/*": {
-      "runtime": "bun"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ]
+  "devCommand": "bun run start"
 }
