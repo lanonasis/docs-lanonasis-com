@@ -325,7 +325,7 @@ module.exports = async function handler(req, res) {
 
     // Unknown method
     const errorResponse = {
-      jsonrpc: '2.0' as const,
+      jsonrpc: '2.0',
       id: request.id || null,
       error: {
         code: -32601,
@@ -342,7 +342,7 @@ module.exports = async function handler(req, res) {
     console.error('MCP Handler Error:', error);
 
     const errorResponse = {
-      jsonrpc: '2.0' as const,
+      jsonrpc: '2.0',
       id: null,
       error: {
         code: -32603,
