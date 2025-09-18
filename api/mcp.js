@@ -57,8 +57,8 @@ class LanOnasisDocsSearch {
     }
   }
 
-  private getMarkdownFiles(dir: string, baseDir: string = dir): Array<{path: string, name: string, relativePath: string}> {
-    const files: Array<{path: string, name: string, relativePath: string}> = [];
+  getMarkdownFiles(dir, baseDir = dir) {
+    const files = [];
 
     try {
       const items = readdirSync(dir);
@@ -85,7 +85,7 @@ class LanOnasisDocsSearch {
     return files;
   }
 
-  private calculateRelevance(query: string, queryWords: string[], text: string): number {
+  calculateRelevance(query, queryWords, text) {
     let score = 0;
 
     // Exact phrase match (highest score)
@@ -109,12 +109,12 @@ class LanOnasisDocsSearch {
     return score;
   }
 
-  private extractTitle(content: string): string | null {
+  extractTitle(content) {
     const titleMatch = content.match(/^#\s+(.+)$/m);
     return titleMatch ? titleMatch[1].trim() : null;
   }
 
-  private extractExcerpt(content: string, query: string): string {
+  extractExcerpt(content, query) {
     const sentences = content.split(/[.!?]+/);
     const queryIndex = content.toLowerCase().indexOf(query);
 
@@ -134,7 +134,7 @@ class LanOnasisDocsSearch {
     return firstSentence ? firstSentence.trim().substring(0, 200) + '...' : '';
   }
 
-  private getDocSection(relativePath: string): string {
+  getDocSection(relativePath) {
     const pathParts = relativePath.split('/');
     if (pathParts.length > 1) {
       return pathParts[0];
@@ -142,14 +142,14 @@ class LanOnasisDocsSearch {
     return 'general';
   }
 
-  private getDocType(relativePath: string): 'doc' | 'api' | 'guide' | 'sdk' {
+  getDocType(relativePath) {
     if (relativePath.includes('api/')) return 'api';
     if (relativePath.includes('sdk/')) return 'sdk';
     if (relativePath.includes('guide/')) return 'guide';
     return 'doc';
   }
 
-  private getDocUrl(relativePath: string): string {
+  getDocUrl(relativePath) {
     const urlPath = relativePath.replace(/\.mdx?$/, '').replace(/\/index$/, '');
     return `${this.baseUrl}/${urlPath}`;
   }
@@ -198,10 +198,10 @@ module.exports = async function handler(req, res) {
 
     // Handle initialize request
     if (request.method === 'initialize') {
-      const initRequest = request as MCPInitializeRequest;
+      const initRequest = request;
 
       const response = {
-        jsonrpc: '2.0' as const,
+        jsonrpc: '2.0',
         id: initRequest.id,
         result: {
           protocolVersion: '2024-11-05',
@@ -226,10 +226,10 @@ module.exports = async function handler(req, res) {
 
     // Handle tools/list request
     if (request.method === 'tools/list') {
-      const listRequest = request as MCPToolsListRequest;
+      const listRequest = request;
 
       const response = {
-        jsonrpc: '2.0' as const,
+        jsonrpc: '2.0',
         id: listRequest.id,
         result: {
           tools: [
@@ -270,14 +270,14 @@ module.exports = async function handler(req, res) {
 
     // Handle tools/call request
     if (request.method === 'tools/call') {
-      const callRequest = request as MCPToolCallRequest;
+      const callRequest = request;
 
       if (callRequest.params.name === 'search_lanonasis_docs') {
         const { query, section = 'all', limit = 10 } = callRequest.params.arguments;
 
         if (!query || typeof query !== 'string') {
           const errorResponse = {
-            jsonrpc: '2.0' as const,
+            jsonrpc: '2.0',
             id: callRequest.id,
             error: {
               code: -32602,
@@ -294,7 +294,7 @@ module.exports = async function handler(req, res) {
         const results = await docsSearch.searchDocumentation(query, section, limit);
 
         const response = {
-          jsonrpc: '2.0' as const,
+          jsonrpc: '2.0',
           id: callRequest.id,
           result: {
             content: [
