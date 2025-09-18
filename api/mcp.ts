@@ -1,4 +1,17 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// Vercel API types
+interface VercelRequest {
+  method?: string;
+  body: any;
+  headers: { [key: string]: string | string[] | undefined };
+}
+
+interface VercelResponse {
+  status(code: number): VercelResponse;
+  json(data: any): void;
+  setHeader(name: string, value: string): void;
+  write(chunk: string): void;
+  end(): void;
+}
 import { readdirSync, readFileSync, statSync } from 'fs';
 import { join, extname } from 'path';
 
