@@ -4,13 +4,13 @@
   "projectName": "docs",
   "settings": {
     "createdAt": 1754026809711,
-    "framework": "vitepress",
-    "devCommand": null,
-    "installCommand": null,
-    "buildCommand": null,
-    "outputDirectory": null,
+    "framework": "docusaurus",
+    "devCommand": "bun run start",
+    "installCommand": "bun install",
+    "buildCommand": "bun run build",
+    "outputDirectory": "build",
     "rootDirectory": null,
     "directoryListing": false,
-    "nodeVersion": "22.x"
+    "nodeVersion": "18.x"
   }
 }
