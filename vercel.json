@@ -1,7 +1,8 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "bun run build",
   "outputDirectory": "build",
   "framework": "docusaurus",
-  "installCommand": "npm install",
-  "devCommand": "npm run start"
+  "installCommand": "bun install",
+  "devCommand": "bun run start",
+  "public": false
 }
