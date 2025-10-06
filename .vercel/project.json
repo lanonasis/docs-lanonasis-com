@@ -1,16 +1,1 @@
-{
-  "projectId": "prj_dVmmPCjVSInAw8uIDpbKLadiQAnO",
-  "orgId": "team_IY947R6mFLIOiooblMMEZanL",
-  "projectName": "docs",
-  "settings": {
-    "createdAt": 1754026809711,
-    "framework": "docusaurus",
-    "devCommand": "bun run start",
-    "installCommand": "bun install",
-    "buildCommand": "bun run build",
-    "outputDirectory": "build",
-    "rootDirectory": null,
-    "directoryListing": false,
-    "nodeVersion": "18.x"
-  }
-}
+{"projectId":"prj_dVmmPCjVSInAw8uIDpbKLadiQAnO","orgId":"team_IY947R6mFLIOiooblMMEZanL","projectName":"docs"}
