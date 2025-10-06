@@ -2,6 +2,9 @@
   "name": "temp-docs",
   "version": "0.0.0",
   "private": true,
+  "bin": {
+    "lanonasis-mcp": "./mcp-bridge.js"
+  },
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -16,7 +19,8 @@
     "index:maas": "ts-node scripts/index-docs-to-maas.ts",
     "index:single": "ts-node scripts/index-docs-to-maas.ts --file",
     "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
-    "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts"
+    "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts",
+    "mcp": "node mcp-bridge.js"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",
