@@ -231,6 +231,7 @@ print(analytics.summary)
 
 For real-time analytics, use the WebSocket endpoint:
 
+> **Note:** The WebSocket endpoint for real-time analytics uses `/api/v1/analytics/stream` to clearly distinguish analytics streaming from other types of streams (such as `/api/v1/stream`). This is intentional to maintain clarity and separation of concerns within the API structure.
 ```javascript
 const ws = new WebSocket('wss://api.lanonasis.com/api/v1/analytics/stream');
 
