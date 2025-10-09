@@ -317,6 +317,7 @@ app.post('/webhooks/lanonasis', (req, res) => {
 ```python
 import hmac
 import hashlib
+import os
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -341,7 +342,6 @@ def handle_webhook():
     # Process webhook
     print(f'Webhook received: {request.json}')
     return jsonify({'status': 'OK'}), 200
-```
 
 ### Headers
 
