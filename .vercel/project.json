@@ -1,16 +1,1 @@
-{
-  "projectId": "prj_dVmmPCjVSInAw8uIDpbKLadiQAnO",
-  "orgId": "team_IY947R6mFLIOiooblMMEZanL",
-  "projectName": "docs",
-  "settings": {
-    "createdAt": 1754026809711,
-    "framework": "vitepress",
-    "devCommand": null,
-    "installCommand": null,
-    "buildCommand": null,
-    "outputDirectory": null,
-    "rootDirectory": null,
-    "directoryListing": false,
-    "nodeVersion": "22.x"
-  }
-}
+{"projectId":"prj_dVmmPCjVSInAw8uIDpbKLadiQAnO","orgId":"team_IY947R6mFLIOiooblMMEZanL","projectName":"docs"}
