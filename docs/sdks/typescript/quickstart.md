@@ -8,11 +8,11 @@ sidebar_position: 2
 ## Installation
 
 ```bash
-npm install @LanOnasis/memory-client
+npm install @lanonasis/memory-client
 # or
-yarn add @LanOnasis/memory-client
+yarn add @lanonasis/memory-client
 # or
-bun add @LanOnasis/memory-client
+bun add @lanonasis/memory-client
 ```
 
 ## Configuration
@@ -28,7 +28,7 @@ LANONASIS_API_URL=http://api.LanOnasis.local # Optional
 ### Client Initialization
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-client'
+import { MemoryClient } from '@lanonasis/memory-client'
 
 // Option 1: Auto-config from environment
 const client = new MemoryClient()
@@ -174,7 +174,7 @@ import {
   APIError, 
   RateLimitError, 
   ValidationError 
-} from '@LanOnasis/memory-client'
+} from '@lanonasis/memory-client'
 
 try {
   const result = await client.upsert({ text: "..." })

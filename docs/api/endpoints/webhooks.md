@@ -63,7 +63,7 @@ curl -X POST https://api.lanonasis.com/api/v1/webhooks \
 ```
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',

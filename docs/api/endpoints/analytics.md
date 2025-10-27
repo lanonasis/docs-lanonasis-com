@@ -47,7 +47,7 @@ curl -X GET "https://api.lanonasis.com/api/v1/analytics?timeframe=7d&metrics=mem
 ```
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',

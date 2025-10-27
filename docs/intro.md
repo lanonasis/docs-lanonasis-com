@@ -25,24 +25,27 @@ Get started with LanOnasis in minutes:
 ### 1. Install the SDK
 
 ```bash
-# TypeScript/JavaScript
-npm install @LanOnasis/memory-sdk
+# TypeScript/JavaScript (Memory Client - Recommended)
+npm install @lanonasis/memory-client
 
-# Python
-pip install LanOnasis
+# TypeScript/JavaScript (Standalone SDK)
+npm install @lanonasis/memory-sdk-standalone
+
+# Python (Coming Soon)
+pip install lanonasis
 
 # CLI Tool
-npm install -g @LanOnasis/cli
+npm install -g @lanonasis/cli
 ```
 
 ### 2. Initialize the Client
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',
-  endpoint: 'http://api.LanOnasis.local' // Self-hosted endpoint
+  endpoint: 'https://api.lanonasis.com' // Or use your self-hosted endpoint
 });
 ```
 
@@ -108,7 +111,7 @@ Seamless integration with Model Context Protocol for AI applications.
 - 📖 Browse our [comprehensive guides](/guides/index)
 - 🐛 Report issues in our [feedback system](/support)
 - 💬 Join our community discussions
-- 📧 Contact support at support@LanOnasis.local
+- 📧 Contact support at support@lanonasis.com
 
 ---
 
