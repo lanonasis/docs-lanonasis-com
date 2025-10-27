@@ -37,7 +37,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 Get started with our API in minutes:
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',
@@ -212,7 +212,7 @@ All API responses follow a consistent format:
 
 We provide official SDKs for popular languages:
 
-- **TypeScript/JavaScript**: `@LanOnasis/memory-sdk`
+- **TypeScript/JavaScript**: `@lanonasis/memory-client`
 - **Python**: `lanonasis-python`
 - **CLI**: `lanonasis-cli`
 

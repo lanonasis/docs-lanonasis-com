@@ -61,7 +61,7 @@ Visit the [Dashboard](https://api.LanOnasis.com/dashboard) to create your accoun
 ### 2. Install the CLI
 
 ```bash
-npm install -g @LanOnasis/memory-cli
+npm install -g @lanonasis/cli
 ```
 
 ### 3. Configure Authentication
@@ -89,7 +89,7 @@ LanOnasis memory search "project meeting"
 ## API Example
 
 ```javascript
-import { LanOnasisClient } from '@LanOnasis/memory-sdk';
+import { LanOnasisClient } from '@lanonasis/memory-client';
 
 const client = new LanOnasisClient({
   apiKey: 'your-api-key',

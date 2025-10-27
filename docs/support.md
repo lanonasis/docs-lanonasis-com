@@ -65,7 +65,7 @@ sidebar_position: 101
 - **Stack Overflow**: Tag with `LanOnasis`
 
 ### Professional Support (Paid Plans)
-- **Email**: support@LanOnasis.local
+- **Email**: support@lanonasis.com
 - **Response Time**: 
   - Pro: 24 hours
   - Enterprise: 4 hours
@@ -187,7 +187,7 @@ curl http://api.LanOnasis.local/health/embeddings
 
 ## 🔐 Security Concerns
 
-For security-related issues, please email security@LanOnasis.local directly. Do not post security vulnerabilities publicly.
+For security-related issues, please email security@lanonasis.com directly. Do not post security vulnerabilities publicly.
 
 ### Responsible Disclosure
 1. Email details to security team

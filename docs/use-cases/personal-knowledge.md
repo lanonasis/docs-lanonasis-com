@@ -12,7 +12,7 @@ Build a powerful personal knowledge base that learns from your notes, documents,
 ### Complete Implementation
 
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-client';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 class JournalApp {
   private client: MemoryClient;

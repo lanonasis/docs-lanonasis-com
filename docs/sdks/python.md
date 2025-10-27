@@ -9,13 +9,15 @@ Official Python SDK for LanOnasis Memory-as-a-Service.
 ## Installation
 
 ```bash
-pip install LanOnasis
+pip install lanonasis
 ```
+
+**Status:** ⏳ Coming Soon (not yet published to PyPI)
 
 ## Quick Start
 
 ```python
-from LanOnasis import LanOnasisClient
+from lanonasis import LanOnasisClient
 
 client = LanOnasisClient(api_key="your-api-key")
 
@@ -29,4 +31,4 @@ memory = client.memories.create(
 
 ## Documentation
 
-Full documentation available at [PyPI](https://pypi.org/project/LanOnasis/)
+Full documentation will be available at [PyPI](https://pypi.org/project/lanonasis/) once published.

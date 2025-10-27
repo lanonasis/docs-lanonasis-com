@@ -30,7 +30,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memory \
 
 ### JavaScript/TypeScript
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',
@@ -295,7 +295,7 @@ Here's a complete example that demonstrates the full workflow:
 
 ### JavaScript/TypeScript
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',

@@ -9,23 +9,50 @@ Get started with LanOnasis in minutes.
 ## Prerequisites
 
 - Node.js 18+ or Bun
-- API key from [dashboard.LanOnasis.com](https://dashboard.LanOnasis.com)
+- API key from [dashboard.lanonasis.com](https://dashboard.lanonasis.com)
 
-## Quick Install
+## Choose Your SDK
 
-### Using npm
+### Memory Client (Recommended)
+Lightweight SDK for most applications.
+
 ```bash
-npm install @LanOnasis/sdk
+# npm
+npm install @lanonasis/memory-client
+
+# yarn
+yarn add @lanonasis/memory-client
+
+# bun
+bun add @lanonasis/memory-client
 ```
 
-### Using yarn
+### Standalone Memory SDK
+For multi-agent systems and standalone projects.
+
 ```bash
-yarn add @LanOnasis/sdk
+# npm
+npm install @lanonasis/memory-sdk-standalone
+
+# yarn
+yarn add @lanonasis/memory-sdk-standalone
+
+# bun
+bun add @lanonasis/memory-sdk-standalone
 ```
 
-### Using bun
+### Enterprise SDK (Coming Soon)
+Full-featured SDK with memory, API keys, and MCP.
+
 ```bash
-bun add @LanOnasis/sdk
+# npm
+npm install @lanonasis/sdk
+
+# yarn
+yarn add @lanonasis/sdk
+
+# bun
+bun add @lanonasis/sdk
 ```
 
 ## Configuration
@@ -33,7 +60,7 @@ bun add @LanOnasis/sdk
 Create a `.env` file:
 ```env
 LANONASIS_API_KEY=your_api_key_here
-LANONASIS_API_URL=https://api.LanOnasis.com
+LANONASIS_API_URL=https://api.lanonasis.com
 ```
 
 ## Next Steps
