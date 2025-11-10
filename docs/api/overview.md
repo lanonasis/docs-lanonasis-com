@@ -12,8 +12,8 @@ Welcome to the LanOnasis Memory-as-a-Service API documentation. Our REST API all
 
 ```
 https://api.lanonasis.com/api/v1
-Production: https://api.lanonasis.com/v1
-Sandbox:    https://sandbox-api.lanonasis.com/v1
+Production: https://api.lanonasis.com/api/v1
+Sandbox:    https://sandbox-api.lanonasis.com/api/v1
 ```
 
 ## Authentication
@@ -41,7 +41,7 @@ import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: 'your-api-key',
-  baseUrl: 'https://api.lanonasis.com'
+  baseUrl: 'https://api.lanonasis.com/api/v1'
 });
 
 // Create a memory
@@ -54,7 +54,7 @@ const memory = await client.createMemory({
 // Search memories
 const results = await client.searchMemories('project notes');
 # Create a memory
-curl -X POST https://api.lanonasis.com/v1/memories \
+curl -X POST https://api.lanonasis.com/api/v1/memory \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -149,10 +149,8 @@ We provide official SDKs for popular programming languages:
 ## Getting Help
 
 ### Core Memory Operations
-- [`POST /memory`](/api/endpoints/memory#create-memory) - Create a new memory
-- [`GET /memory/:id`](/api/endpoints/memory#get-memory) - Get a specific memory
-- [`PUT /memory/:id`](/api/endpoints/memory#update-memory) - Update a memory
-- [`DELETE /memory/:id`](/api/endpoints/memory#delete-memory) - Delete a memory
+- [`/api/v1/memory`](/api/endpoints/memory) - Create and list memories
+- [`/api/v1/memory/:id`](/api/endpoints/memory) - Get, update, or delete a memory
 
 ### Search & Discovery
 - [`POST /search`](/api/endpoints/search) - Semantic search across memories

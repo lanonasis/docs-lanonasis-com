@@ -22,7 +22,7 @@ hero:
       link: /api/
     - theme: alt
       text: View Dashboard
-      link: https://api.LanOnasis.com/dashboard
+      link: https://dashboard.lanonasis.com
 
 features:
   - icon: 🧠
@@ -56,7 +56,7 @@ Get started with LanOnasis Memory Service in minutes:
 
 ### 1. Get Your API Key
 
-Visit the [Dashboard](https://api.LanOnasis.com/dashboard) to create your account and generate API keys.
+Visit the [Dashboard](https://dashboard.lanonasis.com) to create your account and generate API keys.
 
 ### 2. Install the CLI
 
@@ -68,7 +68,7 @@ npm install -g @lanonasis/cli
 
 ```bash
 LanOnasis config set api-key YOUR_API_KEY
-LanOnasis config set endpoint https://api.LanOnasis.com
+LanOnasis config set endpoint https://api.lanonasis.com/api/v1
 ```
 
 ### 4. Create Your First Memory
@@ -93,7 +93,7 @@ import { LanOnasisClient } from '@lanonasis/memory-client';
 
 const client = new LanOnasisClient({
   apiKey: 'your-api-key',
-  endpoint: 'https://api.LanOnasis.com'
+  endpoint: 'https://api.lanonasis.com/api/v1'
 });
 
 // Create a memory
@@ -111,7 +111,7 @@ const results = await client.memories.search('project meeting');
 
 LanOnasis Memory Service provides a complete memory management solution:
 
-- **API Server**: RESTful API with JWT authentication at `api.LanOnasis.com`
+- **API Server**: RESTful API at `https://api.lanonasis.com/api/v1`
 - **Dashboard**: Self-service portal for API key management and analytics
 - **CLI Tools**: Command-line interface for developers and automation
 - **SDKs**: Official libraries for JavaScript/TypeScript and Python
@@ -125,4 +125,4 @@ LanOnasis Memory Service provides a complete memory management solution:
 - 🛡️ **Reliability**: Rate limiting, caching, comprehensive error handling
 - 📚 **Documentation**: Complete API docs, guides, and examples
 
-Ready to get started? [Create your account](https://api.LanOnasis.com/dashboard) and begin building with LanOnasis Memory Service today!
+Ready to get started? [Create your account](https://dashboard.lanonasis.com) and begin building with LanOnasis Memory Service today!
