@@ -20,7 +20,9 @@
     "index:single": "ts-node scripts/index-docs-to-maas.ts --file",
     "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
     "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts",
-    "mcp": "node mcp-bridge.js"
+    "mcp": "node mcp-bridge.js",
+    "check:links": "node scripts/check-links.js",
+    "check:endpoints": "node scripts/smoke-endpoints.js"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",

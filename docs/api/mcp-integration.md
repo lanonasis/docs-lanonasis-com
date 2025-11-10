@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # 🔗 MCP Remote Connection Guide
 
-Connect external MCP clients (like Claude Desktop) to your LanOnasis Memory Service via `mcp.LanOnasis.com/sse`.
+Connect external MCP clients (like Claude Desktop) to your LanOnasis Memory Service via `mcp.lanonasis.com/sse`.
 
 ## 🎯 **Overview**
 
@@ -24,7 +24,7 @@ Add this configuration to your Claude Desktop MCP settings:
       "command": "npx",
       "args": [
         "@modelcontextprotocol/server-sse",
-        "https://mcp.LanOnasis.com/sse"
+        "https://mcp.lanonasis.com/sse"
       ],
       "env": {
         "MCP_API_KEY": "your-LanOnasis-api-key-here"
@@ -36,16 +36,11 @@ Add this configuration to your Claude Desktop MCP settings:
 
 ### **For Custom MCP Clients**
 
-Connect to the SSE endpoint with API key authentication:
+Connect to the SSE endpoint with a bearer token:
 
 ```javascript
 const eventSource = new EventSource(
-  'https://mcp.LanOnasis.com/sse?client_id=my-client',
-  {
-    headers: {
-      'X-API-Key': 'your-LanOnasis-api-key'
-    }
-  }
+  'https://mcp.lanonasis.com/sse?client_id=my-client&token=YOUR_TOKEN'
 );
 
 eventSource.onmessage = (event) => {
@@ -58,7 +53,7 @@ eventSource.onmessage = (event) => {
 
 ### **Getting Your API Key**
 
-1. Visit the [LanOnasis Dashboard](https://api.LanOnasis.com/dashboard)
+1. Visit the [LanOnasis Dashboard](https://dashboard.lanonasis.com)
 2. Navigate to **API Keys** section
 3. Click **Generate New Key**
 4. Copy your API key for MCP configuration
@@ -67,14 +62,14 @@ eventSource.onmessage = (event) => {
 
 The MCP SSE endpoint supports two authentication methods:
 
-1. **Header Authentication** (Recommended):
+1. **Header Authentication** (Recommended for libraries that support custom headers):
    ```
-   X-API-Key: your-LanOnasis-api-key
+   Authorization: Bearer YOUR_TOKEN
    ```
 
 2. **Query Parameter Authentication**:
    ```
-   https://mcp.LanOnasis.com/sse?api_key=your-LanOnasis-api-key
+   https://mcp.lanonasis.com/sse?token=YOUR_TOKEN
    ```
 
 ## 📡 **MCP Protocol Support**
@@ -173,9 +168,9 @@ Once deployed, your MCP remote connection will be available at:
 
 | Endpoint | Purpose | Authentication |
 |----------|---------|----------------|
-| `https://mcp.LanOnasis.com/sse` | MCP SSE Connection | API Key |
-| `https://api.LanOnasis.com/dashboard` | API Key Management | JWT |
-| `https://docs.LanOnasis.com` | Documentation | None |
+| `https://mcp.lanonasis.com/sse` | MCP SSE Connection | Token |
+| `https://dashboard.lanonasis.com` | Account & Management | Auth |
+| `https://docs.lanonasis.com` | Documentation | None |
 
 ## 📋 **Example Usage**
 
@@ -190,9 +185,7 @@ Once deployed, your MCP remote connection will be available at:
 
 ```javascript
 // Connect to MCP SSE
-const mcp = new EventSource('https://mcp.LanOnasis.com/sse', {
-  headers: { 'X-API-Key': 'your-key' }
-});
+const mcp = new EventSource('https://mcp.lanonasis.com/sse?token=YOUR_TOKEN');
 
 // Handle memory updates
 mcp.addEventListener('message', (event) => {
@@ -206,10 +199,10 @@ mcp.addEventListener('message', (event) => {
 
 // Send tool requests (via separate HTTP requests)
 async function searchMemories(query) {
-  const response = await fetch('https://api.LanOnasis.com/api/v1/memory/search', {
+  const response = await fetch('https://api.lanonasis.com/api/v1/memory/search', {
     method: 'POST',
     headers: {
-      'X-API-Key': 'your-key',
+      'Authorization': 'Bearer YOUR_TOKEN',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ query })
