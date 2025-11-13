@@ -77,6 +77,12 @@ const config: Config = {
           label: 'SDKs',
         },
         {
+          type: 'doc',
+          docId: 'v-secure/intro',
+          position: 'left',
+          label: 'v-secure',
+        },
+        {
           type: 'localeDropdown',
           position: 'right',
         },
@@ -104,6 +110,10 @@ const config: Config = {
             {
               label: 'SDKs',
               to: '/sdks/overview',
+            },
+            {
+              label: 'v-secure',
+              to: '/v-secure/intro',
             },
           ],
         },
