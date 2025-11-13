@@ -35,10 +35,10 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/', // Docs at root
-          // No GitHub editing - everything is self-hosted
-          editUrl: undefined,
-          showLastUpdateTime: false,
-          showLastUpdateAuthor: false,
+          // Enable GitHub editing
+          editUrl: 'https://github.com/lanonasis/docs-lanonasis-com/edit/main/',
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
         },
         blog: false, // Disable blog - docs only
         theme: {
