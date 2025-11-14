@@ -3,8 +3,10 @@
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
-      "@lanonasis/memory-sdk": ["./src/mocks/@LanOnasis/memory-sdk"]
+      "@lanonasis/memory-sdk": ["./src/mocks/@LanOnasis/memory-sdk"],
+      "@LanOnasis/memory-sdk": ["./src/mocks/@LanOnasis/memory-sdk"]
     }
   },
   "exclude": [".docusaurus", "build"]

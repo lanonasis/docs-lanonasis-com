@@ -25,8 +25,8 @@
     "check:endpoints": "node scripts/smoke-endpoints.js"
   },
   "dependencies": {
-    "@docusaurus/core": "3.8.1",
-    "@docusaurus/preset-classic": "3.8.1",
+    "@docusaurus/core": "3.9.0",
+    "@docusaurus/preset-classic": "3.9.0",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
     "meilisearch": "^0.53.0",
@@ -37,9 +37,9 @@
     "strip-markdown": "^6.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.8.1",
-    "@docusaurus/tsconfig": "3.8.1",
-    "@docusaurus/types": "3.8.1",
+    "@docusaurus/module-type-aliases": "3.9.0",
+    "@docusaurus/tsconfig": "3.9.0",
+    "@docusaurus/types": "3.9.0",
     "typescript": "~5.6.2"
   },
   "browserslist": {
