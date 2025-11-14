@@ -361,7 +361,7 @@ async function loadConfig(): Promise<AppConfig> {
 
 ## Next Steps
 
-- [Express Integration](./express-integration)
-- [Next.js Integration](./nextjs-integration)
-- [Docker Integration](./docker-integration)
-- [API Reference](../api/overview)
+- [API Reference](../api/overview) - Complete API documentation
+- [MCP Integration Guide](../guides/mcp-integration) - AI tool integration
+- [Secret Management Guide](../guides/secret-management) - Best practices
+- [Getting Started](../getting-started) - Quick start guide

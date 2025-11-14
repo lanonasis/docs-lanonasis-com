@@ -217,12 +217,15 @@ Comprehensive compliance documentation available:
 For compliance questions:
 
 - **Email**: compliance@lanonasis.com
-- **Documentation**: docs.lanonasis.com/v-secure/compliance
-- **Trust Center**: trust.lanonasis.com
+- **Documentation**: [docs.lanonasis.com/v-secure/compliance](https://docs.lanonasis.com/v-secure/compliance)
+- **Trust Center**: [trust.lanonasis.com](https://trust.lanonasis.com)
 
 ## Next Steps
 
-- [SOC 2 Compliance](./soc2)
-- [ISO 27001 Compliance](./iso27001)
-- [GDPR Compliance](./gdpr)
-- [PCI DSS Compliance](./pci-dss)
+- [API Reference](../api/overview) - API documentation
+- [Audit Logs](../api/audit-logs) - Security audit trails
+- [Getting Started](../getting-started) - Quick start guide
+
+:::info
+Detailed compliance documentation for SOC 2, ISO 27001, GDPR, and PCI DSS is available upon request. Contact compliance@lanonasis.com for more information.
+:::

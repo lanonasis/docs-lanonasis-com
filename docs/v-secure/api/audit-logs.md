@@ -496,5 +496,5 @@ vsecure audit:verify log_abc123
 ## Next Steps
 
 - [Compliance Documentation](../compliance/overview)
-- [Security Best Practices](../guides/security-best-practices)
-- [SIEM Integration Guide](../guides/siem-integration)
+- [Secrets API](./secrets)
+- [API Keys API](./api-keys)

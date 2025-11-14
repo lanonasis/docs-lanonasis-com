@@ -10,7 +10,7 @@ The v-secure API provides programmatic access to all security features including
 
 ## Base URL
 
-```
+```text
 https://api.lanonasis.com/v1/security
 ```
 
@@ -195,13 +195,14 @@ curl -X POST https://api.lanonasis.com/v1/security/secrets \
 
 ## SDKs
 
-Official SDKs are available for popular languages:
+Official SDKs are coming soon for:
+- TypeScript/Node.js
+- Python
+- Go
+- Java
+- Ruby
 
-- [TypeScript/Node.js SDK](../sdks/typescript)
-- [Python SDK](../sdks/python)
-- [Go SDK](../sdks/go)
-- [Java SDK](../sdks/java)
-- [Ruby SDK](../sdks/ruby)
+For now, use the CLI or make direct API calls as shown in the [Examples](../examples/basic-usage) section.
 
 ## Webhooks
 
@@ -275,4 +276,4 @@ curl https://api.lanonasis.com/v1/security/secrets?tags=production \
 - [Secrets API](./secrets) - Secret management endpoints
 - [API Keys API](./api-keys) - API key management
 - [MCP API](./mcp) - MCP integration
-- [SDK Documentation](../sdks/overview) - Official SDKs
+- See the [Examples](../examples/basic-usage) for usage patterns and best practices.
