@@ -1,46 +1,6 @@
 // Mock implementation of @LanOnasis/memory-sdk for documentation build
 // This allows the documentation to build without the actual SDK being available
 
-export interface MemoryClient {
-  createMemory(data: any): Promise<any>;
-  searchMemories(query: string): Promise<any>;
-  updateMemory(id: string, data: any): Promise<any>;
-  deleteMemory(id: string): Promise<any>;
-  upsert(data: any): Promise<any>;
-  search(query: any): Promise<any>;
-  rerank?(data: any): Promise<any>;
-}
-
-export class MemoryClient {
-  constructor(config: any) {
-    // Mock constructor
-  }
-
-  async createMemory(data: any): Promise<any> {
-    return { id: 'mock-id', ...data };
-  }
-
-  async searchMemories(query: string): Promise<any> {
-    return { results: [], query };
-  }
-
-  async updateMemory(id: string, data: any): Promise<any> {
-    return { id, ...data };
-  }
-
-  async deleteMemory(id: string): Promise<any> {
-    return { id, deleted: true };
-  }
-
-  async upsert(data: any): Promise<any> {
-    return { id: 'mock-upsert-id', ...data };
-  }
-
-  async search(query: any): Promise<any> {
-    return { results: [], query };
-  }
-
-  rerank?: (data: any) => Promise<any> = async (data: any) => {
 // Type definitions for mock implementation
 export interface Memory {
   id: string;
@@ -53,12 +13,16 @@ export interface SearchQuery {
 }
 
 export interface SearchResult {
-  results: Memory[];
+  results?: Memory[];
+  matches?: any[];
   query: string;
 }
 
 export interface RerankRequest {
-  results: Memory[];
+  query: string;
+  documents: Array<{ id: string; text: string }>;
+  topK?: number;
+  results?: Memory[];
   [key: string]: any;
 }
 
@@ -75,7 +39,7 @@ export interface MemoryClient {
   deleteMemory(id: string): Promise<{ id: string; deleted: boolean }>;
   upsert(data: Memory): Promise<Memory>;
   search(query: SearchQuery): Promise<SearchResult>;
-  rerank?(data: RerankRequest): Promise<RerankResult>;
+  rerank(data: RerankRequest): Promise<RerankResult>;
 }
 
 export class MemoryClient {
@@ -108,6 +72,10 @@ export class MemoryClient {
   }
 
   async rerank(data: RerankRequest): Promise<RerankResult> {
+    // Mock rerank - just return documents as Memory objects
+    if (data.documents) {
+      return data.documents.map(doc => ({ id: doc.id, text: doc.text }));
+    }
     return data.results || [];
   }
 }
