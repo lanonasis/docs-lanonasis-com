@@ -413,4 +413,4 @@ Subscribe to secret events:
 
 - [API Keys API](./api-keys) - Manage API keys
 - [Audit Logs API](./audit-logs) - Track secret access
-- [SDK Documentation](../sdks/overview) - Use official SDKs
+- [Examples](../examples/basic-usage) - Usage patterns and code samples

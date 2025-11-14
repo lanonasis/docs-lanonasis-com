@@ -56,7 +56,7 @@ vsecure secrets:create DB_PASSWORD "secure123" \
 
 Follow a consistent naming pattern:
 
-```
+```text
 {SERVICE}_{ENVIRONMENT}_{TYPE}
 ```
 
@@ -250,6 +250,6 @@ class SecretManager {
 
 ## Next Steps
 
-- [API Key Management](./api-key-management)
+- [API Key Management](../api/api-keys)
 - [MCP Integration](./mcp-integration)
-- [Security Best Practices](./security-best-practices)
+- [Compliance Overview](../compliance/overview)

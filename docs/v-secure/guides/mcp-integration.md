@@ -57,14 +57,14 @@ Restart Claude Desktop to load the MCP server.
 
 In Claude, you can now request access to secrets:
 
-```
+```text
 Claude, I need to debug the database connection.
 Can you read the DATABASE_URL secret?
 ```
 
 Claude will use the MCP protocol to request approval:
 
-```
+```text
 I need approval to access: vsecure://secrets/production/DATABASE_URL
 
 Reason: Debugging database connection issue
@@ -142,7 +142,7 @@ await client.mcp.configureResource({
 
 ### 1. Debugging Production Issues
 
-```
+```text
 User: Claude, help me debug why users can't log in to production.
 
 Claude: I'll need to check the authentication service configuration.
@@ -159,7 +159,7 @@ Claude: I can see the issue - the JWT secret has expired...
 
 ### 2. Infrastructure Setup
 
-```
+```text
 User: Set up a new staging environment
 
 Claude: I'll help you set up staging. I need access to:
@@ -177,7 +177,7 @@ Claude: I've created the following staging secrets:
 
 ### 3. Security Audit
 
-```
+```text
 User: Review our security configuration
 
 Claude: I'll audit your security setup. I need read access to:
@@ -433,6 +433,6 @@ vsecure mcp:approvals
 
 ## Next Steps
 
-- [Security Best Practices](./security-best-practices)
 - [Audit Logs](../api/audit-logs)
 - [API Reference](../api/mcp)
+- [Compliance Overview](../compliance/overview)

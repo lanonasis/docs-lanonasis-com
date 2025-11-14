@@ -370,4 +370,4 @@ vsecure mcp:audit --resource production/*
 
 - [MCP Integration Guide](../guides/mcp-integration)
 - [Audit Logs API](./audit-logs)
-- [Security Best Practices](../guides/security-best-practices)
+- [Compliance Overview](../compliance/overview)

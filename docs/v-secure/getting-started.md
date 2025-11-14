@@ -274,7 +274,7 @@ Now that you're familiar with the basics, explore more advanced features:
 ### 🔑 API Key Management
 Learn how to create and manage API keys for your applications.
 
-[API Key Guide →](./guides/api-key-management)
+[API Key Guide →](./api/api-keys)
 
 ### 🤖 MCP Integration
 Integrate v-secure with AI tools using the Model Context Protocol.

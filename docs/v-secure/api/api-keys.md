@@ -336,4 +336,4 @@ vsecure api-keys:usage key_abc123
 
 - [Secrets API](./secrets) - Manage secrets
 - [Audit Logs API](./audit-logs) - Track API key usage
-- [Security Best Practices](../guides/security-best-practices)
+- [Compliance Overview](../compliance/overview) - Security standards

@@ -616,4 +616,4 @@ vsecure doctor
 
 - [Getting Started](./getting-started) - Quick start guide
 - [API Reference](./api/overview) - API documentation
-- [Security Best Practices](./guides/security-best-practices) - Security guidelines
+- [Compliance Overview](./compliance/overview) - Security standards
