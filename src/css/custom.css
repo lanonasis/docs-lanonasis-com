@@ -1,75 +1,80 @@
 /**
- * LanOnasis brand-aligned documentation theme
- * Using official brand colors: Navy (#1B365D) and Green (#00D4AA)
+ * LanOnasis Documentation Theme
+ * Midnight + Electric Purple with subtle gold accents
+ * NO GREEN - Brand-safe palette
  */
 
 /* Import Inter font for better readability */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* Light mode variables - LanOnasis brand colors */
+/* Light mode variables - Indigo palette */
 :root {
-  --ifm-color-primary: #00D4AA; /* Brand Green */
-  --ifm-color-primary-dark: #00B894;
-  --ifm-color-primary-darker: #00A082;
-  --ifm-color-primary-darkest: #008870;
-  --ifm-color-primary-light: #1ADD8C;
-  --ifm-color-primary-lighter: #33E19A;
-  --ifm-color-primary-lightest: #4DE5A8;
-  
-  --ifm-color-secondary: #1B365D; /* Brand Navy */
-  --ifm-color-success: #00D4AA; /* Brand Green */
-  --ifm-color-info: #1B365D; /* Brand Navy */
-  --ifm-color-warning: #FFD700; /* Brand Gold */
-  --ifm-color-danger: #FF6B6B;
-  
+  --ifm-color-primary: #4F46E5;   /* indigo-600 */
+  --ifm-color-primary-dark: #4338CA;
+  --ifm-color-primary-darker: #3730A3;
+  --ifm-color-primary-darkest: #312E81;
+  --ifm-color-primary-light: #6366F1;
+  --ifm-color-primary-lighter: #818CF8;
+  --ifm-color-primary-lightest: #A5B4FC;
+
+  --onasis-accent-gold: #F59E0B;
+  --onasis-midnight: #0B1220;
+  --onasis-navy: #1B365D;
+
+  --ifm-color-secondary: var(--onasis-navy);
+  --ifm-color-success: #10B981; /* emerald green for success states only */
+  --ifm-color-info: var(--ifm-color-primary);
+  --ifm-color-warning: var(--onasis-accent-gold);
+  --ifm-color-danger: #EF4444;
+
   --ifm-code-font-size: 14px;
   --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', monospace;
-  
+
   --ifm-navbar-height: 3.5rem;
   --ifm-navbar-background-color: #ffffff;
-  --ifm-navbar-shadow: 0 1px 2px 0 rgba(27, 54, 93, 0.1); /* Brand Navy with opacity */
-  
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.1);
+
   --ifm-background-color: #ffffff;
   --ifm-background-surface-color: #f8f9fa;
-  
+
   --ifm-heading-font-weight: 600;
   --ifm-font-weight-bold: 600;
-  
-  --docusaurus-highlighted-code-line-bg: rgba(0, 212, 170, 0.1); /* Brand Green with opacity */
-  
+
+  --docusaurus-highlighted-code-line-bg: rgba(79, 70, 229, 0.1);
+
   --ifm-menu-link-padding-horizontal: 0.75rem;
   --ifm-menu-link-padding-vertical: 0.375rem;
-  
+
   --ifm-toc-border-color: #e2e8f0;
   --ifm-color-emphasis-300: #e2e8f0;
 }
 
-/* Dark mode - LanOnasis brand colors */
+/* Dark mode - Midnight background with indigo accents */
 [data-theme='dark'] {
-  --ifm-color-primary: #00D4AA; /* Brand Green */
-  --ifm-color-primary-dark: #00B894;
-  --ifm-color-primary-darker: #00A082;
-  --ifm-color-primary-darkest: #008870;
-  --ifm-color-primary-light: #1ADD8C;
-  --ifm-color-primary-lighter: #33E19A;
-  --ifm-color-primary-lightest: #4DE5A8;
-  
-  --ifm-color-secondary: #1B365D; /* Brand Navy */
-  --ifm-color-success: #00D4AA; /* Brand Green */
-  --ifm-color-info: #1B365D; /* Brand Navy */
-  --ifm-color-warning: #FFD700; /* Brand Gold */
-  --ifm-color-danger: #FF6B6B;
-  
-  --ifm-background-color: #0f172a; /* Dark version of Brand Navy */
+  --ifm-color-primary: #818CF8;   /* lighter indigo for dark mode */
+  --ifm-color-primary-dark: #6366F1;
+  --ifm-color-primary-darker: #4F46E5;
+  --ifm-color-primary-darkest: #4338CA;
+  --ifm-color-primary-light: #A5B4FC;
+  --ifm-color-primary-lighter: #C7D2FE;
+  --ifm-color-primary-lightest: #E0E7FF;
+
+  --ifm-color-secondary: var(--onasis-navy);
+  --ifm-color-success: #10B981;
+  --ifm-color-info: var(--ifm-color-primary);
+  --ifm-color-warning: var(--onasis-accent-gold);
+  --ifm-color-danger: #EF4444;
+
+  --ifm-background-color: var(--onasis-midnight);
   --ifm-background-surface-color: #1e293b;
-  
-  --ifm-navbar-background-color: #0f172a;
+
+  --ifm-navbar-background-color: var(--onasis-midnight);
   --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  
-  --docusaurus-highlighted-code-line-bg: rgba(0, 212, 170, 0.2); /* Brand Green with opacity */
-  
+
+  --docusaurus-highlighted-code-line-bg: rgba(129, 140, 248, 0.2);
+
   --ifm-toc-border-color: #334155;
   --ifm-color-emphasis-300: #334155;
 }
@@ -82,7 +87,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Navbar styling - Brand aligned */
+/* Navbar styling - Indigo with gold hover accent */
 .navbar {
   padding: 0 2rem;
   backdrop-filter: blur(8px);
@@ -92,11 +97,11 @@ body {
 .navbar__title {
   font-weight: 600;
   font-size: 1.125rem;
-  color: #1B365D; /* Brand Navy */
+  color: var(--ifm-color-primary);
 }
 
 [data-theme='dark'] .navbar__title {
-  color: #00D4AA; /* Brand Green */
+  color: var(--ifm-color-primary);
 }
 
 .navbar__link {
@@ -104,10 +109,34 @@ body {
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   transition: all 0.2s;
+  position: relative;
 }
 
 .navbar__link:hover {
   background: var(--ifm-color-emphasis-100);
+  color: var(--onasis-accent-gold);
+}
+
+.navbar__link--active {
+  color: var(--ifm-color-primary);
+}
+
+.navbar__link--active:hover {
+  color: var(--onasis-accent-gold);
+}
+
+/* Subtle gold underline on nav hover */
+.navbar__item--dropdown .navbar__link:hover::after,
+.navbar__link:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: var(--onasis-accent-gold);
+  border-radius: 1px;
 }
 
 /* Sidebar improvements */
@@ -120,6 +149,7 @@ body {
   border-radius: 0.375rem;
   transition: all 0.2s;
   color: var(--ifm-menu-color);
+  position: relative;
 }
 
 .menu__link:hover {
@@ -128,7 +158,7 @@ body {
 }
 
 .menu__link--active {
-  background: var(--ifm-color-primary); /* Brand Green */
+  background: var(--ifm-color-primary);
   color: white;
 }
 
@@ -137,7 +167,20 @@ body {
   color: white;
 }
 
-/* Code blocks - Brand style */
+/* Indigo accent bar on active sidebar item */
+.menu__link--active::before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 70%;
+  background: var(--onasis-accent-gold);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Code blocks - Indigo theme */
 pre {
   border-radius: 0.5rem;
   border: 1px solid var(--ifm-toc-border-color);
@@ -158,11 +201,17 @@ article {
 article h1 {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  color: #1B365D; /* Brand Navy */
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 [data-theme='dark'] article h1 {
-  color: #00D4AA; /* Brand Green */
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-lighter) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 article h2 {
@@ -170,23 +219,24 @@ article h2 {
   margin-top: 2.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--ifm-toc-border-color);
-  color: #1B365D; /* Brand Navy */
+  border-bottom: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darker);
 }
 
 [data-theme='dark'] article h2 {
-  color: #00D4AA; /* Brand Green */
+  color: var(--ifm-color-primary-lighter);
+  border-bottom-color: var(--ifm-color-primary-dark);
 }
 
 article h3 {
   font-size: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
-  color: #1B365D; /* Brand Navy */
+  color: var(--ifm-color-primary-dark);
 }
 
 [data-theme='dark'] article h3 {
-  color: #00D4AA; /* Brand Green */
+  color: var(--ifm-color-primary-light);
 }
 
 /* Cards and callouts */
@@ -196,31 +246,36 @@ article h3 {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   background: var(--ifm-background-surface-color);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px 0 rgba(79, 70, 229, 0.1);
   transition: all 0.2s;
 }
 
 .card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
   transform: translateY(-2px);
+  border-color: var(--ifm-color-primary-light);
 }
 
-/* Admonitions - Brand style */
+/* Admonitions - Indigo theme */
 .admonition {
   border-radius: 0.5rem;
   border-left-width: 4px;
 }
 
 .admonition.admonition-note {
-  border-left-color: #00D4AA; /* Brand Green */
+  border-left-color: var(--ifm-color-primary);
 }
 
 .admonition.admonition-tip {
-  border-left-color: #1B365D; /* Brand Navy */
+  border-left-color: var(--onasis-accent-gold);
 }
 
 .admonition.admonition-warning {
-  border-left-color: #FFD700; /* Brand Gold */
+  border-left-color: var(--ifm-color-warning);
+}
+
+.admonition.admonition-danger {
+  border-left-color: var(--ifm-color-danger);
 }
 
 /* Tables */
@@ -236,6 +291,18 @@ thead {
 
 th {
   font-weight: 600;
+  color: var(--ifm-color-primary);
+  padding: 1rem;
+  border-bottom: 2px solid var(--ifm-color-primary);
+}
+
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+tr:hover {
+  background: var(--ifm-color-emphasis-100);
 }
 
 /* Footer */
@@ -254,6 +321,7 @@ th {
 
 .DocSearch-Button:hover {
   background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-primary);
 }
 
 /* Custom API endpoint styling */
@@ -276,17 +344,18 @@ th {
   text-transform: uppercase;
 }
 
-.badge-success { background: #00D4AA; color: white; } /* Brand Green */
-.badge-primary { background: #1B365D; color: white; } /* Brand Navy */
-.badge-warning { background: #FFD700; color: black; } /* Brand Gold */
+.badge-success { background: #10B981; color: white; }
+.badge-primary { background: var(--ifm-color-primary); color: white; }
+.badge-warning { background: var(--onasis-accent-gold); color: white; }
 .badge-danger { background: #ef4444; color: white; }
+.badge-info { background: var(--ifm-color-primary-light); color: white; }
 
 /* Interactive Components Styling */
 .api-playground {
-  border: 1px solid var(--ifm-toc-border-color);
+  border: 1px solid var(--ifm-color-primary);
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px 0 rgba(79, 70, 229, 0.15);
   margin: 1.5rem 0;
 }
 
@@ -320,7 +389,7 @@ th {
 .interactive-button:hover {
   background: var(--ifm-color-primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.3);
 }
 
 .interactive-button:active {
@@ -332,7 +401,7 @@ th {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(79, 70, 229, 0.9);
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -347,48 +416,8 @@ th {
   opacity: 1;
 }
 
-/* Enhanced Tables */
-table {
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid var(--ifm-toc-border-color);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-thead {
-  background: var(--ifm-background-surface-color);
-}
-
-th {
-  font-weight: 600;
-  color: var(--ifm-color-primary);
-  padding: 1rem;
-  border-bottom: 2px solid var(--ifm-color-primary);
-}
-
-td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--ifm-toc-border-color);
-}
-
-tr:hover {
-  background: var(--ifm-color-emphasis-100);
-}
-
-/* Enhanced Cards */
-.card-enhanced {
-  border-radius: 0.75rem;
-  border: 1px solid var(--ifm-toc-border-color);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  background: var(--ifm-background-surface-color);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
-}
-
-.card-enhanced:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+.code-copy-button:hover {
+  background: rgba(79, 70, 229, 1);
 }
 
 /* Status Indicators */
@@ -403,21 +432,27 @@ tr:hover {
 }
 
 .status-success {
-  background: rgba(0, 212, 170, 0.1);
-  color: #00D4AA;
-  border: 1px solid rgba(0, 212, 170, 0.2);
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .status-warning {
-  background: rgba(255, 215, 0, 0.1);
-  color: #B8860B;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--onasis-accent-gold);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .status-error {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.status-info {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--ifm-color-primary);
+  border: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 /* Loading States */
@@ -435,47 +470,39 @@ tr:hover {
   to { transform: rotate(360deg); }
 }
 
-/* Enhanced Navigation */
-.navbar__item {
-  position: relative;
-}
-
-.navbar__item::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--ifm-color-primary);
-  transition: width 0.3s ease;
-}
-
-.navbar__item:hover::after {
-  width: 100%;
-}
-
-/* Enhanced Sidebar */
-.menu__link {
-  position: relative;
+/* Enhanced Cards */
+.card-enhanced {
+  border-radius: 0.75rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 
-.menu__link::before {
-  content: '';
-  position: absolute;
-  left: -0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 1.5rem;
-  background: var(--ifm-color-primary);
-  border-radius: 0 0.25rem 0.25rem 0;
-  transition: width 0.2s ease;
+.card-enhanced:hover {
+  box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.15);
+  transform: translateY(-2px);
+  border-color: var(--ifm-color-primary-light);
 }
 
-.menu__link--active::before {
-  width: 3px;
+/* v-secure specific branding */
+[data-product="v-secure"] h1,
+[data-product="v-secure"] h2 {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.v-secure-badge {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 /* Enhanced Footer */
@@ -504,19 +531,27 @@ tr:hover {
   .code-generator {
     margin: 1rem 0;
   }
-  
+
   .card-enhanced {
     padding: 1rem;
   }
-  
+
   .footer__links {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+
+  .navbar__link:hover::after {
+    display: none;
+  }
 }
 
 /* Dark Mode Enhancements */
-[data-theme='dark'] .api-playground,
+[data-theme='dark'] .api-playground {
+  border-color: var(--ifm-color-primary-dark);
+  box-shadow: 0 2px 8px 0 rgba(129, 140, 248, 0.2);
+}
+
 [data-theme='dark'] .code-generator {
   border-color: #334155;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
@@ -527,10 +562,44 @@ tr:hover {
   border-color: #334155;
 }
 
+[data-theme='dark'] .card-enhanced:hover {
+  box-shadow: 0 4px 12px 0 rgba(129, 140, 248, 0.2);
+  border-color: var(--ifm-color-primary);
+}
+
 [data-theme='dark'] .interactive-button {
   background: var(--ifm-color-primary);
 }
 
 [data-theme='dark'] .interactive-button:hover {
-  background: var(--ifm-color-primary-dark);
+  background: var(--ifm-color-primary-light);
+  box-shadow: 0 4px 12px 0 rgba(129, 140, 248, 0.4);
+}
+
+/* Accessibility */
+*:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Link styling */
+a {
+  color: var(--ifm-color-primary);
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--onasis-accent-gold);
+  text-decoration-thickness: 2px;
+}
+
+[data-theme='dark'] a:hover {
+  color: var(--ifm-color-primary-lighter);
 }
