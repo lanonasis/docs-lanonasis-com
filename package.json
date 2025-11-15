@@ -8,6 +8,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "prebuild": "bun run check:endpoints || true",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -22,7 +23,8 @@
     "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts",
     "mcp": "node mcp-bridge.js",
     "check:links": "node scripts/check-links.js",
-    "check:endpoints": "node scripts/smoke-endpoints.js"
+    "check:endpoints": "node scripts/smoke-endpoints.js",
+    "check:all": "bun run check:links && bun run check:endpoints"
   },
   "dependencies": {
     "@docusaurus/core": "3.9.0",
