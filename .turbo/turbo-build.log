@@ -1,7 +1,2 @@
-$ docusaurus build
-[INFO] Website will be built for all these locales: 
-- en
-- es
-- fr
-- de
-[INFO] [en] Creating an optimized production build...
+$ bun run check:endpoints || true
+$ node scripts/smoke-endpoints.js
