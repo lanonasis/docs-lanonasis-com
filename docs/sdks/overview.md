@@ -9,25 +9,29 @@ LanOnasis provides official SDKs for multiple programming languages:
 
 ## TypeScript/JavaScript
 
-### Memory Client (Recommended)
-Lightweight SDK for memory operations.
+### Memory SDK (Recommended)
+Full-featured SDK for memory operations with multi-modal support.
 
 ```bash
-npm install @lanonasis/memory-client
+npm install @lanonasis/memory-sdk
 ```
+
+[View Memory SDK Documentation →](/api/memory-client)
+
+### Security SDK
+Enterprise-grade encryption and secure key management for all services.
+
+```bash
+npm install @lanonasis/security-sdk
+```
+
+[View Security SDK Documentation →](/sdks/security-sdk)
 
 ### Standalone Memory SDK
 Drop-in SDK for multi-agent systems with no platform dependencies.
 
 ```bash
 npm install @lanonasis/memory-sdk-standalone
-```
-
-### Enterprise SDK (Coming Soon)
-Full-featured SDK with memory, API keys, and MCP support.
-
-```bash
-npm install @lanonasis/sdk
 ```
 
 [View TypeScript SDK Documentation →](/sdks/typescript)
