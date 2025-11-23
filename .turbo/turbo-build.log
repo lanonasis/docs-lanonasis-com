@@ -1,2 +1,3 @@
-$ bun run check:endpoints || true
-$ node scripts/smoke-endpoints.js
+
+[0m[2m[35m$[0m [2m[1mbun run check:endpoints || true[0m
+[0m[2m[35m$[0m [2m[1mnode scripts/smoke-endpoints.js[0m

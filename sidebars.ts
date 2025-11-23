@@ -56,6 +56,17 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'SDKs & Libraries',
+      items: [
+        'sdks/overview',
+        'sdks/security-sdk',
+        'sdks/typescript',
+        'sdks/python',
+        'sdks/cli',
+      ],
+    },
+    {
+      type: 'category',
       label: 'v-secure',
       collapsed: false,
       items: [
