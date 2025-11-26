@@ -451,9 +451,9 @@ async function cachedSearch(query, options = {}) {
 
 ### TypeScript
 ```typescript
-import { LanOnasisClient } from '@lanonasis/sdk';
+import { LanonasisClient } from '@lanonasis/sdk';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY
 });
 

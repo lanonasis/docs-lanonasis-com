@@ -1,5 +1,5 @@
 import React, { useState, useCallback, createContext, useContext } from 'react';
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 interface SearchResult {
   title: string;
@@ -32,7 +32,7 @@ export function MaaSSearchProvider({ children }: { children: React.ReactNode }) 
   const [isSearching, setIsSearching] = useState(false);
   
   const memoryClient = new MemoryClient({
-    endpoint: process.env.NEXT_PUBLIC_MAAS_ENDPOINT || 'http://api.LanOnasis.local',
+    endpoint: process.env.NEXT_PUBLIC_MAAS_ENDPOINT || 'http://api.lanonasis.local',
     apiKey: process.env.NEXT_PUBLIC_MAAS_DOCS_KEY || ''
   });
 

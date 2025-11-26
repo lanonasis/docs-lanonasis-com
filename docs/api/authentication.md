@@ -246,10 +246,10 @@ curl -X DELETE https://api.lanonasis.com/v1/auth/keys/key_789abc \
 
 ### TypeScript
 ```typescript
-import { LanOnasisClient } from '@lanonasis/sdk';
+import { LanonasisClient } from '@lanonasis/sdk';
 
 // Initialize client
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY,
   baseUrl: process.env.LANONASIS_BASE_URL
 });

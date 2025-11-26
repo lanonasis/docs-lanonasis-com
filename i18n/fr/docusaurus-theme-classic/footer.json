@@ -25,15 +25,15 @@
   },
   "link.item.label.Dashboard": {
     "message": "Dashboard",
-    "description": "The label of footer link with label=Dashboard linking to https://dashboard.LanOnasis.com"
+    "description": "The label of footer link with label=Dashboard linking to https://dashboard.lanonasis.com"
   },
   "link.item.label.API Gateway": {
     "message": "API Gateway",
-    "description": "The label of footer link with label=API Gateway linking to https://api.LanOnasis.com"
+    "description": "The label of footer link with label=API Gateway linking to https://api.lanonasis.com"
   },
   "link.item.label.MCP Interface": {
     "message": "MCP Interface",
-    "description": "The label of footer link with label=MCP Interface linking to https://mcp.LanOnasis.com"
+    "description": "The label of footer link with label=MCP Interface linking to https://mcp.lanonasis.com"
   },
   "link.item.label.Changelog": {
     "message": "Changelog",
@@ -45,7 +45,7 @@
   },
   "link.item.label.Status": {
     "message": "Status",
-    "description": "The label of footer link with label=Status linking to https://status.LanOnasis.com"
+    "description": "The label of footer link with label=Status linking to https://status.lanonasis.com"
   },
   "copyright": {
     "message": "Copyright 2025 LanOnasis. Built with Docusaurus.",

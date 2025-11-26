@@ -1,4 +1,4 @@
-# Docs.LanOnasis.com - Documentation Hub
+# Docs.lanonasis.com - Documentation Hub
 
 **Comprehensive documentation site for the Lan Onasis platform APIs, SDKs, and integrations.**
 
@@ -32,16 +32,16 @@
 - **Interactive Components** - Live API explorers and code examples
 
 ## 🚀 Deployment
-- **Domain**: docs.LanOnasis.com
+- **Domain**: docs.lanonasis.com
 - **Platform**: Vercel/Netlify (static site deployment)
 - **Build**: `npm run build` or `bun run build`
 - **Dev**: `npm run dev` or `bun run dev`
 
 ## 🔗 Referenced Services
-- **API Gateway**: api.LanOnasis.com
-- **Dashboard**: dashboard.LanOnasis.com  
-- **MCP Interface**: mcp.LanOnasis.com
-- **Main Site**: LanOnasis.com
+- **API Gateway**: api.lanonasis.com
+- **Dashboard**: dashboard.lanonasis.com  
+- **MCP Interface**: mcp.lanonasis.com
+- **Main Site**: lanonasis.com
 
 ## 📱 Social Media
 - **Twitter/X**: [@LanOnasis](https://twitter.com/LanOnasis)

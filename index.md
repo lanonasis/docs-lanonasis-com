@@ -17,7 +17,7 @@ hero:
       link: /api/
     - theme: alt
       text: View Dashboard
-      link: https://api.LanOnasis.com/dashboard
+      link: https://api.lanonasis.com/dashboard
 
 features:
   - icon: 🧠
@@ -51,19 +51,19 @@ Get started with LanOnasis Memory Service in minutes:
 
 ### 1. Get Your API Key
 
-Visit the [Dashboard](https://api.LanOnasis.com/dashboard) to create your account and generate API keys.
+Visit the [Dashboard](https://api.lanonasis.com/dashboard) to create your account and generate API keys.
 
 ### 2. Install the CLI
 
 ```bash
-npm install -g @LanOnasis/memory-cli
+npm install -g @lanonasis/cli
 ```
 
 ### 3. Configure Authentication
 
 ```bash
 LanOnasis config set api-key YOUR_API_KEY
-LanOnasis config set endpoint https://api.LanOnasis.com
+LanOnasis config set endpoint https://api.lanonasis.com
 ```
 
 ### 4. Create Your First Memory
@@ -84,11 +84,11 @@ LanOnasis memory search "project meeting"
 ## API Example
 
 ```javascript
-import { LanOnasisClient } from '@LanOnasis/memory-sdk';
+import { LanonasisClient } from '@lanonasis/sdk';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: 'your-api-key',
-  endpoint: 'https://api.LanOnasis.com'
+  endpoint: 'https://api.lanonasis.com'
 });
 
 // Create a memory
@@ -106,7 +106,7 @@ const results = await client.memories.search('project meeting');
 
 LanOnasis Memory Service provides a complete memory management solution:
 
-- **API Server**: RESTful API with JWT authentication at `api.LanOnasis.com`
+- **API Server**: RESTful API with JWT authentication at `api.lanonasis.com`
 - **Dashboard**: Self-service portal for API key management and analytics
 - **CLI Tools**: Command-line interface for developers and automation
 - **SDKs**: Official libraries for JavaScript/TypeScript and Python
@@ -120,4 +120,4 @@ LanOnasis Memory Service provides a complete memory management solution:
 - 🛡️ **Reliability**: Rate limiting, caching, comprehensive error handling
 - 📚 **Documentation**: Complete API docs, guides, and examples
 
-Ready to get started? [Create your account](https://api.LanOnasis.com/dashboard) and begin building with LanOnasis Memory Service today!
+Ready to get started? [Create your account](https://api.lanonasis.com/dashboard) and begin building with LanOnasis Memory Service today!

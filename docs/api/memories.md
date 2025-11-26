@@ -334,9 +334,9 @@ curl -X GET "https://api.lanonasis.com/v1/memories?limit=10&tags=project,require
 
 ### TypeScript
 ```typescript
-import { LanOnasisClient } from '@lanonasis/sdk';
+import { LanonasisClient } from '@lanonasis/sdk';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY
 });
 

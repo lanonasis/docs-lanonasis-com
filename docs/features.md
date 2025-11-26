@@ -89,9 +89,9 @@ LanOnasis memory search "project meeting"
 ## API Example
 
 ```javascript
-import { LanOnasisClient } from '@lanonasis/memory-client';
+import { LanonasisClient } from '@lanonasis/memory-client';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: 'your-api-key',
   endpoint: 'https://api.lanonasis.com/api/v1'
 });

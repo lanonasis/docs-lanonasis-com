@@ -5,8 +5,8 @@
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
-      "@lanonasis/memory-sdk": ["./src/mocks/@LanOnasis/memory-sdk"],
-      "@LanOnasis/memory-sdk": ["./src/mocks/@LanOnasis/memory-sdk"]
+      "@lanonasis/sdk": ["./src/mocks/@lanonasis/sdk"],
+      "@lanonasis/memory-client": ["./src/mocks/@lanonasis/sdk"]
     }
   },
   "exclude": [".docusaurus", "build"]

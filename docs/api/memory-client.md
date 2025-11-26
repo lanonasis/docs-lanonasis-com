@@ -25,13 +25,13 @@ The Memory Client SDK provides a simple, typed interface to the Lanonasis Memory
 
 ```bash
 # NPM
-npm install @lanonasis/memory-sdk
+npm install @lanonasis/memory-client
 
 # Yarn
-yarn add @lanonasis/memory-sdk
+yarn add @lanonasis/memory-client
 
 # Bun (recommended)
-bun add @lanonasis/memory-sdk
+bun add @lanonasis/memory-client
 ```
 
 ## 🚀 Quick Start
@@ -39,7 +39,7 @@ bun add @lanonasis/memory-sdk
 ### Basic Setup
 
 ```typescript
-import MemoryClient from '@lanonasis/memory-sdk';
+import MemoryClient from '@lanonasis/memory-client';
 
 // Initialize with API key
 const memory = new MemoryClient({
@@ -242,7 +242,7 @@ console.log(`Last accessed: ${insights.last_accessed}`);
 ### Images with OCR
 
 ```typescript
-import { MultiModalMemoryClient } from '@lanonasis/memory-sdk';
+import { MultiModalMemoryClient } from '@lanonasis/memory-client';
 
 const memory = new MultiModalMemoryClient({
   apiUrl: 'https://api.lanonasis.com',
@@ -531,7 +531,7 @@ await memory.importMemories(backup, {
 ## 🛠️ Error Handling
 
 ```typescript
-import { MemoryClient, MemoryError } from '@lanonasis/memory-sdk';
+import { MemoryClient, MemoryError } from '@lanonasis/memory-client';
 
 try {
   const result = await memory.createMemory({...});
@@ -563,7 +563,7 @@ try {
 
 ```typescript
 import { useState, useEffect } from 'react';
-import MemoryClient from '@lanonasis/memory-sdk';
+import MemoryClient from '@lanonasis/memory-client';
 
 const useMemoryClient = () => {
   const [client] = useState(() => new MemoryClient({
@@ -606,7 +606,7 @@ function MemorySearch() {
 
 ```typescript
 // pages/api/memories/search.ts
-import MemoryClient from '@lanonasis/memory-sdk';
+import MemoryClient from '@lanonasis/memory-client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const memory = new MemoryClient({
@@ -636,7 +636,7 @@ export default async function handler(
 
 ```typescript
 import express from 'express';
-import MemoryClient from '@lanonasis/memory-sdk';
+import MemoryClient from '@lanonasis/memory-client';
 
 const app = express();
 const memory = new MemoryClient({
@@ -671,7 +671,7 @@ app.listen(3000);
 ## 🧪 Testing
 
 ```typescript
-import MemoryClient from '@lanonasis/memory-sdk';
+import MemoryClient from '@lanonasis/memory-client';
 
 describe('MemoryClient', () => {
   let client: MemoryClient;
@@ -762,11 +762,11 @@ const memory = new MemoryClient({
 
 ## 📦 Package Details
 
-- **Package**: `@lanonasis/memory-sdk`
+- **Package**: `@lanonasis/memory-client`
 - **Version**: Latest
 - **License**: MIT
 - **Repository**: [GitHub](https://github.com/lanonasis/memory-sdk)
-- **NPM**: [npmjs.com](https://www.npmjs.com/package/@lanonasis/memory-sdk)
+- **NPM**: [npmjs.com](https://www.npmjs.com/package/@lanonasis/memory-client)
 
 ## 💡 Support
 
