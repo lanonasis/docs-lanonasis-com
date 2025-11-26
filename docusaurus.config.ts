@@ -10,7 +10,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Production URL
-  url: 'https://docs.LanOnasis.com',
+  url: 'https://docs.lanonasis.com',
   baseUrl: '/',
 
   // No GitHub pages - we're self-hosting
@@ -88,7 +88,7 @@ const config: Config = {
         },
         {
           label: 'Dashboard',
-          href: 'https://dashboard.LanOnasis.com',
+          href: 'https://dashboard.lanonasis.com',
           position: 'right',
         },
       ],
@@ -122,15 +122,15 @@ const config: Config = {
           items: [
             {
               label: 'Dashboard',
-              href: 'https://dashboard.LanOnasis.com',
+              href: 'https://dashboard.lanonasis.com',
             },
             {
               label: 'API Gateway',
-              href: 'https://api.LanOnasis.com',
+              href: 'https://api.lanonasis.com',
             },
             {
               label: 'MCP Interface',
-              href: 'https://mcp.LanOnasis.com',
+              href: 'https://mcp.lanonasis.com',
             },
           ],
         },
@@ -147,7 +147,7 @@ const config: Config = {
             },
             {
               label: 'Status',
-              href: 'https://status.LanOnasis.com',
+              href: 'https://status.lanonasis.com',
             },
           ],
         },

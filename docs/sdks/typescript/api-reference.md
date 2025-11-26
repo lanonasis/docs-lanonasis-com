@@ -18,12 +18,12 @@ pnpm add @lanonasis/sdk
 
 ## Client Configuration
 
-### LanOnasisClient
+### LanonasisClient
 
 ```typescript
-import { LanOnasisClient } from '@lanonasis/sdk';
+import { LanonasisClient } from '@lanonasis/sdk';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: string;                    // Required: Your API key
   baseUrl?: string;                  // Optional: Custom API base URL
   timeout?: number;                  // Optional: Request timeout in ms (default: 30000)
@@ -38,12 +38,12 @@ const client = new LanOnasisClient({
 
 ```typescript
 // Basic configuration
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY!
 });
 
 // Advanced configuration
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY!,
   baseUrl: 'https://api.lanonasis.com/v1',
   timeout: 60000,
@@ -399,7 +399,7 @@ try {
 ### Retry Logic
 
 ```typescript
-import { LanOnasisClient, RateLimitError } from '@lanonasis/sdk';
+import { LanonasisClient, RateLimitError } from '@lanonasis/sdk';
 
 async function createMemoryWithRetry(data: CreateMemoryData, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -498,7 +498,7 @@ await ws.connect();
 ### Request Middleware
 
 ```typescript
-import { LanOnasisClient, RequestMiddleware } from '@lanonasis/sdk';
+import { LanonasisClient, RequestMiddleware } from '@lanonasis/sdk';
 
 const loggingMiddleware: RequestMiddleware = (request, next) => {
   console.log(`[${new Date().toISOString()}] ${request.method} ${request.url}`);
@@ -511,7 +511,7 @@ const loggingMiddleware: RequestMiddleware = (request, next) => {
   });
 };
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY!,
   middleware: [loggingMiddleware]
 });
@@ -522,7 +522,7 @@ const client = new LanOnasisClient({
 ```typescript
 import { CachePlugin } from '@lanonasis/sdk/plugins';
 
-const client = new LanOnasisClient({
+const client = new LanonasisClient({
   apiKey: process.env.LANONASIS_API_KEY!,
   plugins: [
     new CachePlugin({

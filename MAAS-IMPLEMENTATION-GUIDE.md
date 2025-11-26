@@ -54,7 +54,7 @@ NEXT_PUBLIC_MEILISEARCH_KEY=your_meili_key
 bun install
 
 # Install additional search dependencies
-bun add @LanOnasis/memory-sdk meilisearch gray-matter remark strip-markdown
+bun add @lanonasis/memory-client meilisearch gray-matter remark strip-markdown
 ```
 
 ### Step 3: Index Documentation to MaaS

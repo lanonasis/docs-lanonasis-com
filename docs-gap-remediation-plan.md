@@ -102,7 +102,7 @@ X-Workspace-ID: workspace_123 (optional)
 
 ### cURL
 ```bash
-curl -X POST https://api.LanOnasis.com/api/v1/memory \
+curl -X POST https://api.lanonasis.com/api/v1/memory \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -170,7 +170,7 @@ sidebar_position: 2
 ## Installation
 
 ```bash
-npm install @LanOnasis/memory-client
+npm install @lanonasis/memory-client
 ```
 
 ## Configuration
@@ -179,12 +179,12 @@ npm install @LanOnasis/memory-client
 ```env
 LANONASIS_API_KEY=your_api_key_here
 LANONASIS_WORKSPACE_ID=workspace_123
-LANONASIS_API_URL=https://api.LanOnasis.com # Optional
+LANONASIS_API_URL=https://api.lanonasis.com # Optional
 ```
 
 ### Client Initialization
 ```typescript
-import { MemoryClient } from '@LanOnasis/memory-client'
+import { MemoryClient } from '@lanonasis/memory-client'
 
 // Option 1: Auto-config from environment
 const client = new MemoryClient()
@@ -193,7 +193,7 @@ const client = new MemoryClient()
 const client = new MemoryClient({
   apiKey: 'your_api_key',
   workspaceId: 'workspace_123',
-  baseUrl: 'https://api.LanOnasis.com', // Optional
+  baseUrl: 'https://api.lanonasis.com', // Optional
   timeout: 30000, // Optional: 30 seconds
   maxRetries: 3 // Optional
 })
@@ -324,7 +324,7 @@ import {
   APIError, 
   RateLimitError, 
   ValidationError 
-} from '@LanOnasis/memory-client'
+} from '@lanonasis/memory-client'
 
 try {
   const result = await client.upsert({ text: "..." })
@@ -724,7 +724,7 @@ sidebar_position: 101
 
 ## 🎯 Quick Links
 
-- **Status Page**: [status.LanOnasis.com](https://status.LanOnasis.com)
+- **Status Page**: [status.lanonasis.com](https://status.lanonasis.com)
 - **API Status**: Real-time monitoring available
 - **Community Discord**: [Join our Discord](https://discord.gg/LanOnasis)
 
@@ -784,7 +784,7 @@ sidebar_position: 101
 - **Stack Overflow**: Tag with `LanOnasis`
 
 ### Professional Support (Paid Plans)
-- **Email**: support@LanOnasis.com
+- **Email**: support@lanonasis.com
 - **Response Time**: 
   - Pro: 24 hours
   - Enterprise: 4 hours
@@ -822,7 +822,7 @@ lan-onasis limits
 ## 📖 Additional Resources
 
 - [Video Tutorials](https://youtube.com/@LanOnasis)
-- [Blog](https://blog.LanOnasis.com)
+- [Blog](https://blog.lanonasis.com)
 - [Case Studies](/docs/case-studies)
 - [Roadmap](https://github.com/LanOnasis/roadmap)
 ```

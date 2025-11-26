@@ -107,7 +107,7 @@ LanOnasis provides official SDKs for multiple programming languages:
 ## TypeScript/JavaScript
 
 \`\`\`bash
-npm install @LanOnasis/memory-sdk
+npm install @lanonasis/sdk
 \`\`\`
 
 [View TypeScript SDK Documentation →](/sdks/typescript)
@@ -123,7 +123,7 @@ pip install LanOnasis
 ## CLI Tool
 
 \`\`\`bash
-npm install -g @LanOnasis/cli
+npm install -g @lanonasis/cli
 \`\`\`
 
 [View CLI Documentation →](/sdks/cli)
@@ -151,7 +151,7 @@ Get up and running with LanOnasis in 5 minutes.
 ## Prerequisites
 
 - Node.js 18+ or Python 3.8+
-- An API key (get one from the [Dashboard](http://dashboard.LanOnasis.local))
+- An API key (get one from the [Dashboard](http://dashboard.lanonasis.local))
 
 ## Installation
 
@@ -160,7 +160,7 @@ Choose your preferred SDK:
 ### TypeScript/JavaScript
 
 \`\`\`bash
-npm install @LanOnasis/memory-sdk
+npm install @lanonasis/sdk
 \`\`\`
 
 ### Python
@@ -174,7 +174,7 @@ pip install LanOnasis
 ### JavaScript Example
 
 \`\`\`javascript
-import { MemoryClient } from '@LanOnasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 
 const client = new MemoryClient({
   apiKey: process.env.LANONASIS_API_KEY

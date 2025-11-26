@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { MemoryClient } from '@lanonasis/memory-sdk';
+import { MemoryClient } from '@lanonasis/memory-client';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
