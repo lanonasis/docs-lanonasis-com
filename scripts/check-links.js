@@ -4,6 +4,7 @@ const path = require('path');
 
 const DOCS_DIR = path.join(__dirname, '..', 'docs');
 const broken = [];
+const VALID_EXTENSIONS = ['.md', '.mdx'];
 
 function listMarkdownFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -16,20 +17,34 @@ function listMarkdownFiles(dir) {
 }
 
 function checkFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+  const content = fs
+    .readFileSync(filePath, 'utf8')
+    // Strip fenced code blocks so sample links don't trigger false positives
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/~~~[\s\S]*?~~~/g, '');
   const linkRegex = /\[[^\]]*\]\(([^)]+)\)/g;
   let match;
   while ((match = linkRegex.exec(content)) !== null) {
     const target = match[1];
     if (/^https?:\/\//i.test(target)) continue; // external
+    if (/^mailto:/i.test(target)) continue;
+    if (/^tel:/i.test(target)) continue;
     if (target.startsWith('#')) continue; // in-page
     if (target.startsWith('/')) continue; // route link
-    const normalized = target.split('#')[0];
+    const normalized = target.split('#')[0].split('?')[0];
     if (!normalized) continue;
-    const targetPath = path.resolve(path.dirname(filePath), normalized);
-    if (!fs.existsSync(targetPath)) {
-      broken.push({ file: filePath, link: target });
-    }
+    const basePath = path.resolve(path.dirname(filePath), normalized);
+
+    const candidatePaths = [
+      basePath,
+      ...VALID_EXTENSIONS.map((ext) => basePath + ext),
+      ...VALID_EXTENSIONS.map((ext) =>
+        path.join(basePath, `index${ext}`)
+      ),
+    ];
+
+    const exists = candidatePaths.some((p) => fs.existsSync(p));
+    if (!exists) broken.push({ file: filePath, link: target });
   }
 }
 
@@ -46,5 +61,4 @@ if (broken.length > 0) {
 } else {
   console.log('No broken relative links detected.');
 }
-
 

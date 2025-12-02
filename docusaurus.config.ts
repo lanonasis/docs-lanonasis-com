@@ -1,6 +1,12 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import yaml from 'js-yaml';
+
+// Polyfill for gray-matter expecting `yaml.safeLoad` (removed in js-yaml@4)
+// Keep the override on js-yaml v4 while preserving Docusaurus frontmatter parsing.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(yaml as any).safeLoad = (yaml as any).load;
 
 // Self-hosted configuration - No external dependencies
 
