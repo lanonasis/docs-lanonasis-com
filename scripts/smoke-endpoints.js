@@ -1,8 +1,8 @@
 /* Minimal endpoint smoke tests (non-auth) */
 const targets = [
-  { url: 'https://api.lanonasis.com/api/v1', allow: [200, 401, 403, 404] },
-  { url: 'https://auth.lanonasis.com', allow: [200, 401, 403, 404] },
-  { url: 'https://mcp.lanonasis.com', allow: [200, 401, 403, 404] },
+  { url: 'https://api.lanonasis.com/api/v1/health', allow: [200, 401, 403, 404] },
+  { url: 'https://auth.lanonasis.com/health', allow: [200, 401, 403, 404] },
+  { url: 'https://mcp.lanonasis.com/health', allow: [200, 401, 403, 404] },
   { url: 'https://docs.lanonasis.com', allow: [200, 301, 302, 304] },
   { url: 'https://dashboard.lanonasis.com', allow: [200, 301, 302, 304, 401, 403] },
 ];
