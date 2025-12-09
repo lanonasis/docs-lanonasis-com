@@ -89,6 +89,11 @@ const config: Config = {
           label: 'v-secure',
         },
         {
+          to: '/api/playground',
+          position: 'left',
+          label: 'API Playground',
+        },
+        {
           type: 'localeDropdown',
           position: 'right',
         },

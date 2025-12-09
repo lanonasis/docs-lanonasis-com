@@ -1,0 +1,302 @@
+openapi: 3.1.0
+info:
+  title: LanOnasis Documentation Search API
+  description: |
+    REST API for searching LanOnasis documentation. This API enables semantic and keyword-based search 
+    across documentation pages, supporting filtering by section (API, guides, SDKs).
+    
+    **Use Cases:**
+    - Custom GPT Actions for OpenAI GPTs
+    - Documentation search integrations
+    - Automated documentation retrieval
+    
+    **Base URL:** `https://docs.lanonasis.com`
+  version: 1.0.0
+  contact:
+    name: LanOnasis Support
+    url: https://docs.lanonasis.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://docs.lanonasis.com
+    description: Production server
+  - url: https://docs.lanonasis.com
+    description: Development server (same as production)
+
+paths:
+  /api/search:
+    get:
+      summary: Search documentation (GET)
+      description: |
+        Search LanOnasis documentation using a query string. Returns relevant documentation 
+        pages sorted by relevance score. Returns plain JSON (no SSE) for Custom GPT Actions.
+      operationId: searchDocsGet
+      tags:
+        - Search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string
+          schema:
+            type: string
+            minLength: 1
+            example: "memory service authentication"
+        - name: query
+          in: query
+          required: false
+          description: Alternative parameter name for search query (alias for 'q')
+          schema:
+            type: string
+            minLength: 1
+        - name: section
+          in: query
+          required: false
+          description: Filter results by documentation section
+          schema:
+            type: string
+            enum: [all, api, guides, sdks]
+            default: all
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of results to return (1-50)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Successful search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+              examples:
+                success:
+                  summary: Successful search
+                  value:
+                    success: true
+                    data:
+                      query: "memory service"
+                      results:
+                        - title: "Memory Service Overview"
+                          content: "The LanOnasis Memory Service provides enterprise-grade memory management..."
+                          url: "https://docs.lanonasis.com/intro"
+                          relevance_score: 19
+                          section: "general"
+                          type: "doc"
+                        - title: "API Reference"
+                          content: "Memory service API endpoints for creating and managing memories..."
+                          url: "https://docs.lanonasis.com/api/overview"
+                          relevance_score: 15
+                          section: "api"
+                          type: "api"
+                      total: 2
+                      metadata:
+                        section_filter: "all"
+                        limit: 10
+                        search_timestamp: "2025-12-02T19:00:00.000Z"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: "VALIDATION_ERROR"
+                  message: "Query parameter is required and must be a non-empty string"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: "INTERNAL_ERROR"
+                  message: "An error occurred while searching documentation"
+
+    post:
+      summary: Search documentation (POST)
+      description: |
+        Search LanOnasis documentation using a POST request with JSON body. Returns relevant 
+        documentation pages sorted by relevance score. Returns plain JSON (no SSE) for Custom GPT Actions.
+      operationId: searchDocsPost
+      tags:
+        - Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+            examples:
+              basic:
+                summary: Basic search
+                value:
+                  query: "memory service authentication"
+              withFilters:
+                summary: Search with filters
+                value:
+                  query: "API endpoints"
+                  section: "api"
+                  limit: 5
+      responses:
+        '200':
+          description: Successful search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: Search query string
+          minLength: 1
+          example: "memory service authentication"
+        q:
+          type: string
+          description: Alternative parameter name for search query (alias for 'query')
+          minLength: 1
+        section:
+          type: string
+          description: Filter results by documentation section
+          enum: [all, api, guides, sdks]
+          default: all
+        limit:
+          type: integer
+          description: Maximum number of results to return
+          minimum: 1
+          maximum: 50
+          default: 10
+
+    SearchResult:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the documentation page
+          example: "Memory Service Overview"
+        content:
+          type: string
+          description: Excerpt from the documentation page containing the query
+          example: "The LanOnasis Memory Service provides enterprise-grade memory management for AI applications..."
+        url:
+          type: string
+          format: uri
+          description: Full URL to the documentation page
+          example: "https://docs.lanonasis.com/intro"
+        relevance_score:
+          type: number
+          description: Relevance score for this result (higher is more relevant)
+          example: 19
+        section:
+          type: string
+          description: Documentation section this result belongs to
+          enum: [general, api, guides, sdks]
+          example: "general"
+        type:
+          type: string
+          description: Type of documentation
+          enum: [doc, api, sdk, guide]
+          example: "doc"
+
+    SearchResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: true
+        data:
+          type: object
+          properties:
+            query:
+              type: string
+              description: The search query that was executed
+              example: "memory service"
+            results:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchResult'
+              description: Array of search results sorted by relevance
+            total:
+              type: integer
+              description: Total number of results returned
+              example: 2
+            metadata:
+              type: object
+              properties:
+                section_filter:
+                  type: string
+                  description: Section filter that was applied
+                  example: "all"
+                limit:
+                  type: integer
+                  description: Maximum results limit that was applied
+                  example: 10
+                search_timestamp:
+                  type: string
+                  format: date-time
+                  description: ISO 8601 timestamp of when the search was performed
+                  example: "2025-12-02T19:00:00.000Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Always false for error responses
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              enum: [VALIDATION_ERROR, METHOD_NOT_ALLOWED, INTERNAL_ERROR]
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Query parameter is required and must be a non-empty string"
+
+  securitySchemes:
+    # No authentication required for public documentation search
+    # Add API key authentication here if needed in the future
+    # ApiKeyAuth:
+    #   type: apiKey
+    #   in: header
+    #   name: X-API-Key
+
+# security: []  # Uncomment if authentication is added
+
+tags:
+  - name: Search
+    description: Documentation search operations

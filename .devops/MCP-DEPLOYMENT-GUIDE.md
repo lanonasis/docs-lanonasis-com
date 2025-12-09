@@ -81,9 +81,11 @@ module.exports = async function handler(req, res) {
 1. **`/api/mcp.js`** - Core MCP functionality (SSE format for Claude Desktop)
 2. **`/api/search.js`** - REST API endpoint (JSON format for Custom GPT/Actions)
 3. **`/openapi.yaml`** - OpenAPI 3.1 specification for Custom GPT Actions
-4. **`/static/img/logo_single_export/`** - Brand assets
-5. **`vercel.json`** - Deployment configuration
-6. **`docusaurus.config.ts`** - Site configuration
+4. **`/src/pages/api/playground.tsx`** - Interactive API playground component
+5. **`/src/pages/api/ApiPlayground.module.css`** - Playground styles
+6. **`/static/img/logo_single_export/`** - Brand assets
+7. **`vercel.json`** - Deployment configuration
+8. **`docusaurus.config.ts`** - Site configuration
 
 ### Common Pitfalls and Solutions
 
@@ -282,8 +284,10 @@ curl -X POST https://docs.lanonasis.com/api/search \
 - Monitor deployment status in Vercel dashboard
 - Test MCP endpoint after each deployment (for Claude Desktop)
 - Test REST API endpoint after each deployment (for Custom GPT)
+- Test API Playground at `/api/playground` (for interactive testing)
 - Verify Claude Desktop integration works
 - Verify Custom GPT Actions can access the OpenAPI spec
+- Verify OpenAPI spec is accessible at `/openapi.yaml`
 
 ### Performance Optimization
 
@@ -311,6 +315,15 @@ For questions about this deployment strategy:
 
 ---
 
-**Last Updated**: September 2025
-**Strategy Version**: 1.0
+## Related Documentation
+
+- [API Playground Guide](./API-PLAYGROUND-GUIDE.md) - Interactive API testing
+- [Custom GPT Integration Guide](./CUSTOM-GPT-INTEGRATION.md) - OpenAI Custom Actions
+- [API Endpoints Summary](./API-ENDPOINTS-SUMMARY.md) - Endpoint comparison
+- [FAQ](./FAQ.md) - Common questions and troubleshooting
+
+---
+
+**Last Updated**: December 2024
+**Strategy Version**: 1.1
 **Deployment Status**: ✅ Production Ready
