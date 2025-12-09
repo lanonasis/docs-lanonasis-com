@@ -1,0 +1,33 @@
+.formGroup {
+  margin-bottom: var(--ifm-spacing-vertical);
+}
+
+.paramSection {
+  margin-bottom: var(--ifm-spacing-vertical);
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  font-size: 1rem;
+}
+
+.textarea {
+  min-height: 200px;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.description {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.875rem;
+}
+
+.runButton {
+  margin-top: var(--ifm-spacing-vertical);
+}
