@@ -38,7 +38,9 @@ async function handleMCPRequest(request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // Server requires both JSON and SSE accept headers; keep order explicit
         'Accept': 'application/json, text/event-stream',
+        'Cache-Control': 'no-cache',
         'Content-Length': Buffer.byteLength(postData)
       }
     };
@@ -52,19 +54,35 @@ async function handleMCPRequest(request) {
 
       res.on('end', () => {
         try {
-          // Extract JSON from SSE format
+          // If status is not OK, propagate a clearer error to the client
+          if (res.statusCode && res.statusCode >= 400) {
+            const errorResponse = {
+              jsonrpc: '2.0',
+              id: request.id || null,
+              error: {
+                code: -32603,
+                message: `Upstream error ${res.statusCode}: ${res.statusMessage || 'Unknown error'}`,
+                data: responseData || undefined
+              }
+            };
+            stdout.write(JSON.stringify(errorResponse) + '\n');
+            return;
+          }
+
+          // Try SSE first
           const lines = responseData.split('\n');
           const dataLine = lines.find(line => line.startsWith('data: '));
 
           if (dataLine) {
             const jsonData = dataLine.substring(6); // Remove "data: "
             const response = JSON.parse(jsonData);
-
-            // Send response back to Claude Desktop via stdout
             stdout.write(JSON.stringify(response) + '\n');
-          } else {
-            stderr.write(`No data line found in response: ${responseData}\n`);
+            return;
           }
+
+          // Fallback: try to parse the whole body as JSON (non-SSE response)
+          const parsed = JSON.parse(responseData);
+          stdout.write(JSON.stringify(parsed) + '\n');
         } catch (error) {
           stderr.write(`Response parse error: ${error.message}\n`);
 
