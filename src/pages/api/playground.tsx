@@ -34,8 +34,11 @@ export default function ApiPlayground() {
   // Fetch the OpenAPI spec on mount
   useEffect(() => {
     async function fetchSpec() {
+      // Prioritize JSON format for better browser compatibility
       const candidateUrls = ['/openapi.json', '/openapi.yaml', '/openapi.yml'];
       let spec: any = null;
+      let lastError: string = '';
+      
       for (const url of candidateUrls) {
         try {
           const res = await fetch(url);
@@ -43,20 +46,35 @@ export default function ApiPlayground() {
             const text = await res.text();
             if (url.endsWith('.json')) {
               spec = JSON.parse(text);
+              console.log('✅ Loaded OpenAPI spec from:', url);
             } else {
-              // Dynamically import js-yaml to parse YAML definitions
-              const yaml = await import('js-yaml');
-              spec = yaml.load(text);
+              // Try to parse YAML - may fail if js-yaml not bundled
+              try {
+                const yaml = await import('js-yaml');
+                spec = yaml.load(text);
+                console.log('✅ Loaded OpenAPI spec from:', url);
+              } catch (yamlError: any) {
+                console.warn('⚠️ js-yaml not available, skipping YAML file:', url);
+                lastError = `YAML parsing failed: ${yamlError.message}`;
+                continue;
+              }
             }
             break;
           }
-        } catch (e) {
-          // ignore and try the next candidate
+        } catch (e: any) {
+          console.warn('Failed to load spec from:', url, e.message);
+          lastError = e.message;
         }
       }
+      
       if (spec) {
         specRef.current = spec;
         setOperations(extractOperations(spec));
+      } else {
+        console.error('❌ Failed to load OpenAPI spec. Last error:', lastError);
+        console.error('Tried URLs:', candidateUrls);
+        // Set error state for user feedback
+        setResponse(`Failed to load OpenAPI specification. Please ensure /openapi.json or /openapi.yaml is accessible.\n\nLast error: ${lastError}`);
       }
     }
     fetchSpec();
@@ -279,7 +297,24 @@ export default function ApiPlayground() {
             )}
           </>
         ) : (
-          <p>Loading API specification...</p>
+          <div>
+            {response ? (
+              <div className="alert alert--danger margin-top--md">
+                <h3>Error Loading API Specification</h3>
+                <pre style={{ whiteSpace: 'pre-wrap' }}>{response}</pre>
+                <p className="margin-top--md">
+                  <strong>Troubleshooting:</strong>
+                </p>
+                <ul>
+                  <li>Check browser console for detailed errors</li>
+                  <li>Verify <code>/openapi.json</code> or <code>/openapi.yaml</code> is accessible</li>
+                  <li>Ensure the OpenAPI spec is valid JSON/YAML</li>
+                </ul>
+              </div>
+            ) : (
+              <p>Loading API specification...</p>
+            )}
+          </div>
         )}
       </div>
     </Layout>

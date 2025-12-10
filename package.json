@@ -8,8 +8,9 @@
   "scripts": {
     "docusaurus": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus",
     "start": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus start",
-    "prebuild": "bun run check:endpoints || true",
+    "prebuild": "node scripts/generate-openapi-json.js && bun run check:endpoints || true",
     "build": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus build",
+    "generate:openapi-json": "node scripts/generate-openapi-json.js",
     "swizzle": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus swizzle",
     "deploy": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus deploy",
     "clear": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus clear",
