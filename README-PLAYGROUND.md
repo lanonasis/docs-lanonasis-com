@@ -8,9 +8,11 @@ I've successfully integrated an interactive API Playground into your LanOnasis d
 - Moved `ApiPlayground.tsx` → `src/pages/api/playground.tsx`
 - Moved `ApiPlayground.module.css` → `src/pages/api/ApiPlayground.module.css`
 - Copied `openapi.yaml` → `static/openapi.yaml` (auto-served at `/openapi.yaml`)
+- Generated `openapi.json` → `static/openapi.json` (for browser compatibility)
 
 ### 2. **Dependencies** ✅
-- Installed `js-yaml@3.14.2` for YAML parsing
+- Installed `js-yaml@3.14.2` for YAML parsing (build-time only)
+- Added automatic JSON generation script
 - Verified all required dependencies present
 
 ### 3. **Navigation** ✅
@@ -35,6 +37,7 @@ Created comprehensive documentation:
 ### 6. **Testing** ✅
 - Created `test-playground.sh` for automated testing
 - Verified local build works
+- Fixed YAML parsing issue (see PLAYGROUND-FIX.md)
 - Ready for production deployment
 
 ## 🎯 Key Features
