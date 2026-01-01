@@ -1,44 +1,118 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Layout from '@theme/Layout';
 import CodeBlock from '@theme/CodeBlock';
 import clsx from 'clsx';
 import styles from './ApiPlayground.module.css';
 
 /**
- * API Playground page
+ * Enhanced API Playground for LanOnasis Documentation
  *
- * This component provides an interactive interface for exploring your OpenAPI
- * specification directly from your documentation. It reads the API
- * definition from `/openapi.json` or `/openapi.yaml` at runtime and
- * auto‑generates a form for query/path parameters and request bodies.
- *
- * The UI follows the LanOnasis docs theme, using Docusaurus utilities and
- * CSS variables for a cohesive look. Your API key is persisted in
- * localStorage so you don't need to re‑enter it on every visit.
+ * A modern, interactive interface for exploring the LanOnasis API directly
+ * from the documentation. Features include:
+ * - Split-pane request/response layout
+ * - Multi-language code generation with tabbed interface
+ * - Response metadata (status, timing, size)
+ * - Request history with replay capability
+ * - Copy-to-clipboard functionality
+ * - Smooth animations and visual feedback
  */
+
+// Language configuration for code generation
+const LANGUAGES = [
+  { id: 'curl', name: 'cURL', icon: '🌐' },
+  { id: 'javascript', name: 'JavaScript', icon: '🟨' },
+  { id: 'typescript', name: 'TypeScript', icon: '🔷' },
+  { id: 'python', name: 'Python', icon: '🐍' },
+  { id: 'go', name: 'Go', icon: '🐹' },
+  { id: 'php', name: 'PHP', icon: '🐘' },
+] as const;
+
+type LanguageId = typeof LANGUAGES[number]['id'];
+
+interface Operation {
+  path: string;
+  method: string;
+  summary?: string;
+  params: Parameter[];
+  hasBody: boolean;
+  defaultBody: string;
+}
+
+interface Parameter {
+  name: string;
+  in: 'query' | 'path' | 'header';
+  required: boolean;
+  description: string;
+  schema: {
+    type?: string;
+    enum?: string[];
+    default?: any;
+  };
+}
+
+interface ResponseMeta {
+  status: number;
+  statusText: string;
+  time: number;
+  size: string;
+}
+
+interface HistoryItem {
+  id: string;
+  method: string;
+  path: string;
+  params: Record<string, string>;
+  status: number;
+  time: number;
+  timestamp: Date;
+}
+
 export default function ApiPlayground() {
-  const [operations, setOperations] = useState([]);
+  // Core state
+  const [operations, setOperations] = useState<Operation[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
   const [bodyText, setBodyText] = useState('');
   const [apiKey, setApiKey] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('apiKey') ?? '';
+      return localStorage.getItem('lanonasis_api_key') ?? '';
     }
     return '';
   });
-  const [response, setResponse] = useState('');
-  const [curl, setCurl] = useState('');
+
+  // Response state
+  const [response, setResponse] = useState<string>('');
+  const [responseMeta, setResponseMeta] = useState<ResponseMeta | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Code generation state
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageId>('curl');
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedResponse, setCopiedResponse] = useState(false);
+
+  // History state
+  const [history, setHistory] = useState<HistoryItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('lanonasis_playground_history');
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+
   const specRef = useRef<any>(null);
 
-  // Fetch the OpenAPI spec on mount
+  // Fetch OpenAPI spec on mount
   useEffect(() => {
     async function fetchSpec() {
-      // Prioritize JSON format for better browser compatibility
       const candidateUrls = ['/openapi.json', '/openapi.yaml', '/openapi.yml'];
       let spec: any = null;
-      let lastError: string = '';
-      
+      let lastError = '';
+
       for (const url of candidateUrls) {
         try {
           const res = await fetch(url);
@@ -46,15 +120,11 @@ export default function ApiPlayground() {
             const text = await res.text();
             if (url.endsWith('.json')) {
               spec = JSON.parse(text);
-              console.log('✅ Loaded OpenAPI spec from:', url);
             } else {
-              // Try to parse YAML - may fail if js-yaml not bundled
               try {
                 const yaml = await import('js-yaml');
                 spec = yaml.load(text);
-                console.log('✅ Loaded OpenAPI spec from:', url);
               } catch (yamlError: any) {
-                console.warn('⚠️ js-yaml not available, skipping YAML file:', url);
                 lastError = `YAML parsing failed: ${yamlError.message}`;
                 continue;
               }
@@ -62,31 +132,37 @@ export default function ApiPlayground() {
             break;
           }
         } catch (e: any) {
-          console.warn('Failed to load spec from:', url, e.message);
           lastError = e.message;
         }
       }
-      
+
       if (spec) {
         specRef.current = spec;
         setOperations(extractOperations(spec));
       } else {
-        console.error('❌ Failed to load OpenAPI spec. Last error:', lastError);
-        console.error('Tried URLs:', candidateUrls);
-        // Set error state for user feedback
-        setResponse(`Failed to load OpenAPI specification. Please ensure /openapi.json or /openapi.yaml is accessible.\n\nLast error: ${lastError}`);
+        setError(`Failed to load API specification. ${lastError}`);
       }
     }
     fetchSpec();
   }, []);
 
-  // Helper to build operations list from spec
-  function extractOperations(spec: any) {
-    const ops: any[] = [];
-    if (!spec || !spec.paths) return ops;
+  // Save history to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lanonasis_playground_history', JSON.stringify(history.slice(0, 20)));
+    }
+  }, [history]);
+
+  // Extract operations from OpenAPI spec
+  function extractOperations(spec: any): Operation[] {
+    const ops: Operation[] = [];
+    if (!spec?.paths) return ops;
+
     Object.entries(spec.paths).forEach(([path, methods]) => {
       Object.entries(methods as any).forEach(([method, details]) => {
-        const params: any[] = [];
+        if (typeof details !== 'object' || !details) return;
+
+        const params: Parameter[] = [];
         (details.parameters || []).forEach((p: any) => {
           params.push({
             name: p.name,
@@ -96,102 +172,280 @@ export default function ApiPlayground() {
             schema: p.schema || {},
           });
         });
+
         const hasBody = Boolean(details.requestBody);
         let defaultBody = '';
         if (hasBody) {
           try {
-            const content = details.requestBody.content || {};
-            const jsonContent = content['application/json'] || content['application/json; charset=utf-8'];
-            if (jsonContent) {
-              if (jsonContent.example) {
-                defaultBody = JSON.stringify(jsonContent.example, null, 2);
-              } else if (jsonContent.examples) {
-                const first = Object.values(jsonContent.examples)[0] as any;
-                defaultBody = JSON.stringify(first.value, null, 2);
-              } else if (jsonContent.schema && jsonContent.schema.example) {
-                defaultBody = JSON.stringify(jsonContent.schema.example, null, 2);
-              }
+            const content = details.requestBody?.content || {};
+            const jsonContent = content['application/json'];
+            if (jsonContent?.example) {
+              defaultBody = JSON.stringify(jsonContent.example, null, 2);
+            } else if (jsonContent?.examples) {
+              const first = Object.values(jsonContent.examples)[0] as any;
+              defaultBody = JSON.stringify(first?.value, null, 2);
             }
-          } catch (e) {
-            // ignore
+          } catch {
+            // Ignore
           }
         }
-        ops.push({ path, method, params, hasBody, defaultBody });
+
+        ops.push({
+          path,
+          method,
+          summary: details.summary,
+          params,
+          hasBody,
+          defaultBody,
+        });
       });
     });
+
     return ops;
   }
 
-  // Update parameter values
-  const updateParam = (name: string, value: string) => {
-    setParamValues((prev) => ({ ...prev, [name]: value }));
-  };
+  // Handle parameter changes
+  const updateParam = useCallback((name: string, value: string) => {
+    setParamValues(prev => ({ ...prev, [name]: value }));
+  }, []);
 
-  // Persist API key on change
-  const handleApiKeyChange = (key: string) => {
+  // Persist API key
+  const handleApiKeyChange = useCallback((key: string) => {
     setApiKey(key);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('apiKey', key);
+      localStorage.setItem('lanonasis_api_key', key);
     }
-  };
+  }, []);
 
-  // Compose and send request
-  async function runRequest() {
-    if (selectedIndex === null) return;
-    const op = operations[selectedIndex];
-    // Determine base URL from servers list or use window origin
+  // Build full URL for request
+  const buildUrl = useCallback((op: Operation): string => {
     const spec = specRef.current;
     const baseUrl = spec?.servers?.[0]?.url?.replace(/\/$/, '') || '';
-    // Build path with path params substituted
-    let urlPath = op.path as string;
+    let urlPath = op.path;
+
+    // Substitute path parameters
     op.params
-      .filter((p: any) => p.in === 'path')
-      .forEach((p: any) => {
+      .filter(p => p.in === 'path')
+      .forEach(p => {
         const value = paramValues[p.name] || '';
         urlPath = urlPath.replace(`{${p.name}}`, encodeURIComponent(value));
       });
+
     // Build query string
     const queryParts = op.params
-      .filter((p: any) => p.in === 'query' && paramValues[p.name])
-      .map((p: any) => `${encodeURIComponent(p.name)}=${encodeURIComponent(paramValues[p.name])}`);
+      .filter(p => p.in === 'query' && paramValues[p.name])
+      .map(p => `${encodeURIComponent(p.name)}=${encodeURIComponent(paramValues[p.name])}`);
+
     const queryString = queryParts.join('&');
-    const fullUrl = `${baseUrl}${urlPath}${queryString ? (urlPath.includes('?') ? '&' : '?') + queryString : ''}`;
-    const headers: Record<string, string> = {};
-    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
-    let body: any;
-    if (op.hasBody) {
-      try {
-        body = bodyText ? JSON.parse(bodyText) : undefined;
-        if (body) headers['Content-Type'] = 'application/json';
-      } catch (e) {
-        setResponse('Invalid JSON in request body');
-        return;
-      }
-    }
-    const options: any = { method: op.method.toUpperCase(), headers };
-    if (body !== undefined) options.body = JSON.stringify(body);
+    return `${baseUrl}${urlPath}${queryString ? (urlPath.includes('?') ? '&' : '?') + queryString : ''}`;
+  }, [paramValues]);
+
+  // Generate code for selected language
+  const generateCode = useCallback((language: LanguageId): string => {
+    if (selectedIndex === null) return '';
+    const op = operations[selectedIndex];
+    const url = buildUrl(op);
+    const method = op.method.toUpperCase();
+
+    const generators: Record<LanguageId, () => string> = {
+      curl: () => {
+        let cmd = `curl -X ${method} "${url}"`;
+        if (apiKey) cmd += ` \\\n  -H "Authorization: Bearer ${apiKey}"`;
+        if (op.hasBody && bodyText) {
+          cmd += ` \\\n  -H "Content-Type: application/json"`;
+          cmd += ` \\\n  -d '${bodyText.replace(/\n/g, '')}'`;
+        }
+        return cmd;
+      },
+      javascript: () => {
+        let code = `const response = await fetch('${url}', {\n`;
+        code += `  method: '${method}',\n`;
+        code += `  headers: {\n`;
+        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+        code += `    'Content-Type': 'application/json'\n`;
+        code += `  }`;
+        if (op.hasBody && bodyText) {
+          code += `,\n  body: JSON.stringify(${bodyText})`;
+        }
+        code += `\n});\n\nconst data = await response.json();\nconsole.log(data);`;
+        return code;
+      },
+      typescript: () => {
+        let code = `interface ApiResponse {\n  success: boolean;\n  data?: any;\n  error?: { code: string; message: string; };\n}\n\n`;
+        code += `const response = await fetch('${url}', {\n`;
+        code += `  method: '${method}',\n`;
+        code += `  headers: {\n`;
+        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+        code += `    'Content-Type': 'application/json'\n`;
+        code += `  }`;
+        if (op.hasBody && bodyText) {
+          code += `,\n  body: JSON.stringify(${bodyText})`;
+        }
+        code += `\n});\n\nconst data: ApiResponse = await response.json();\nconsole.log(data);`;
+        return code;
+      },
+      python: () => {
+        let code = `import requests\n\n`;
+        code += `url = '${url}'\n`;
+        code += `headers = {\n`;
+        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+        code += `    'Content-Type': 'application/json'\n}\n\n`;
+        if (op.hasBody && bodyText) {
+          code += `data = ${bodyText}\n\n`;
+          code += `response = requests.${method.toLowerCase()}(url, headers=headers, json=data)\n`;
+        } else {
+          code += `response = requests.${method.toLowerCase()}(url, headers=headers)\n`;
+        }
+        code += `print(response.json())`;
+        return code;
+      },
+      go: () => {
+        let code = `package main\n\nimport (\n    "fmt"\n    "net/http"\n`;
+        if (op.hasBody && bodyText) code += `    "bytes"\n`;
+        code += `    "io"\n)\n\nfunc main() {\n`;
+        if (op.hasBody && bodyText) {
+          code += `    body := []byte(\`${bodyText}\`)\n`;
+          code += `    req, _ := http.NewRequest("${method}", "${url}", bytes.NewBuffer(body))\n`;
+        } else {
+          code += `    req, _ := http.NewRequest("${method}", "${url}", nil)\n`;
+        }
+        if (apiKey) code += `    req.Header.Set("Authorization", "Bearer ${apiKey}")\n`;
+        code += `    req.Header.Set("Content-Type", "application/json")\n\n`;
+        code += `    client := &http.Client{}\n`;
+        code += `    resp, _ := client.Do(req)\n`;
+        code += `    defer resp.Body.Close()\n\n`;
+        code += `    data, _ := io.ReadAll(resp.Body)\n`;
+        code += `    fmt.Println(string(data))\n}`;
+        return code;
+      },
+      php: () => {
+        let code = `<?php\n\n$url = '${url}';\n`;
+        code += `$headers = [\n`;
+        if (apiKey) code += `    'Authorization: Bearer ${apiKey}',\n`;
+        code += `    'Content-Type: application/json'\n];\n\n`;
+        code += `$ch = curl_init();\n`;
+        code += `curl_setopt($ch, CURLOPT_URL, $url);\n`;
+        code += `curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n`;
+        code += `curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n`;
+        if (method !== 'GET') {
+          code += `curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');\n`;
+        }
+        if (op.hasBody && bodyText) {
+          code += `curl_setopt($ch, CURLOPT_POSTFIELDS, '${bodyText.replace(/\n/g, '')}');\n`;
+        }
+        code += `\n$response = curl_exec($ch);\ncurl_close($ch);\n\nprint_r(json_decode($response, true));`;
+        return code;
+      },
+    };
+
+    return generators[language]?.() || '';
+  }, [selectedIndex, operations, buildUrl, apiKey, bodyText]);
+
+  // Execute API request
+  const runRequest = useCallback(async () => {
+    if (selectedIndex === null) return;
+
+    const op = operations[selectedIndex];
+    setIsLoading(true);
+    setError(null);
+    setResponse('');
+    setResponseMeta(null);
+
+    const startTime = performance.now();
+
     try {
-      const res = await fetch(fullUrl, options);
+      const url = buildUrl(op);
+      const headers: Record<string, string> = {};
+      if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+
+      let body: any;
+      if (op.hasBody && bodyText) {
+        try {
+          body = JSON.parse(bodyText);
+          headers['Content-Type'] = 'application/json';
+        } catch {
+          throw new Error('Invalid JSON in request body');
+        }
+      }
+
+      const res = await fetch(url, {
+        method: op.method.toUpperCase(),
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+      });
+
+      const endTime = performance.now();
       const contentType = res.headers.get('content-type') || '';
       let data: any;
+      let responseText: string;
+
       if (contentType.includes('application/json')) {
         data = await res.json();
-        setResponse(JSON.stringify(data, null, 2));
+        responseText = JSON.stringify(data, null, 2);
       } else {
-        data = await res.text();
-        setResponse(data);
+        responseText = await res.text();
       }
-      // Build cURL snippet
-      const headerFlags = Object.entries(headers)
-        .map(([k, v]) => `-H \"${k}: ${v}\"`)
-        .join(' ');
-      const dataFlag = options.body ? `-d '${options.body}'` : '';
-      const curlCmd = `curl -X ${options.method} \"${fullUrl}\" ${headerFlags} ${dataFlag}`.trim();
-      setCurl(curlCmd);
+
+      const size = new Blob([responseText]).size;
+      setResponse(responseText);
+      setResponseMeta({
+        status: res.status,
+        statusText: res.statusText,
+        time: Math.round(endTime - startTime),
+        size: size > 1024 ? `${(size / 1024).toFixed(1)} KB` : `${size} B`,
+      });
+
+      // Add to history
+      const historyItem: HistoryItem = {
+        id: Date.now().toString(),
+        method: op.method.toUpperCase(),
+        path: op.path,
+        params: { ...paramValues },
+        status: res.status,
+        time: Math.round(endTime - startTime),
+        timestamp: new Date(),
+      };
+      setHistory(prev => [historyItem, ...prev.slice(0, 19)]);
+
     } catch (e: any) {
-      setResponse(`Error: ${e.message || e.toString()}`);
+      setError(e.message || 'Request failed');
+    } finally {
+      setIsLoading(false);
     }
-  }
+  }, [selectedIndex, operations, buildUrl, apiKey, bodyText, paramValues]);
+
+  // Copy to clipboard
+  const copyToClipboard = useCallback(async (text: string, type: 'code' | 'response') => {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (type === 'code') {
+        setCopiedCode(true);
+        setTimeout(() => setCopiedCode(false), 2000);
+      } else {
+        setCopiedResponse(true);
+        setTimeout(() => setCopiedResponse(false), 2000);
+      }
+    } catch {
+      // Fallback
+    }
+  }, []);
+
+  // Replay history item
+  const replayHistory = useCallback((item: HistoryItem) => {
+    const idx = operations.findIndex(op => op.path === item.path && op.method.toUpperCase() === item.method);
+    if (idx !== -1) {
+      setSelectedIndex(idx);
+      setParamValues(item.params);
+    }
+  }, [operations]);
+
+  // Clear history
+  const clearHistory = useCallback(() => {
+    setHistory([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('lanonasis_playground_history');
+    }
+  }, []);
 
   // Reset form when operation changes
   useEffect(() => {
@@ -200,121 +454,320 @@ export default function ApiPlayground() {
     setParamValues({});
     setBodyText(op.defaultBody || '');
     setResponse('');
-    setCurl('');
-  }, [selectedIndex]);
+    setResponseMeta(null);
+    setError(null);
+  }, [selectedIndex, operations]);
+
+  // Get method badge class
+  const getMethodClass = (method: string) => {
+    const m = method.toLowerCase();
+    return styles[`method${m.charAt(0).toUpperCase() + m.slice(1)}`] || styles.methodGet;
+  };
+
+  // Get status class
+  const getStatusClass = (status: number) => {
+    if (status >= 200 && status < 300) return styles.statusSuccess;
+    if (status >= 400) return styles.statusError;
+    return styles.statusWarning;
+  };
+
+  const selectedOp = selectedIndex !== null ? operations[selectedIndex] : null;
 
   return (
     <Layout
       title="API Playground"
-      description="Interactively test the LanOnasis API endpoints directly from the docs."
+      description="Interactively test the LanOnasis Memory as a Service API endpoints."
     >
       <div className="container margin-vert--lg">
-        <h1>API Playground</h1>
-        {operations.length ? (
+        {/* Hero Section */}
+        <div className={styles.hero}>
+          <h1 className={styles.heroTitle}>API Playground</h1>
+          <p className={styles.heroSubtitle}>
+            Explore and test the LanOnasis API in real-time
+          </p>
+          <div className={styles.heroBadge}>
+            <span className={styles.heroBadgeDot} />
+            Memory as a Service
+          </div>
+        </div>
+
+        {error && !operations.length ? (
+          <div className={styles.errorBanner}>
+            <span className={styles.errorIcon}>⚠️</span>
+            <div className={styles.errorContent}>
+              <h3 className={styles.errorTitle}>Error Loading API Specification</h3>
+              <p className={styles.errorMessage}>{error}</p>
+            </div>
+          </div>
+        ) : !operations.length ? (
+          <div className={styles.emptyState}>
+            <div className={styles.spinner} />
+            <p className={styles.emptyStateText}>Loading API specification...</p>
+          </div>
+        ) : (
           <>
-            {/* Endpoint selector */}
-            <div className={styles.formGroup}>
-              <label htmlFor="endpoint">Endpoint</label>
-              <select
-                id="endpoint"
-                value={selectedIndex ?? ''}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedIndex(value === '' ? null : parseInt(value, 10));
-                }}
-                className={styles.input}
-              >
-                <option value="">Select an endpoint</option>
-                {operations.map((op: any, idx: number) => (
-                  <option key={idx} value={idx}>{`${op.method.toUpperCase()} ${op.path}`}</option>
-                ))}
-              </select>
-            </div>
-            {/* Parameter inputs */}
-            {selectedIndex !== null && operations[selectedIndex].params.length > 0 && (
-              <div className={styles.paramSection}>
-                {operations[selectedIndex].params.map((p: any) => (
-                  <div key={p.name} className={styles.formGroup}>
-                    <label>
-                      {p.name}
-                      {p.required && <span style={{ color: 'var(--ifm-color-danger)' }}> *</span>}
-                    </label>
-                    <input
-                      type="text"
-                      value={paramValues[p.name] || ''}
-                      onChange={(e) => updateParam(p.name, e.target.value)}
-                      className={styles.input}
-                    />
-                    {p.description && <small className={styles.description}>{p.description}</small>}
+            {/* Main Playground */}
+            <div className={styles.playgroundContainer}>
+              {/* Request Panel */}
+              <div className={styles.panel}>
+                <div className={styles.panelHeader}>
+                  <h2 className={styles.panelTitle}>
+                    <span className={styles.panelIcon}>📤</span>
+                    Request
+                  </h2>
+                </div>
+                <div className={styles.panelContent}>
+                  {/* Endpoint Selector */}
+                  <div className={styles.endpointSelector}>
+                    {selectedOp && (
+                      <span className={clsx(styles.methodBadge, getMethodClass(selectedOp.method))}>
+                        {selectedOp.method.toUpperCase()}
+                      </span>
+                    )}
+                    <select
+                      value={selectedIndex ?? ''}
+                      onChange={(e) => setSelectedIndex(e.target.value === '' ? null : parseInt(e.target.value, 10))}
+                      className={styles.endpointSelect}
+                      aria-label="Select endpoint"
+                    >
+                      <option value="">Select an endpoint...</option>
+                      {operations.map((op, idx) => (
+                        <option key={idx} value={idx}>
+                          {op.path}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                ))}
+
+                  {selectedOp && (
+                    <>
+                      {/* Parameters */}
+                      {selectedOp.params.length > 0 && (
+                        <div className={styles.paramSection}>
+                          <div className={styles.paramSectionTitle}>
+                            <span>📋</span> Parameters
+                          </div>
+                          {selectedOp.params.map((p) => (
+                            <div key={p.name} className={styles.formGroup}>
+                              <label className={styles.formLabel}>
+                                {p.name}
+                                {p.required && <span className={styles.required}>*</span>}
+                                {p.schema.type && (
+                                  <span className={styles.paramType}>{p.schema.type}</span>
+                                )}
+                              </label>
+                              {p.schema.enum ? (
+                                <select
+                                  value={paramValues[p.name] || p.schema.default || ''}
+                                  onChange={(e) => updateParam(p.name, e.target.value)}
+                                  className={styles.input}
+                                >
+                                  <option value="">Select...</option>
+                                  {p.schema.enum.map((v) => (
+                                    <option key={v} value={v}>{v}</option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={paramValues[p.name] || ''}
+                                  onChange={(e) => updateParam(p.name, e.target.value)}
+                                  placeholder={p.schema.default?.toString() || `Enter ${p.name}...`}
+                                  className={styles.input}
+                                />
+                              )}
+                              {p.description && (
+                                <small className={styles.description}>{p.description}</small>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Request Body */}
+                      {selectedOp.hasBody && (
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>
+                            Request Body
+                            <span className={styles.paramType}>JSON</span>
+                          </label>
+                          <textarea
+                            value={bodyText}
+                            onChange={(e) => setBodyText(e.target.value)}
+                            placeholder='{"key": "value"}'
+                            className={clsx(styles.input, styles.textarea)}
+                          />
+                        </div>
+                      )}
+
+                      {/* API Key */}
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                          🔑 API Key
+                          <span className={styles.paramType}>Bearer</span>
+                        </label>
+                        <input
+                          type="password"
+                          value={apiKey}
+                          onChange={(e) => handleApiKeyChange(e.target.value)}
+                          placeholder="Enter your API key..."
+                          className={styles.input}
+                        />
+                        <small className={styles.description}>
+                          Stored locally in your browser for convenience
+                        </small>
+                      </div>
+
+                      {/* Run Button */}
+                      <button
+                        onClick={runRequest}
+                        disabled={isLoading}
+                        className={clsx(styles.runButton, isLoading && styles.runButtonLoading)}
+                      >
+                        {isLoading ? (
+                          <>
+                            <span className={styles.spinner} />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <span>▶️</span>
+                            Send Request
+                          </>
+                        )}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-            )}
-            {/* Body */}
-            {selectedIndex !== null && operations[selectedIndex].hasBody && (
-              <div className={styles.formGroup}>
-                <label>Request Body (JSON)</label>
-                <textarea
-                  value={bodyText}
-                  onChange={(e) => setBodyText(e.target.value)}
-                  className={clsx(styles.input, styles.textarea)}
-                />
+
+              {/* Response Panel */}
+              <div className={styles.panel}>
+                <div className={styles.panelHeader}>
+                  <h2 className={styles.panelTitle}>
+                    <span className={styles.panelIcon}>📥</span>
+                    Response
+                  </h2>
+                </div>
+                <div className={styles.panelContent}>
+                  {error && (
+                    <div className={clsx(styles.errorBanner, styles.fadeIn)}>
+                      <span className={styles.errorIcon}>❌</span>
+                      <div className={styles.errorContent}>
+                        <h3 className={styles.errorTitle}>Request Failed</h3>
+                        <p className={styles.errorMessage}>{error}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {responseMeta && (
+                    <div className={clsx(styles.responseMetadata, styles.fadeIn)}>
+                      <div className={styles.metadataItem}>
+                        <span className={styles.metadataLabel}>Status:</span>
+                        <span className={clsx(styles.metadataValue, getStatusClass(responseMeta.status))}>
+                          {responseMeta.status} {responseMeta.statusText}
+                        </span>
+                      </div>
+                      <div className={styles.metadataItem}>
+                        <span className={styles.metadataLabel}>Time:</span>
+                        <span className={styles.metadataValue}>{responseMeta.time}ms</span>
+                      </div>
+                      <div className={styles.metadataItem}>
+                        <span className={styles.metadataLabel}>Size:</span>
+                        <span className={styles.metadataValue}>{responseMeta.size}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {response ? (
+                    <div className={clsx(styles.responseBody, styles.fadeIn)}>
+                      <button
+                        onClick={() => copyToClipboard(response, 'response')}
+                        className={clsx(styles.copyButton, copiedResponse && styles.copySuccess)}
+                      >
+                        {copiedResponse ? '✓ Copied!' : '📋 Copy'}
+                      </button>
+                      <CodeBlock language="json">{response}</CodeBlock>
+                    </div>
+                  ) : (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyStateIcon}>🚀</div>
+                      <p className={styles.emptyStateText}>Ready to explore</p>
+                      <p className={styles.emptyStateHint}>
+                        Select an endpoint and click "Send Request"
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-            {/* API Key */}
-            <div className={styles.formGroup}>
-              <label htmlFor="apiKey">API Key (Bearer token)</label>
-              <input
-                id="apiKey"
-                type="text"
-                value={apiKey}
-                onChange={(e) => handleApiKeyChange(e.target.value)}
-                className={styles.input}
-              />
             </div>
-            {/* Run button */}
-            <button
-              className={clsx('button button--primary', styles.runButton)}
-              onClick={runRequest}
-              disabled={selectedIndex === null}
-            >
-              Run Request
-            </button>
-            {/* Response output */}
-            {response && (
-              <div className="margin-top--lg">
-                <h2>Response</h2>
-                {/* Use CodeBlock to provide syntax highlighting */}
-                <CodeBlock language="json">{response}</CodeBlock>
+
+            {/* Code Generation Section */}
+            {selectedOp && (
+              <div className={clsx(styles.panel, 'margin-top--lg', styles.fadeIn)}>
+                <div className={styles.codeTabs}>
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.id}
+                      onClick={() => setSelectedLanguage(lang.id)}
+                      className={clsx(
+                        styles.codeTab,
+                        selectedLanguage === lang.id && styles.codeTabActive
+                      )}
+                    >
+                      <span className={styles.codeTabIcon}>{lang.icon}</span>
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.panelContent}>
+                  <div className={styles.responseBody}>
+                    <button
+                      onClick={() => copyToClipboard(generateCode(selectedLanguage), 'code')}
+                      className={clsx(styles.copyButton, copiedCode && styles.copySuccess)}
+                    >
+                      {copiedCode ? '✓ Copied!' : '📋 Copy'}
+                    </button>
+                    <CodeBlock language={selectedLanguage === 'curl' ? 'bash' : selectedLanguage}>
+                      {generateCode(selectedLanguage)}
+                    </CodeBlock>
+                  </div>
+                </div>
               </div>
             )}
-            {/* cURL snippet */}
-            {curl && (
-              <div className="margin-top--lg">
-                <h2>cURL</h2>
-                <CodeBlock language="bash">{curl}</CodeBlock>
+
+            {/* Request History */}
+            {history.length > 0 && (
+              <div className={styles.historySection}>
+                <div className={styles.historyHeader}>
+                  <h3 className={styles.historyTitle}>
+                    <span>🕒</span> Recent Requests
+                  </h3>
+                  <button onClick={clearHistory} className={styles.clearHistoryBtn}>
+                    Clear History
+                  </button>
+                </div>
+                <div className={styles.historyList}>
+                  {history.slice(0, 5).map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => replayHistory(item)}
+                      className={styles.historyItem}
+                    >
+                      <span className={clsx(styles.historyMethod, styles.methodBadge, getMethodClass(item.method))}>
+                        {item.method}
+                      </span>
+                      <span className={styles.historyEndpoint}>{item.path}</span>
+                      <span className={clsx(styles.historyStatus, getStatusClass(item.status))}>
+                        {item.status}
+                      </span>
+                      <span className={styles.historyTime}>{item.time}ms</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </>
-        ) : (
-          <div>
-            {response ? (
-              <div className="alert alert--danger margin-top--md">
-                <h3>Error Loading API Specification</h3>
-                <pre style={{ whiteSpace: 'pre-wrap' }}>{response}</pre>
-                <p className="margin-top--md">
-                  <strong>Troubleshooting:</strong>
-                </p>
-                <ul>
-                  <li>Check browser console for detailed errors</li>
-                  <li>Verify <code>/openapi.json</code> or <code>/openapi.yaml</code> is accessible</li>
-                  <li>Ensure the OpenAPI spec is valid JSON/YAML</li>
-                </ul>
-              </div>
-            ) : (
-              <p>Loading API specification...</p>
-            )}
-          </div>
         )}
       </div>
     </Layout>

@@ -1,33 +1,684 @@
-.formGroup {
-  margin-bottom: var(--ifm-spacing-vertical);
+/* =============================================================================
+   API Playground - Modern Interactive Styles
+   LanOnasis Documentation - Memory as a Service
+   ============================================================================= */
+
+/* CSS Custom Properties for theming */
+:root {
+  --playground-accent: #6366f1;
+  --playground-accent-hover: #4f46e5;
+  --playground-success: #10b981;
+  --playground-error: #ef4444;
+  --playground-warning: #f59e0b;
+  --playground-info: #3b82f6;
+  --playground-surface: var(--ifm-background-surface-color);
+  --playground-border: var(--ifm-color-emphasis-200);
+  --playground-text: var(--ifm-font-color-base);
+  --playground-text-muted: var(--ifm-color-emphasis-600);
+  --playground-radius: 12px;
+  --playground-radius-sm: 8px;
+  --playground-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --playground-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --playground-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.paramSection {
-  margin-bottom: var(--ifm-spacing-vertical);
+/* Dark mode adjustments */
+[data-theme='dark'] {
+  --playground-border: var(--ifm-color-emphasis-300);
+  --playground-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+/* =============================================================================
+   Hero Section
+   ============================================================================= */
+.hero {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--playground-border);
+}
+
+.heroTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, var(--playground-accent), #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  color: var(--playground-text-muted);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--playground-accent);
+  margin-top: 1rem;
+}
+
+.heroBadgeDot {
+  width: 6px;
+  height: 6px;
+  background: var(--playground-success);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* =============================================================================
+   Main Layout
+   ============================================================================= */
+.playgroundContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  min-height: 600px;
+}
+
+@media (max-width: 1024px) {
+  .playgroundContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================================================
+   Panel Styles
+   ============================================================================= */
+.panel {
+  background: var(--playground-surface);
+  border: 1px solid var(--playground-border);
+  border-radius: var(--playground-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--playground-shadow);
+  transition: var(--playground-transition);
+}
+
+.panel:hover {
+  box-shadow: var(--playground-shadow-lg);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(to bottom, var(--ifm-background-color), var(--playground-surface));
+  border-bottom: 1px solid var(--playground-border);
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--playground-text-muted);
+  margin: 0;
+}
+
+.panelIcon {
+  font-size: 1rem;
+}
+
+.panelContent {
+  flex: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+/* =============================================================================
+   Endpoint Selector
+   ============================================================================= */
+.endpointSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--playground-border);
+  border-radius: var(--playground-radius-sm);
+  margin-bottom: 1.25rem;
+  transition: var(--playground-transition);
+}
+
+.endpointSelector:focus-within {
+  border-color: var(--playground-accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.methodBadge {
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  flex-shrink: 0;
+}
+
+.methodGet { background: #dcfce7; color: #166534; }
+.methodPost { background: #dbeafe; color: #1e40af; }
+.methodPut { background: #fef3c7; color: #92400e; }
+.methodDelete { background: #fee2e2; color: #991b1b; }
+.methodPatch { background: #f3e8ff; color: #6b21a8; }
+
+[data-theme='dark'] .methodGet { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+[data-theme='dark'] .methodPost { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+[data-theme='dark'] .methodPut { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+[data-theme='dark'] .methodDelete { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+[data-theme='dark'] .methodPatch { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+
+.endpointPath {
+  flex: 1;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+  color: var(--playground-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.endpointSelect {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+  color: var(--playground-text);
+  cursor: pointer;
+  outline: none;
+}
+
+/* =============================================================================
+   Form Styles
+   ============================================================================= */
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--playground-text);
+}
+
+.required {
+  color: var(--playground-error);
+  font-weight: 600;
+}
+
+.paramType {
+  padding: 0.125rem 0.375rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-family: var(--ifm-font-family-monospace);
+  color: var(--playground-text-muted);
+  text-transform: lowercase;
 }
 
 .input {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 4px;
-  background-color: var(--ifm-background-surface-color);
-  color: var(--ifm-font-color-base);
-  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--playground-border);
+  border-radius: var(--playground-radius-sm);
+  background: var(--ifm-background-color);
+  color: var(--playground-text);
+  font-size: 0.9rem;
+  transition: var(--playground-transition);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--playground-accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.input::placeholder {
+  color: var(--ifm-color-emphasis-400);
 }
 
 .textarea {
-  min-height: 200px;
+  min-height: 180px;
   font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  resize: vertical;
 }
 
 .description {
   display: block;
-  margin-top: 0.25rem;
-  color: var(--ifm-color-emphasis-700);
-  font-size: 0.875rem;
+  margin-top: 0.375rem;
+  color: var(--playground-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
+.paramSection {
+  margin-bottom: 1.5rem;
+}
+
+.paramSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--playground-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--playground-text-muted);
+}
+
+/* =============================================================================
+   Run Button
+   ============================================================================= */
 .runButton {
-  margin-top: var(--ifm-spacing-vertical);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--playground-accent), #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: var(--playground-radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--playground-transition);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+}
+
+.runButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+}
+
+.runButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.runButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.runButtonLoading {
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   Response Panel
+   ============================================================================= */
+.responseMetadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-background-color);
+  border-radius: var(--playground-radius-sm);
+  margin-bottom: 1rem;
+}
+
+.metadataItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+}
+
+.metadataLabel {
+  color: var(--playground-text-muted);
+}
+
+.metadataValue {
+  font-weight: 600;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.statusSuccess { color: var(--playground-success); }
+.statusError { color: var(--playground-error); }
+.statusWarning { color: var(--playground-warning); }
+
+.responseBody {
+  position: relative;
+  border-radius: var(--playground-radius-sm);
+  overflow: hidden;
+}
+
+.copyButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--playground-transition);
+  z-index: 10;
+}
+
+.copyButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.copySuccess {
+  background: var(--playground-success) !important;
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  text-align: center;
+  color: var(--playground-text-muted);
+}
+
+.emptyStateIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.emptyStateText {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.emptyStateHint {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* =============================================================================
+   Code Tabs
+   ============================================================================= */
+.codeTabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid var(--playground-border);
+  overflow-x: auto;
+}
+
+.codeTab {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--playground-text-muted);
+  cursor: pointer;
+  transition: var(--playground-transition);
+  white-space: nowrap;
+}
+
+.codeTab:hover {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--playground-text);
+}
+
+.codeTabActive {
+  background: var(--playground-accent) !important;
+  color: white !important;
+}
+
+.codeTabIcon {
+  font-size: 1rem;
+}
+
+/* =============================================================================
+   Request History
+   ============================================================================= */
+.historySection {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--playground-border);
+}
+
+.historyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.historyTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--playground-text-muted);
+  margin: 0;
+}
+
+.clearHistoryBtn {
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--playground-border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--playground-text-muted);
+  cursor: pointer;
+  transition: var(--playground-transition);
+}
+
+.clearHistoryBtn:hover {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--playground-error);
+  border-color: var(--playground-error);
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--playground-border);
+  border-radius: var(--playground-radius-sm);
+  cursor: pointer;
+  transition: var(--playground-transition);
+}
+
+.historyItem:hover {
+  border-color: var(--playground-accent);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.historyMethod {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+}
+
+.historyEndpoint {
+  flex: 1;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  color: var(--playground-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyStatus {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.historyTime {
+  font-size: 0.7rem;
+  color: var(--playground-text-muted);
+}
+
+/* =============================================================================
+   Loading & Error States
+   ============================================================================= */
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 20;
+}
+
+[data-theme='dark'] .loadingOverlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--playground-radius-sm);
+  color: var(--playground-error);
+}
+
+.errorIcon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.errorContent {
+  flex: 1;
+}
+
+.errorTitle {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.errorMessage {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* =============================================================================
+   Animation Utilities
+   ============================================================================= */
+.fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* =============================================================================
+   Responsive Adjustments
+   ============================================================================= */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .panelContent {
+    padding: 1rem;
+  }
+
+  .codeTabs {
+    padding: 0.375rem;
+  }
+
+  .codeTab {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .responseMetadata {
+    gap: 0.5rem;
+  }
+
+  .metadataItem {
+    font-size: 0.75rem;
+  }
 }
