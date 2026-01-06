@@ -23,3 +23,4 @@ yarn-error.log*
 .vercel/.env.preview.local
 .cache_ggshield
 .vercel/.env.preview.local
+.turbo/turbo-build.log

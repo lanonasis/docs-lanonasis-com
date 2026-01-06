@@ -1,3 +1,15 @@
-
-[0m[2m[35m$[0m [2m[1mbun run check:endpoints || true[0m
-[0m[2m[35m$[0m [2m[1mnode scripts/smoke-endpoints.js[0m
+$ node scripts/generate-openapi-json.js && bun run check:endpoints || true
+📖 Reading OpenAPI YAML spec...
+🔄 Parsing YAML...
+📝 Writing JSON spec...
+✅ Successfully generated /Users/onasis/dev-hub/lan-onasis-monorepo/apps/docs-lanonasis/static/openapi.json
+   Size: 12.88 KB
+   Paths: 1
+   Version: 1.0.0
+$ node scripts/smoke-endpoints.js
+OK  200 https://api.lanonasis.com/api/v1/health
+OK  200 https://auth.lanonasis.com/health
+OK  200 https://mcp.lanonasis.com/health
+OK  200 https://docs.lanonasis.com
+OK  200 https://dashboard.lanonasis.com
+$ NODE_OPTIONS="--require ./scripts/patch-js-yaml.cjs" docusaurus build
