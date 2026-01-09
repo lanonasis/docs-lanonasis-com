@@ -45,39 +45,39 @@ The `secret` is only shown once. Save it securely to verify webhook signatures.
 
 ### Transfer Events
 
-| Event | Description |
-|-------|-------------|
-| `transfer.initiated` | Transfer created |
+| Event                 | Description                 |
+| --------------------- | --------------------------- |
+| `transfer.initiated`  | Transfer created            |
 | `transfer.processing` | Transfer is being processed |
-| `transfer.completed` | Transfer successful |
-| `transfer.failed` | Transfer failed |
-| `transfer.reversed` | Transfer was reversed |
+| `transfer.completed`  | Transfer successful         |
+| `transfer.failed`     | Transfer failed             |
+| `transfer.reversed`   | Transfer was reversed       |
 
 ### Payment Events
 
-| Event | Description |
-|-------|-------------|
-| `payment.initialized` | Payment created |
-| `payment.successful` | Payment completed |
-| `payment.failed` | Payment failed |
-| `payment.refunded` | Payment refunded |
+| Event                 | Description       |
+| --------------------- | ----------------- |
+| `payment.initialized` | Payment created   |
+| `payment.successful`  | Payment completed |
+| `payment.failed`      | Payment failed    |
+| `payment.refunded`    | Payment refunded  |
 
 ### Wallet Events
 
-| Event | Description |
-|-------|-------------|
-| `wallet.created` | New wallet created |
-| `wallet.credited` | Funds added to wallet |
-| `wallet.debited` | Funds removed from wallet |
-| `wallet.frozen` | Wallet frozen |
+| Event             | Description               |
+| ----------------- | ------------------------- |
+| `wallet.created`  | New wallet created        |
+| `wallet.credited` | Funds added to wallet     |
+| `wallet.debited`  | Funds removed from wallet |
+| `wallet.frozen`   | Wallet frozen             |
 
 ### KYC Events
 
-| Event | Description |
-|-------|-------------|
-| `kyc.submitted` | Verification submitted |
-| `kyc.verified` | Verification successful |
-| `kyc.failed` | Verification failed |
+| Event           | Description             |
+| --------------- | ----------------------- |
+| `kyc.submitted` | Verification submitted  |
+| `kyc.verified`  | Verification successful |
+| `kyc.failed`    | Verification failed     |
 
 ## Webhook Payload
 
@@ -120,16 +120,16 @@ X-LanOnasis-Signature: t=1704299405,v1=EXAMPLE_HASH_VALUE_DO_NOT_USE
 ### Verification Code
 
 ```typescript
-import crypto from 'crypto';
+import crypto from "crypto";
 
 function verifyWebhookSignature(
   payload: string,
   signature: string,
   secret: string
 ): boolean {
-  const parts = signature.split(',');
-  const timestamp = parts.find(p => p.startsWith('t='))?.slice(2);
-  const hash = parts.find(p => p.startsWith('v1='))?.slice(3);
+  const parts = signature.split(",");
+  const timestamp = parts.find((p) => p.startsWith("t="))?.slice(2);
+  const hash = parts.find((p) => p.startsWith("v1="))?.slice(3);
 
   if (!timestamp || !hash) return false;
 
@@ -142,39 +142,42 @@ function verifyWebhookSignature(
   // Compute expected signature
   const signedPayload = `${timestamp}.${payload}`;
   const expectedHash = crypto
-    .createHmac('sha256', secret)
+    .createHmac("sha256", secret)
     .update(signedPayload)
-    .digest('hex');
+    .digest("hex");
 
-  return crypto.timingSafeEqual(
-    Buffer.from(hash),
-    Buffer.from(expectedHash)
-  );
+  return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(expectedHash));
 }
 
 // Express.js example
-app.post('/webhooks/lanonasis', express.raw({ type: 'application/json' }), (req, res) => {
-  const signature = req.headers['x-lanonasis-signature'];
-  const payload = req.body.toString();
+app.post(
+  "/webhooks/lanonasis",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const signature = req.headers["x-lanonasis-signature"];
+    const payload = req.body.toString();
 
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
-    return res.status(401).send('Invalid signature');
+    if (
+      !verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
+    ) {
+      return res.status(401).send("Invalid signature");
+    }
+
+    const event = JSON.parse(payload);
+
+    switch (event.type) {
+      case "transfer.completed":
+        handleTransferCompleted(event.data);
+        break;
+      case "payment.successful":
+        handlePaymentSuccessful(event.data);
+        break;
+      // ... handle other events
+    }
+
+    res.status(200).send("OK");
   }
-
-  const event = JSON.parse(payload);
-
-  switch (event.type) {
-    case 'transfer.completed':
-      handleTransferCompleted(event.data);
-      break;
-    case 'payment.successful':
-      handlePaymentSuccessful(event.data);
-      break;
-    // ... handle other events
-  }
-
-  res.status(200).send('OK');
-});
+);
 ```
 
 ### Python Verification
@@ -211,15 +214,15 @@ def verify_webhook_signature(payload: bytes, signature: str, secret: str) -> boo
 
 If your endpoint doesn't respond with `2xx`, we retry with exponential backoff:
 
-| Attempt | Delay |
-|---------|-------|
-| 1 | Immediate |
-| 2 | 1 minute |
-| 3 | 5 minutes |
-| 4 | 30 minutes |
-| 5 | 2 hours |
-| 6 | 8 hours |
-| 7 | 24 hours |
+| Attempt | Delay      |
+| ------- | ---------- |
+| 1       | Immediate  |
+| 2       | 1 minute   |
+| 3       | 5 minutes  |
+| 4       | 30 minutes |
+| 5       | 2 hours    |
+| 6       | 8 hours    |
+| 7       | 24 hours   |
 
 After 7 failed attempts, the webhook is marked as failed and the endpoint may be disabled.
 
@@ -256,11 +259,11 @@ curl -X DELETE https://api.lanonasis.com/v1/webhooks/whk_abc123 \
 Return `200 OK` immediately, then process async:
 
 ```typescript
-app.post('/webhooks/lanonasis', async (req, res) => {
+app.post("/webhooks/lanonasis", async (req, res) => {
   // Verify signature first
 
   // Acknowledge immediately
-  res.status(200).send('OK');
+  res.status(200).send("OK");
 
   // Process async
   queueWebhookProcessing(req.body);
@@ -299,7 +302,7 @@ console.log({
   event_id: event.id,
   event_type: event.type,
   received_at: new Date().toISOString(),
-  data: event.data
+  data: event.data,
 });
 ```
 
