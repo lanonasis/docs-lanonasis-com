@@ -17,6 +17,28 @@ import styles from './ApiPlayground.module.css';
  * - Smooth animations and visual feedback
  */
 
+// API Spec configuration for multi-service support
+const API_SPECS = [
+  {
+    id: 'memory',
+    name: 'Memory Service',
+    icon: '🧠',
+    description: 'Memory as a Service API',
+    paths: ['/openapi.json', '/openapi.yaml', '/openapi.yml'],
+    badge: 'Memory as a Service'
+  },
+  {
+    id: 'unified',
+    name: 'Unified Services',
+    icon: '🔗',
+    description: 'Wallets, Transfers, Payments, KYC',
+    paths: ['/static/unified-services.yaml'],
+    badge: 'Unified Services API'
+  },
+] as const;
+
+type ApiSpecId = typeof API_SPECS[number]['id'];
+
 // Language configuration for code generation
 const LANGUAGES = [
   { id: 'curl', name: 'cURL', icon: '🌐' },
@@ -68,6 +90,17 @@ interface HistoryItem {
 }
 
 export default function ApiPlayground() {
+  // API Spec selection state
+  const [selectedSpec, setSelectedSpec] = useState<ApiSpecId>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lanonasis_selected_spec');
+      if (saved && API_SPECS.some(s => s.id === saved)) {
+        return saved as ApiSpecId;
+      }
+    }
+    return 'memory';
+  });
+
   // Core state
   const [operations, setOperations] = useState<Operation[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -105,11 +138,39 @@ export default function ApiPlayground() {
   });
 
   const specRef = useRef<any>(null);
+  const [specLoading, setSpecLoading] = useState(true);
 
-  // Fetch OpenAPI spec on mount
+  // Get current spec config
+  const currentSpecConfig = API_SPECS.find(s => s.id === selectedSpec) || API_SPECS[0];
+
+  // Handle spec change
+  const handleSpecChange = useCallback((specId: ApiSpecId) => {
+    setSelectedSpec(specId);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lanonasis_selected_spec', specId);
+    }
+    // Reset state when switching specs
+    setSelectedIndex(null);
+    setOperations([]);
+    setResponse('');
+    setResponseMeta(null);
+    setError(null);
+  }, []);
+
+  // Fetch OpenAPI spec when selectedSpec changes
   useEffect(() => {
     async function fetchSpec() {
-      const candidateUrls = ['/openapi.json', '/openapi.yaml', '/openapi.yml'];
+      setSpecLoading(true);
+      setError(null);
+
+      const specConfig = API_SPECS.find(s => s.id === selectedSpec);
+      if (!specConfig) {
+        setError('Invalid API specification selected');
+        setSpecLoading(false);
+        return;
+      }
+
+      const candidateUrls = [...specConfig.paths];
       let spec: any = null;
       let lastError = '';
 
@@ -142,9 +203,10 @@ export default function ApiPlayground() {
       } else {
         setError(`Failed to load API specification. ${lastError}`);
       }
+      setSpecLoading(false);
     }
     fetchSpec();
-  }, []);
+  }, [selectedSpec]);
 
   // Save history to localStorage
   useEffect(() => {
@@ -485,9 +547,28 @@ export default function ApiPlayground() {
           <p className={styles.heroSubtitle}>
             Explore and test the LanOnasis API in real-time
           </p>
+
+          {/* API Spec Selector */}
+          <div className={styles.specSelector}>
+            {API_SPECS.map((spec) => (
+              <button
+                key={spec.id}
+                onClick={() => handleSpecChange(spec.id)}
+                className={clsx(
+                  styles.specTab,
+                  selectedSpec === spec.id && styles.specTabActive
+                )}
+                title={spec.description}
+              >
+                <span className={styles.specTabIcon}>{spec.icon}</span>
+                <span className={styles.specTabName}>{spec.name}</span>
+              </button>
+            ))}
+          </div>
+
           <div className={styles.heroBadge}>
             <span className={styles.heroBadgeDot} />
-            Memory as a Service
+            {currentSpecConfig.badge}
           </div>
         </div>
 
@@ -499,10 +580,10 @@ export default function ApiPlayground() {
               <p className={styles.errorMessage}>{error}</p>
             </div>
           </div>
-        ) : !operations.length ? (
+        ) : specLoading || !operations.length ? (
           <div className={styles.emptyState}>
             <div className={styles.spinner} />
-            <p className={styles.emptyStateText}>Loading API specification...</p>
+            <p className={styles.emptyStateText}>Loading {currentSpecConfig.name} specification...</p>
           </div>
         ) : (
           <>

@@ -16,6 +16,20 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
       type: 'category',
+      label: 'Unified Services',
+      collapsed: false,
+      items: [
+        'unified-services/overview',
+        'unified-services/authentication',
+        'unified-services/wallets',
+        'unified-services/transfers',
+        'unified-services/payments',
+        'unified-services/kyc',
+        'unified-services/webhooks',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Platform',
       items: ['platform/architecture'],
     },
