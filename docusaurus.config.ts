@@ -2,6 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import yaml from 'js-yaml';
+import path from 'path';
 
 // Polyfill for gray-matter expecting `yaml.safeLoad` (removed in js-yaml@4)
 // Keep the override on js-yaml v4 while preserving Docusaurus frontmatter parsing.
@@ -52,6 +53,23 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
+  ],
+  plugins: [
+    () => ({
+      name: 'path-to-regexp-default-export',
+      configureWebpack() {
+        return {
+          resolve: {
+            alias: {
+              'path-to-regexp$': path.resolve(
+                __dirname,
+                'src/utils/path-to-regexp-default.js'
+              ),
+            },
+          },
+        };
+      },
+    }),
   ],
 
   themeConfig: {
