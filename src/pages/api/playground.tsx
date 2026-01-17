@@ -21,19 +21,27 @@ import styles from './ApiPlayground.module.css';
 const API_SPECS = [
   {
     id: 'memory',
-    name: 'Memory Service',
+    name: 'MCP Memory API',
     icon: '🧠',
-    description: 'Memory as a Service API',
-    paths: ['/openapi.json', '/openapi.yaml', '/openapi.yml'],
-    badge: 'Memory as a Service'
+    description: 'Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System',
+    paths: ['/memory-api.json', '/memory-api.yaml'],
+    badge: 'MCP v2.0 - 28 Tools'
   },
   {
     id: 'unified',
     name: 'Unified Services',
     icon: '🔗',
     description: 'Wallets, Transfers, Payments, KYC',
-    paths: ['/static/unified-services.yaml'],
+    paths: ['/unified-services.yaml'],
     badge: 'Unified Services API'
+  },
+  {
+    id: 'docs',
+    name: 'Documentation Search',
+    icon: '📚',
+    description: 'Search documentation with semantic queries',
+    paths: ['/openapi.json', '/openapi.yaml'],
+    badge: 'Docs Search API'
   },
 ] as const;
 

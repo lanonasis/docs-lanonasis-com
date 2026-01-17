@@ -12,8 +12,7 @@ Store a new memory entry with optional metadata and vector embeddings.
 ### Authentication
 
 ```http
-Authorization: Bearer YOUR_API_KEY
-X-Workspace-ID: workspace_123 (optional)
+X-API-Key: YOUR_API_KEY
 ```
 
 ### Request
@@ -22,23 +21,21 @@ X-Workspace-ID: workspace_123 (optional)
 
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
-| Authorization | string | Yes | Bearer token |
+| X-API-Key | string | Yes | API key |
 | Content-Type | string | Yes | application/json |
-| X-Workspace-ID | string | No | Target workspace |
 
 #### Body
 
 ```json
 {
-  "id": "string (optional)",
-  "text": "string (required)",
+  "title": "string (required)",
+  "content": "string (required)",
+  "memory_type": "context",
+  "tags": ["string"],
   "metadata": {
-    "type": "string",
-    "tags": ["string"],
     "source": "string",
     "timestamp": "ISO 8601"
-  },
-  "embedding": [0.1, 0.2, ...] // optional
+  }
 }
 ```
 
@@ -48,11 +45,18 @@ X-Workspace-ID: workspace_123 (optional)
 
 ```json
 {
-  "id": "mem_abc123",
-  "status": "stored",
-  "embedding_generated": true,
-  "vector_dimensions": 1536,
-  "tokens_used": 245
+  "data": {
+    "id": "mem_abc123",
+    "title": "Meeting notes from Q4 planning",
+    "content": "Meeting notes from Q4 planning...",
+    "memory_type": "meeting",
+    "tags": ["planning", "q4"],
+    "metadata": {
+      "source": "notebook"
+    },
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
 }
 ```
 
@@ -91,14 +95,16 @@ X-Workspace-ID: workspace_123 (optional)
 #### cURL
 
 ```bash
-curl -X POST http://api.LanOnasis.local/api/v1/memory \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST https://api.lanonasis.com/api/v1/memory \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "Meeting notes from Q4 planning",
+    "title": "Meeting Notes",
+    "content": "Meeting notes from Q4 planning",
+    "memory_type": "meeting",
+    "tags": ["planning", "q4"],
     "metadata": {
-      "type": "meeting",
-      "tags": ["planning", "q4"]
+      "source": "notebook"
     }
   }'
 ```
@@ -106,23 +112,38 @@ curl -X POST http://api.LanOnasis.local/api/v1/memory \
 #### TypeScript SDK
 
 ```typescript
-const result = await client.upsert({
-  text: "Meeting notes from Q4 planning",
+import { createMemoryClient } from '@lanonasis/memory-client/core';
+
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: process.env.LANONASIS_API_KEY
+});
+
+const created = await client.createMemory({
+  title: "Meeting Notes",
+  content: "Meeting notes from Q4 planning",
+  memory_type: "meeting",
+  tags: ["planning", "q4"],
   metadata: {
-    type: "meeting",
-    tags: ["planning", "q4"]
+    source: "notebook"
   }
-})
+});
+
+if (created.data) {
+  console.log(created.data.id);
+}
 ```
 
 #### Python SDK
 
 ```python
-result = client.upsert(
-    text="Meeting notes from Q4 planning",
+result = client.create_memory(
+    title="Meeting Notes",
+    content="Meeting notes from Q4 planning",
+    memory_type="meeting",
+    tags=["planning", "q4"],
     metadata={
-        "type": "meeting",
-        "tags": ["planning", "q4"]
+        "source": "notebook"
     }
 )
 ```
@@ -148,22 +169,25 @@ Retrieve a specific memory by ID.
 ### Authentication
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+X-API-Key: YOUR_API_KEY
 ```
 
 ### Response
 
 ```json
 {
-  "id": "mem_abc123",
-  "text": "Meeting notes from Q4 planning",
-  "metadata": {
-    "type": "meeting",
-    "tags": ["planning", "q4"]
-  },
-  "embedding": [...],
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
+  "data": {
+    "id": "mem_abc123",
+    "title": "Meeting Notes",
+    "content": "Meeting notes from Q4 planning",
+    "memory_type": "meeting",
+    "tags": ["planning", "q4"],
+    "metadata": {
+      "source": "notebook"
+    },
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
 }
 ```
 
@@ -176,16 +200,13 @@ Delete a memory entry.
 ### Authentication
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+X-API-Key: YOUR_API_KEY
 ```
 
 ### Response
 
-```json
-{
-  "success": true,
-  "deleted_id": "mem_abc123"
-}
+```http
+204 No Content
 ```
 
 ---
@@ -198,10 +219,12 @@ Update an existing memory.
 
 ```json
 {
-  "text": "Updated meeting notes",
+  "title": "Updated Meeting Notes",
+  "content": "Updated meeting notes",
+  "memory_type": "meeting",
+  "tags": ["planning", "q4", "revised"],
   "metadata": {
-    "type": "meeting",
-    "tags": ["planning", "q4", "revised"]
+    "source": "notebook"
   }
 }
 ```
@@ -210,8 +233,16 @@ Update an existing memory.
 
 ```json
 {
-  "id": "mem_abc123",
-  "status": "updated",
-  "embedding_regenerated": true
+  "data": {
+    "id": "mem_abc123",
+    "title": "Updated Meeting Notes",
+    "content": "Updated meeting notes",
+    "memory_type": "meeting",
+    "tags": ["planning", "q4", "revised"],
+    "metadata": {
+      "source": "notebook"
+    },
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
 }
 ```

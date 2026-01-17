@@ -41,26 +41,29 @@ npm install -g @lanonasis/cli
 ### 2. Initialize the Client
 
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
-  apiKey: 'your-api-key',
-  endpoint: 'https://api.lanonasis.com' // Or use your self-hosted endpoint
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: 'your-api-key'
 });
 ```
 
 ### 3. Create Your First Memory
 
 ```typescript
-const memory = await client.memories.create({
+const created = await client.createMemory({
+  title: 'Meeting Notes',
   content: 'Important meeting notes from today',
+  tags: ['meeting', 'project-x'],
   metadata: {
-    tags: ['meeting', 'project-x'],
     priority: 'high'
   }
 });
 
-console.log('Memory created:', memory.id);
+if (created.data) {
+  console.log('Memory created:', created.data.id);
+}
 ```
 
 ## Core Features

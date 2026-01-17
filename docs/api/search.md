@@ -14,128 +14,31 @@ Search across all your memories using natural language queries.
 ### Request
 
 ```http
-GET /v1/search
+POST /api/v1/memory/search
 ```
 
-### Query Parameters
+### Request Body
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `q` | string | Yes | Search query (natural language) |
-| `limit` | integer | No | Number of results (1-50, default: 10) |
-| `similarity_threshold` | float | No | Minimum similarity score (0.0-1.0, default: 0.7) |
-| `tags` | string | No | Comma-separated tags to filter by |
-| `created_after` | string | No | ISO 8601 timestamp filter |
-| `created_before` | string | No | ISO 8601 timestamp filter |
-| `include_content` | boolean | No | Include full content in results (default: false) |
-| `highlight` | boolean | No | Highlight matching text (default: true) |
-
-### Example Request
-
-```bash
-curl -X GET "https://api.lanonasis.com/v1/search?q=user authentication requirements&limit=5&similarity_threshold=0.8" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-### Example Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "query": "user authentication requirements",
-    "results": [
-      {
-        "id": "mem_456789",
-        "title": "Project Requirements",
-        "content_preview": "The new feature should include **user authentication**, data visualization, and real-time updates...",
-        "similarity_score": 0.92,
-        "tags": ["project", "requirements", "high-priority"],
-        "metadata": {
-          "project_id": "proj_123",
-          "author": "john.doe@company.com",
-          "department": "engineering"
-        },
-        "highlights": [
-          "**user authentication**",
-          "security **requirements**",
-          "login system"
-        ],
-        "created_at": "2024-01-15T10:30:00Z",
-        "updated_at": "2024-01-16T14:22:00Z"
-      },
-      {
-        "id": "mem_789012",
-        "title": "Security Guidelines",
-        "content_preview": "All applications must implement secure **authentication** mechanisms including...",
-        "similarity_score": 0.87,
-        "tags": ["security", "guidelines", "authentication"],
-        "metadata": {
-          "document_type": "policy",
-          "department": "security"
-        },
-        "highlights": [
-          "secure **authentication**",
-          "OAuth 2.0 **requirements**"
-        ],
-        "created_at": "2024-01-10T16:45:00Z",
-        "updated_at": "2024-01-12T09:30:00Z"
-      }
-    ],
-    "pagination": {
-      "total": 12,
-      "limit": 5,
-      "offset": 0,
-      "has_more": true
-    },
-    "search_metadata": {
-      "query_time_ms": 45,
-      "embedding_model": "text-embedding-ada-002",
-      "similarity_threshold": 0.8
-    }
-  },
-  "meta": {
-    "timestamp": "2024-01-16T16:00:00Z",
-    "request_id": "req_search_234"
-  }
-}
-```
-
-## Vector Search
-
-Perform similarity search using custom vectors or embeddings.
-
-### Request
-
-```http
-POST /v1/search/vector
-```
-
-### Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `vector` | array | Yes | Vector embedding (1536 dimensions) |
-| `limit` | integer | No | Number of results (1-50, default: 10) |
-| `similarity_threshold` | float | No | Minimum similarity score (0.0-1.0, default: 0.7) |
+| `query` | string | Yes | Search query (natural language) |
+| `limit` | integer | No | Number of results (1-100, default: 20) |
+| `threshold` | float | No | Minimum similarity score (0.0-1.0, default: 0.7) |
+| `memory_type` | string | No | Filter by memory type |
 | `tags` | array | No | Array of tags to filter by |
-| `metadata_filter` | object | No | Filter by metadata fields |
 
 ### Example Request
 
 ```bash
-curl -X POST https://api.lanonasis.com/v1/search/vector \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "vector": [0.1, -0.2, 0.3, ...], // 1536-dimensional vector
+    "query": "user authentication requirements",
     "limit": 5,
-    "similarity_threshold": 0.85,
-    "tags": ["project"],
-    "metadata_filter": {
-      "department": "engineering",
-      "project_id": "proj_123"
-    }
+    "threshold": 0.8,
+    "memory_type": "project",
+    "tags": ["security", "requirements"]
   }'
 ```
 
@@ -143,113 +46,86 @@ curl -X POST https://api.lanonasis.com/v1/search/vector \
 
 ```json
 {
-  "success": true,
-  "data": {
-    "results": [
-      {
-        "id": "mem_456789",
-        "title": "Project Requirements",
-        "content_preview": "The new feature should include user authentication...",
-        "similarity_score": 0.94,
-        "vector_distance": 0.06,
-        "tags": ["project", "requirements"],
-        "metadata": {
-          "department": "engineering",
-          "project_id": "proj_123"
-        },
-        "created_at": "2024-01-15T10:30:00Z"
-      }
-    ],
-    "pagination": {
-      "total": 3,
-      "limit": 5,
-      "offset": 0,
-      "has_more": false
+  "data": [
+    {
+      "id": "mem_456789",
+      "title": "Project Requirements",
+      "content": "The new feature should include user authentication, data visualization, and real-time updates...",
+      "similarity_score": 0.92,
+      "tags": ["project", "requirements", "high-priority"],
+      "metadata": {
+        "project_id": "proj_123",
+        "author": "john.doe@company.com",
+        "department": "engineering"
+      },
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-16T14:22:00Z"
     },
-    "search_metadata": {
-      "query_time_ms": 23,
-      "similarity_threshold": 0.85,
-      "distance_metric": "cosine"
+    {
+      "id": "mem_789012",
+      "title": "Security Guidelines",
+      "content": "All applications must implement secure authentication mechanisms including...",
+      "similarity_score": 0.87,
+      "tags": ["security", "guidelines", "authentication"],
+      "metadata": {
+        "document_type": "policy",
+        "department": "security"
+      },
+      "created_at": "2024-01-10T16:45:00Z",
+      "updated_at": "2024-01-12T09:30:00Z"
     }
-  },
-  "meta": {
-    "timestamp": "2024-01-16T16:05:00Z",
-    "request_id": "req_vector_search_567"
-  }
+  ]
 }
 ```
 
-## Search Suggestions
+## Vector-Boosted Search
 
-Get autocomplete suggestions for search queries.
+Vector similarity search is available through the same memory search endpoint. Adjust `threshold` and filters to control precision.
 
 ### Request
 
 ```http
-GET /v1/search/suggestions
+POST /api/v1/memory/search
 ```
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | string | Yes | Partial search query |
-| `limit` | integer | No | Number of suggestions (1-20, default: 5) |
-| `type` | string | No | Suggestion type: `query`, `tag`, `title` (default: `query`) |
 
 ### Example Request
 
 ```bash
-curl -X GET "https://api.lanonasis.com/v1/search/suggestions?q=user auth&limit=5" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X POST https://api.lanonasis.com/api/v1/memory/search \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "project requirements",
+    "limit": 5,
+    "threshold": 0.85,
+    "tags": ["project"]
+  }'
 ```
 
 ### Example Response
 
 ```json
 {
-  "success": true,
-  "data": {
-    "query": "user auth",
-    "suggestions": [
-      {
-        "text": "user authentication",
-        "type": "query",
-        "frequency": 15,
-        "score": 0.95
+  "data": [
+    {
+      "id": "mem_456789",
+      "title": "Project Requirements",
+      "content": "The new feature should include user authentication...",
+      "similarity_score": 0.94,
+      "tags": ["project", "requirements"],
+      "metadata": {
+        "department": "engineering",
+        "project_id": "proj_123"
       },
-      {
-        "text": "user authorization",
-        "type": "query",
-        "frequency": 8,
-        "score": 0.87
-      },
-      {
-        "text": "user authentication requirements",
-        "type": "query",
-        "frequency": 12,
-        "score": 0.82
-      },
-      {
-        "text": "authentication",
-        "type": "tag",
-        "frequency": 23,
-        "score": 0.78
-      },
-      {
-        "text": "User Authentication Guide",
-        "type": "title",
-        "frequency": 1,
-        "score": 0.75
-      }
-    ]
-  },
-  "meta": {
-    "timestamp": "2024-01-16T16:10:00Z",
-    "request_id": "req_suggestions_890"
-  }
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ]
 }
 ```
+
+## Search Suggestions
+
+Autocomplete endpoints are not currently available in the REST API. Use client-side suggestions or cached queries for now.
 
 ## Generate Embeddings
 
@@ -258,7 +134,7 @@ Generate vector embeddings for custom text.
 ### Request
 
 ```http
-POST /v1/embeddings
+POST /api/v1/embeddings
 ```
 
 ### Parameters
@@ -271,8 +147,8 @@ POST /v1/embeddings
 ### Example Request
 
 ```bash
-curl -X POST https://api.lanonasis.com/v1/embeddings \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST https://api.lanonasis.com/api/v1/embeddings \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "text": "User authentication and security requirements",
@@ -284,17 +160,18 @@ curl -X POST https://api.lanonasis.com/v1/embeddings \
 
 ```json
 {
-  "success": true,
-  "data": {
-    "text": "User authentication and security requirements",
-    "embedding": [0.1234, -0.5678, 0.9012, ...], // 1536-dimensional vector
-    "model": "text-embedding-ada-002",
-    "token_count": 6,
-    "dimensions": 1536
-  },
-  "meta": {
-    "timestamp": "2024-01-16T16:15:00Z",
-    "request_id": "req_embeddings_123"
+  "object": "list",
+  "data": [
+    {
+      "object": "embedding",
+      "embedding": [0.1234, -0.5678, 0.9012, ...],
+      "index": 0
+    }
+  ],
+  "model": "text-embedding-ada-002",
+  "usage": {
+    "prompt_tokens": 6,
+    "total_tokens": 6
   }
 }
 ```
@@ -306,30 +183,32 @@ curl -X POST https://api.lanonasis.com/v1/embeddings \
 Filter search results by metadata fields:
 
 ```bash
-curl -X GET "https://api.lanonasis.com/v1/search?q=project requirements" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "metadata_filter": {
-      "department": "engineering",
-      "project_id": "proj_123",
-      "status": ["active", "pending"]
-    }
+    "query": "project requirements",
+    "tags": ["security", "compliance"],
+    "memory_type": "project"
   }'
 ```
 
 ### Date Range Filtering
 
-```bash
-curl -X GET "https://api.lanonasis.com/v1/search?q=meeting notes&created_after=2024-01-01T00:00:00Z&created_before=2024-01-31T23:59:59Z" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
+Use `tags` and `memory_type` filters in the search body to narrow results.
 
 ### Combined Filtering
 
 ```bash
-curl -X GET "https://api.lanonasis.com/v1/search?q=security requirements&tags=security,compliance&similarity_threshold=0.9&limit=20" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "security requirements",
+    "tags": ["security", "compliance"],
+    "threshold": 0.9,
+    "limit": 20
+  }'
 ```
 
 ## Search Analytics
@@ -339,22 +218,22 @@ Track search performance and user behavior.
 ### Request
 
 ```http
-GET /v1/analytics/search
+GET /api/v1/analytics/search
 ```
 
 ### Query Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `start_date` | string | No | Start date (ISO 8601) |
-| `end_date` | string | No | End date (ISO 8601) |
-| `granularity` | string | No | `hour`, `day`, `week`, `month` (default: `day`) |
+| `from` | string | No | Start date (ISO 8601) |
+| `to` | string | No | End date (ISO 8601) |
+| `group_by` | string | No | `hour`, `day`, `week`, `month` (default: `day`) |
 
 ### Example Request
 
 ```bash
-curl -X GET "https://api.lanonasis.com/v1/analytics/search?start_date=2024-01-01&end_date=2024-01-31&granularity=day" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X GET "https://api.lanonasis.com/api/v1/analytics/search?from=2024-01-01&to=2024-01-31&group_by=day" \
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ### Example Response
@@ -437,7 +316,7 @@ async function cachedSearch(query, options = {}) {
     return searchCache.get(cacheKey);
   }
 
-  const results = await client.search.semantic(query, options);
+  const results = await client.searchMemories({ query, ...options });
   searchCache.set(cacheKey, results);
 
   // Cache for 5 minutes
@@ -451,118 +330,44 @@ async function cachedSearch(query, options = {}) {
 
 ### TypeScript
 ```typescript
-import { LanonasisClient } from '@lanonasis/sdk';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new LanonasisClient({
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
   apiKey: process.env.LANONASIS_API_KEY
 });
 
 // Semantic search
-const searchResults = await client.search.semantic('user authentication', {
+const searchResults = await client.searchMemories({
+  query: 'user authentication',
   limit: 10,
-  similarityThreshold: 0.8,
-  tags: ['security', 'requirements'],
-  includeContent: true
+  threshold: 0.8,
+  tags: ['security', 'requirements']
 });
 
-// Vector search
-const vectorResults = await client.search.vector({
-  vector: [0.1, -0.2, 0.3, ...], // Your vector
-  limit: 5,
-  similarityThreshold: 0.85
-});
-
-// Get suggestions
-const suggestions = await client.search.suggestions('user auth', {
-  limit: 5,
-  type: 'query'
-});
-
-// Generate embeddings
-const embedding = await client.embeddings.generate(
-  'Text to generate embeddings for'
-);
-
-console.log('Search results:', searchResults.data.results);
-console.log('Vector results:', vectorResults.data.results);
-console.log('Suggestions:', suggestions.data.suggestions);
-console.log('Embedding:', embedding.data.embedding);
+console.log('Search results:', searchResults.data);
 ```
 
 ### Python
 ```python
-from lanonasis import LanOnasisClient
+from lanonasis import MemoryClient
 
-client = LanOnasisClient(api_key=os.environ['LANONASIS_API_KEY'])
+client = MemoryClient(api_key=os.environ['LANONASIS_API_KEY'])
 
 # Semantic search
-search_results = client.search.semantic(
+search_results = client.search_memories(
     query='user authentication',
     limit=10,
-    similarity_threshold=0.8,
-    tags=['security', 'requirements'],
-    include_content=True
+    threshold=0.8,
+    tags=['security', 'requirements']
 )
 
-# Vector search
-vector_results = client.search.vector(
-    vector=[0.1, -0.2, 0.3, ...],  # Your vector
-    limit=5,
-    similarity_threshold=0.85
-)
-
-# Get suggestions
-suggestions = client.search.suggestions(
-    query='user auth',
-    limit=5,
-    type='query'
-)
-
-# Generate embeddings
-embedding = client.embeddings.generate(
-    text='Text to generate embeddings for'
-)
-
-print(f'Search results: {search_results.data.results}')
-print(f'Vector results: {vector_results.data.results}')
-print(f'Suggestions: {suggestions.data.suggestions}')
-print(f'Embedding: {embedding.data.embedding}')
+print(f'Search results: {search_results.results}')
 ```
 
 ## Real-time Search
 
-### WebSocket Search
-For real-time search updates, connect to our WebSocket endpoint:
-
-```javascript
-const ws = new WebSocket('wss://api.lanonasis.com/v1/search/live');
-
-ws.onopen = () => {
-  // Subscribe to search updates
-  ws.send(JSON.stringify({
-    type: 'subscribe',
-    query: 'user authentication',
-    filters: {
-      tags: ['security']
-    }
-  }));
-};
-
-ws.onmessage = (event) => {
-  const update = JSON.parse(event.data);
-  if (update.type === 'new_result') {
-    console.log('New matching memory:', update.memory);
-  }
-};
-```
-
-### Search with Streaming
-```bash
-# Stream search results as they become available
-curl -X GET "https://api.lanonasis.com/v1/search/stream?q=project requirements" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Accept: text/event-stream"
-```
+Real-time search streaming endpoints are not currently available in the REST API. Use polling with `searchMemories` if you need live updates.
 
 ## Search Best Practices
 

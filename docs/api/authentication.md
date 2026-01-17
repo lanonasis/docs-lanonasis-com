@@ -10,7 +10,7 @@ LanOnasis uses API keys for authentication. All API requests must include a vali
 ## API Key Format
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+X-API-Key: YOUR_API_KEY
 ```
 
 ## Getting Your API Key
@@ -47,13 +47,13 @@ API keys are only shown once. Store them securely and never share them publicly.
 ### Production
 ```bash
 export LANONASIS_API_KEY="lk_prod_your_key_here"
-export LANONASIS_BASE_URL="https://api.lanonasis.com/v1"
+export LANONASIS_BASE_URL="https://api.lanonasis.com"
 ```
 
 ### Sandbox
 ```bash
 export LANONASIS_API_KEY="lk_test_your_key_here"
-export LANONASIS_BASE_URL="https://sandbox-api.lanonasis.com/v1"
+export LANONASIS_BASE_URL="https://sandbox-api.lanonasis.com"
 ```
 
 ## Create API Key
@@ -63,7 +63,7 @@ Generate a new API key programmatically.
 ### Request
 
 ```http
-POST /v1/auth/keys
+POST /api/v1/auth/api-keys
 ```
 
 ### Parameters
@@ -77,8 +77,8 @@ POST /v1/auth/keys
 ### Example Request
 
 ```bash
-curl -X POST https://api.lanonasis.com/v1/auth/keys \
-  -H "Authorization: Bearer YOUR_MASTER_KEY" \
+curl -X POST https://api.lanonasis.com/api/v1/auth/api-keys \
+  -H "X-API-Key: YOUR_MASTER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Production API Key",
@@ -115,7 +115,7 @@ Retrieve all API keys for your account.
 ### Request
 
 ```http
-GET /v1/auth/keys
+GET /api/v1/auth/api-keys
 ```
 
 ### Query Parameters
@@ -128,8 +128,8 @@ GET /v1/auth/keys
 ### Example Request
 
 ```bash
-curl -X GET https://api.lanonasis.com/v1/auth/keys \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X GET https://api.lanonasis.com/api/v1/auth/api-keys \
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ### Example Response
@@ -179,7 +179,7 @@ Permanently revoke an API key. This action cannot be undone.
 ### Request
 
 ```http
-DELETE /v1/auth/keys/{id}
+DELETE /api/v1/auth/api-keys/{id}
 ```
 
 ### Path Parameters
@@ -191,8 +191,8 @@ DELETE /v1/auth/keys/{id}
 ### Example Request
 
 ```bash
-curl -X DELETE https://api.lanonasis.com/v1/auth/keys/key_789abc \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X DELETE https://api.lanonasis.com/api/v1/auth/api-keys/key_789abc \
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ### Example Response
@@ -369,16 +369,16 @@ const isValid = verifyWebhookSignature(
 ### Authentication Flow Testing
 ```bash
 # 1. Test basic authentication
-curl -X GET https://sandbox-api.lanonasis.com/v1/auth/test \
-  -H "Authorization: Bearer lk_test_your_key_here"
+curl -X GET https://sandbox-api.lanonasis.com/api/v1/auth/test \
+  -H "X-API-Key: lk_test_your_key_here"
 
 # 2. Test permissions
-curl -X POST https://sandbox-api.lanonasis.com/v1/memories \
-  -H "Authorization: Bearer lk_test_your_key_here" \
+curl -X POST https://sandbox-api.lanonasis.com/api/v1/memory \
+  -H "X-API-Key: lk_test_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{"title": "Test", "content": "Testing authentication"}'
 
 # 3. Test invalid key handling
-curl -X GET https://sandbox-api.lanonasis.com/v1/memories \
-  -H "Authorization: Bearer invalid_key_123"
+curl -X GET https://sandbox-api.lanonasis.com/api/v1/memory \
+  -H "X-API-Key: invalid_key_123"
 ```

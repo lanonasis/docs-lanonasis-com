@@ -8,9 +8,11 @@
   "scripts": {
     "docusaurus": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus",
     "start": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus start",
-    "prebuild": "node scripts/generate-openapi-json.js && bun run check:endpoints || true",
+    "prebuild": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js && bun run check:endpoints || true",
     "build": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus build",
     "generate:openapi-json": "node scripts/generate-openapi-json.js",
+    "sync:docs": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js",
+    "check:docs-sync": "node scripts/sync-docs-specs.js --check && node scripts/sync-docs-versions.js --check && node scripts/generate-openapi-json.js --check",
     "swizzle": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus swizzle",
     "deploy": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus deploy",
     "clear": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus clear",
@@ -25,7 +27,7 @@
     "mcp": "node mcp-bridge.js",
     "check:links": "node scripts/check-links.js",
     "check:endpoints": "node scripts/smoke-endpoints.js",
-    "check:all": "bun run check:links && bun run check:endpoints"
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints"
   },
   "dependencies": {
     "@docusaurus/core": "3.9.0",

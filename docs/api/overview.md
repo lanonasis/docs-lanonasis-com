@@ -18,17 +18,18 @@ Sandbox:    https://sandbox-api.lanonasis.com/api/v1
 
 ## Authentication
 
-All API requests require authentication using API keys. Include your API key in the request headers:
+All API requests require authentication. Use an API key header for key-based auth or a bearer token for OAuth/JWT:
 
 ```http
-Authorization: Bearer YOUR_API_KEY
+X-API-Key: lms_live_your_key_here
+Authorization: Bearer YOUR_TOKEN (OAuth/JWT)
 Content-Type: application/json
 ```
 
 ## Quick Start
 
 ```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
+curl -H "X-API-Key: lms_live_your_key_here" \
   https://api.lanonasis.com/api/v1/memory
 ```
 
@@ -37,25 +38,38 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 Get started with our API in minutes:
 
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://api.lanonasis.com/api/v1'
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: 'your-api-key'
 });
 
 // Create a memory
-const memory = await client.createMemory({
+const created = await client.createMemory({
+  title: 'Project Notes',
   content: 'Important project notes',
   metadata: { project: 'web-app' },
   tags: ['work', 'important']
 });
 
+if (created.data) {
+  console.log('Memory ID:', created.data.id);
+}
+
 // Search memories
-const results = await client.searchMemories('project notes');
+const results = await client.searchMemories({
+  query: 'project notes',
+  limit: 10
+});
+
+console.log('Matches:', results.data?.results);
+```
+
+```bash
 # Create a memory
 curl -X POST https://api.lanonasis.com/api/v1/memory \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Meeting Notes",
@@ -71,16 +85,14 @@ curl -X POST https://api.lanonasis.com/api/v1/memory \
 ## API Endpoints
 
 ### 🧠 Memory Management
-- [`POST /memories`](./memories#create-memory) - Create a new memory
-- [`GET /memories/{id}`](./memories#get-memory) - Retrieve a memory
-- [`PUT /memories/{id}`](./memories#update-memory) - Update a memory
-- [`DELETE /memories/{id}`](./memories#delete-memory) - Delete a memory
-- [`GET /memories`](./memories#list-memories) - List memories with pagination
+- [`POST /memory`](./memories#create-memory) - Create a new memory
+- [`GET /memory/{id}`](./memories#get-memory) - Retrieve a memory
+- [`PUT /memory/{id}`](./memories#update-memory) - Update a memory
+- [`DELETE /memory/{id}`](./memories#delete-memory) - Delete a memory
+- [`GET /memory`](./memories#list-memories) - List memories with pagination
 
 ### 🔍 Search & Discovery
-- [`GET /search`](./search#semantic-search) - Semantic search across memories
-- [`POST /search/vector`](./search#vector-search) - Vector similarity search
-- [`GET /search/suggestions`](./search#search-suggestions) - Search autocomplete
+- [`POST /memory/search`](./endpoints/search#memory-search) - Semantic search across memories
 
 ### 🔐 Authentication
 - [`POST /auth/keys`](./authentication#create-api-key) - Create API key

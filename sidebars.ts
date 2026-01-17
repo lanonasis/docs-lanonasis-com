@@ -40,8 +40,14 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'MCP',
-      items: ['mcp/production-server', 'mcp/ide-integration'],
+      label: 'MCP (Model Context Protocol)',
+      collapsed: false,
+      items: [
+        'mcp/overview',
+        'mcp/production-server',
+        'mcp/tools',
+        'mcp/ide-integration',
+      ],
     },
     {
       type: 'category',

@@ -27,23 +27,28 @@ bun add @lanonasis/memory-client
 **Quick Start:**
 
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
   apiKey: process.env.LANONASIS_API_KEY
 });
 
 // Create a memory
-const memory = await client.memories.create({
+const created = await client.createMemory({
   title: 'Important Note',
   content: 'This is my memory content',
   tags: ['work', 'project']
 });
+
+if (created.data) {
+  console.log('Memory ID:', created.data.id);
+}
 ```
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: 1.0.0
+- ✅ Version: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.0<!-- /AUTO -->
 - ✅ Size: ~150 KB
 - ✅ TypeScript support
 
@@ -66,9 +71,10 @@ bun add @lanonasis/memory-sdk-standalone
 **Quick Start:**
 
 ```typescript
-import { MemorySDK } from '@lanonasis/memory-sdk-standalone';
+import { MemoryClient } from '@lanonasis/memory-sdk-standalone';
 
-const sdk = new MemorySDK({
+const sdk = new MemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
   apiKey: process.env.LANONASIS_API_KEY
 });
 
@@ -76,7 +82,7 @@ const sdk = new MemorySDK({
 const memory = await sdk.createMemory({
   title: 'Project Requirements',
   content: 'Build a social media dashboard...',
-  type: 'project'
+  memory_type: 'project'
 });
 
 // Search memories
@@ -99,32 +105,9 @@ const results = await sdk.searchMemories({
 
 Full-featured SDK with memory, API keys, and MCP support.
 
-**Installation:**
+**Status:** ⏳ Coming soon
 
-```bash
-npm install @lanonasis/sdk
-# or
-yarn add @lanonasis/sdk
-# or
-bun add @lanonasis/sdk
-```
-
-**Quick Start:**
-
-```typescript
-import { LanonasisClient } from '@lanonasis/sdk';
-
-const client = new LanonasisClient({
-  apiKey: process.env.LANONASIS_API_KEY
-});
-
-// Create a memory
-const memory = await client.memories.create({
-  title: 'Important Note',
-  content: 'This is my memory content',
-  tags: ['work', 'project']
-});
-```
+Until the Enterprise SDK is available, use `@lanonasis/memory-client` for production workloads.
 
 **Package Details:**
 - ⏳ Coming soon

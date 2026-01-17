@@ -37,23 +37,32 @@ pip install lanonasis  # Coming soon
 ### JavaScript Example
 
 ```javascript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
   apiKey: process.env.LANONASIS_API_KEY
 });
 
 // Create a memory
-const memory = await client.memories.create({
+const created = await client.createMemory({
+  title: 'My first memory!',
   content: 'My first memory!',
+  tags: ['getting-started'],
   metadata: { importance: 'high' }
 });
 
+if (created.data) {
+  console.log('Memory created:', created.data.id);
+}
+
 // Search memories
-const results = await client.search({
+const results = await client.searchMemories({
   query: 'first memory',
   limit: 10
 });
+
+console.log('Matches:', results.data?.results);
 ```
 
 ### Python Example
@@ -64,13 +73,15 @@ from lanonasis import MemoryClient
 client = MemoryClient(api_key="your-api-key")
 
 # Create a memory
-memory = client.memories.create(
+memory = client.create_memory(
+    title="My first memory!",
     content="My first memory!",
+    tags=["getting-started"],
     metadata={"importance": "high"}
 )
 
 # Search memories
-results = client.search(
+results = client.search_memories(
     query="first memory",
     limit=10
 )

@@ -12,7 +12,7 @@ Official command-line interface for LanOnasis Memory-as-a-Service.
 npm install -g @lanonasis/cli
 ```
 
-**Current Version:** 3.6.7
+**Current Version:** <!-- AUTO:CLI_VERSION -->3.8.0<!-- /AUTO -->
 
 ## Usage
 

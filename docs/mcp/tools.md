@@ -492,6 +492,338 @@ const result = await client.callTool('list_topics', {});
 }
 ```
 
+## Intelligence Tools
+
+AI-powered memory analysis tools for tag suggestions, finding related content, detecting duplicates, and extracting insights.
+
+### intelligence_health_check
+
+Check the health of AI intelligence services.
+
+**Tool Name**: `intelligence_health_check`
+
+**Parameters:** None
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_health_check', {});
+```
+
+**Response:**
+```typescript
+{
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  services: {
+    embedding: string;
+    analysis: string;
+  };
+  latency_ms: number;
+}
+```
+
+### intelligence_suggest_tags
+
+Get AI-powered tag suggestions for a memory based on content analysis.
+
+**Tool Name**: `intelligence_suggest_tags`
+
+**Parameters:**
+```typescript
+{
+  memory_id: string;              // Required: Memory UUID to analyze
+  user_id: string;                // Required: Owner's user UUID
+  max_suggestions?: number;       // Optional: Max tags to suggest (1-20, default: 5)
+  include_existing_tags?: boolean; // Optional: Consider existing tags (default: true)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_suggest_tags', {
+  memory_id: 'mem_1234567890abcdef',
+  user_id: 'user_abcdef1234567890',
+  max_suggestions: 5
+});
+```
+
+**Response:**
+```typescript
+{
+  memory_id: string;
+  suggestions: Array<{
+    tag: string;
+    confidence: number;  // 0-1
+    reason: string;
+  }>;
+  existing_tags: string[];
+}
+```
+
+### intelligence_find_related
+
+Find semantically related memories using vector similarity search.
+
+**Tool Name**: `intelligence_find_related`
+
+**Parameters:**
+```typescript
+{
+  memory_id: string;               // Required: Source memory UUID
+  user_id: string;                 // Required: Owner's user UUID
+  limit?: number;                  // Optional: Max results (1-50, default: 10)
+  similarity_threshold?: number;   // Optional: Min similarity (0-1, default: 0.7)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_find_related', {
+  memory_id: 'mem_1234567890abcdef',
+  user_id: 'user_abcdef1234567890',
+  limit: 10,
+  similarity_threshold: 0.7
+});
+```
+
+**Response:**
+```typescript
+{
+  source_memory_id: string;
+  related: Array<{
+    ...MemoryEntry,
+    similarity_score: number;
+  }>;
+}
+```
+
+### intelligence_detect_duplicates
+
+Detect potential duplicate memories using semantic similarity analysis.
+
+**Tool Name**: `intelligence_detect_duplicates`
+
+**Parameters:**
+```typescript
+{
+  user_id: string;                 // Required: User UUID to analyze
+  similarity_threshold?: number;   // Optional: Min similarity (0-1, default: 0.9)
+  max_pairs?: number;              // Optional: Max duplicate pairs (1-100, default: 20)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_detect_duplicates', {
+  user_id: 'user_abcdef1234567890',
+  similarity_threshold: 0.9,
+  max_pairs: 20
+});
+```
+
+**Response:**
+```typescript
+{
+  duplicate_pairs: Array<{
+    memory_1: MemoryEntry;
+    memory_2: MemoryEntry;
+    similarity_score: number;
+  }>;
+  total_pairs: number;
+  threshold_used: number;
+}
+```
+
+### intelligence_extract_insights
+
+Extract actionable insights from memories using AI analysis.
+
+**Tool Name**: `intelligence_extract_insights`
+
+**Parameters:**
+```typescript
+{
+  user_id: string;                 // Required: User UUID
+  topic?: string;                  // Optional: Focus topic for insights
+  memory_type?: MemoryType;        // Optional: Filter by memory type
+  max_memories?: number;           // Optional: Max memories to analyze (1-100, default: 50)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_extract_insights', {
+  user_id: 'user_abcdef1234567890',
+  topic: 'API design',
+  memory_type: 'knowledge',
+  max_memories: 50
+});
+```
+
+**Response:**
+```typescript
+{
+  insights: Array<{
+    category: string;
+    insight: string;
+    supporting_memories: string[];  // UUIDs
+    confidence: number;
+  }>;
+  summary: string;
+  topic: string;
+  memories_analyzed: number;
+}
+```
+
+### intelligence_analyze_patterns
+
+Analyze usage patterns and trends across memories over time.
+
+**Tool Name**: `intelligence_analyze_patterns`
+
+**Parameters:**
+```typescript
+{
+  user_id: string;                 // Required: User UUID
+  time_range_days?: number;        // Optional: Days to analyze (1-365, default: 30)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('intelligence_analyze_patterns', {
+  user_id: 'user_abcdef1234567890',
+  time_range_days: 30
+});
+```
+
+**Response:**
+```typescript
+{
+  time_range_days: number;
+  patterns: {
+    top_topics: Array<{ topic: string; count: number }>;
+    activity_trend: 'increasing' | 'stable' | 'decreasing';
+    peak_usage_hours: number[];
+    type_distribution: Record<MemoryType, number>;
+  };
+}
+```
+
+## Configuration Tools
+
+### get_config
+
+Retrieve a configuration setting by key.
+
+**Tool Name**: `get_config`
+
+**Parameters:**
+```typescript
+{
+  key: string;  // Required: Configuration key (e.g., 'embedding_model')
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('get_config', {
+  key: 'embedding_model'
+});
+```
+
+### set_config
+
+Update a configuration setting (may require admin access).
+
+**Tool Name**: `set_config`
+
+**Parameters:**
+```typescript
+{
+  key: string;    // Required: Configuration key
+  value: string;  // Required: New value
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('set_config', {
+  key: 'max_memories',
+  value: '10000'
+});
+```
+
+## Project & Organization Tools
+
+### create_project
+
+Create a new project for organizing memories and API keys.
+
+**Tool Name**: `create_project`
+
+**Parameters:**
+```typescript
+{
+  name: string;              // Required: Project name (1-255 chars)
+  description?: string;      // Optional: Project description
+  organization_id?: string;  // Optional: Organization UUID
+}
+```
+
+### list_projects
+
+List projects accessible to the user.
+
+**Tool Name**: `list_projects`
+
+**Parameters:**
+```typescript
+{
+  organization_id?: string;  // Optional: Filter by organization
+}
+```
+
+### get_organization_info
+
+Get detailed organization information including settings and limits.
+
+**Tool Name**: `get_organization_info`
+
+**Parameters:**
+```typescript
+{
+  organization_id: string;  // Required: Organization UUID
+}
+```
+
+## Documentation Tools
+
+### search_lanonasis_docs
+
+Search the Lanonasis documentation for guides, API references, and SDK information.
+
+**Tool Name**: `search_lanonasis_docs`
+
+**Parameters:**
+```typescript
+{
+  query: string;            // Required: Search query
+  section?: 'all' | 'api' | 'guides' | 'sdks';  // Optional: Section filter (default: 'all')
+  limit?: number;           // Optional: Max results (1-50, default: 10)
+}
+```
+
+**Example:**
+```typescript
+const result = await client.callTool('search_lanonasis_docs', {
+  query: 'memory SDK authentication',
+  section: 'sdks',
+  limit: 10
+});
+```
+
+---
+
 ## Error Responses
 
 All tools return errors in JSON-RPC 2.0 format:

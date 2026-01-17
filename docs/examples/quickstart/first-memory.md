@@ -15,10 +15,12 @@ Let's start by creating a simple memory about a project idea.
 ### cURL
 ```bash
 curl -X POST https://api.lanonasis.com/api/v1/memory \
-  -H "Authorization: Bearer your-api-key" \
+  -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
+    "title": "Knowledge Management Idea",
     "content": "Build a personal knowledge management system using AI",
+    "memory_type": "project",
     "metadata": {
       "project": "knowledge-management",
       "priority": "high",
@@ -30,28 +32,32 @@ curl -X POST https://api.lanonasis.com/api/v1/memory \
 
 ### JavaScript/TypeScript
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://api.lanonasis.com'
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: 'your-api-key'
 });
 
 async function createFirstMemory() {
   try {
-    const memory = await client.createMemory({
+    const created = await client.createMemory({
+      title: "Knowledge Management Idea",
       content: "Build a personal knowledge management system using AI",
+      memory_type: "project",
+      tags: ["project", "ai", "knowledge", "planning"],
       metadata: {
         project: "knowledge-management",
         priority: "high",
         status: "planning"
-      },
-      tags: ["project", "ai", "knowledge", "planning"]
+      }
     });
 
-    console.log('Memory created:', memory.id);
-    console.log('Content:', memory.content);
-    return memory;
+    if (created.data) {
+      console.log('Memory created:', created.data.id);
+      console.log('Content:', created.data.content);
+    }
+    return created.data;
   } catch (error) {
     console.error('Error creating memory:', error);
   }
@@ -72,13 +78,15 @@ client = MemoryClient(
 def create_first_memory():
     try:
         memory = client.create_memory(
+            title="Knowledge Management Idea",
             content="Build a personal knowledge management system using AI",
+            memory_type="project",
+            tags=["project", "ai", "knowledge", "planning"],
             metadata={
                 "project": "knowledge-management",
                 "priority": "high",
                 "status": "planning"
-            },
-            tags=["project", "ai", "knowledge", "planning"]
+            }
         )
         
         print(f"Memory created: {memory.id}")
@@ -115,8 +123,8 @@ Now let's search for your memory using natural language.
 
 ### cURL
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/search \
-  -H "Authorization: Bearer your-api-key" \
+curl -X POST https://api.lanonasis.com/api/v1/memory/search \
+  -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "AI knowledge management project",
@@ -133,9 +141,10 @@ async function searchMemories() {
       limit: 10
     });
 
-    console.log(`Found ${results.results.length} memories:`);
-    results.results.forEach((memory, index) => {
-      console.log(`${index + 1}. ${memory.content} (Score: ${memory.score})`);
+    const matches = results.data?.results ?? [];
+    console.log(`Found ${matches.length} memories:`);
+    matches.forEach((memory, index) => {
+      console.log(`${index + 1}. ${memory.content} (Score: ${memory.similarity_score})`);
     });
   } catch (error) {
     console.error('Error searching memories:', error);
@@ -156,7 +165,7 @@ def search_memories():
         
         print(f"Found {len(results.results)} memories:")
         for i, memory in enumerate(results.results):
-            print(f"{i + 1}. {memory.content} (Score: {memory.score})")
+            print(f"{i + 1}. {memory.content} (Score: {memory.similarity_score})")
     except Exception as error:
         print(f"Error searching memories: {error}")
 
@@ -170,7 +179,7 @@ Let's add more details to your memory.
 ### cURL
 ```bash
 curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_1234567890abcdef \
-  -H "Authorization: Bearer your-api-key" \
+  -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
     "content": "Build a personal knowledge management system using AI with features like semantic search, automatic categorization, and intelligent recommendations",
@@ -189,7 +198,7 @@ curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_1234567890abcdef \
 ```typescript
 async function updateMemory(memoryId: string) {
   try {
-    const updatedMemory = await client.updateMemory(memoryId, {
+    const updated = await client.updateMemory(memoryId, {
       content: "Build a personal knowledge management system using AI with features like semantic search, automatic categorization, and intelligent recommendations",
       metadata: {
         project: "knowledge-management",
@@ -201,8 +210,10 @@ async function updateMemory(memoryId: string) {
       tags: ["project", "ai", "knowledge", "planning", "features"]
     });
 
-    console.log('Memory updated:', updatedMemory.id);
-    console.log('New content:', updatedMemory.content);
+    if (updated.data) {
+      console.log('Memory updated:', updated.data.id);
+      console.log('New content:', updated.data.content);
+    }
   } catch (error) {
     console.error('Error updating memory:', error);
   }
@@ -245,21 +256,22 @@ Let's see all the memories you've created.
 ### cURL
 ```bash
 curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=20" \
-  -H "Authorization: Bearer your-api-key"
+  -H "X-API-Key: your-api-key"
 ```
 
 ### JavaScript/TypeScript
 ```typescript
 async function listMemories() {
   try {
-    const memories = await client.listMemories({
+    const response = await client.listMemories({
       limit: 20,
-      sortBy: 'created_at',
-      sortOrder: 'desc'
+      sort: 'created_at',
+      order: 'desc'
     });
 
-    console.log(`You have ${memories.total} memories:`);
-    memories.results.forEach((memory, index) => {
+    const memories = response.data?.data ?? [];
+    console.log(`You have ${response.data?.pagination.total ?? 0} memories:`);
+    memories.forEach((memory, index) => {
       console.log(`${index + 1}. [${memory.tags.join(', ')}] ${memory.content}`);
     });
   } catch (error) {
@@ -306,14 +318,21 @@ async function completeExample() {
   try {
     // 1. Create a memory
     console.log('Creating memory...');
-    const memory = await client.createMemory({
+    const created = await client.createMemory({
+      title: "Knowledge Management Idea",
       content: "Build a personal knowledge management system using AI",
+      memory_type: "project",
+      tags: ["project", "ai", "knowledge"],
       metadata: {
         project: "knowledge-management",
         priority: "high"
-      },
-      tags: ["project", "ai", "knowledge"]
+      }
     });
+
+    if (!created.data) {
+      throw new Error('Memory creation failed');
+    }
+    const memory = created.data;
     console.log('✅ Memory created:', memory.id);
 
     // 2. Search for the memory
@@ -322,11 +341,12 @@ async function completeExample() {
       query: "AI knowledge management",
       limit: 5
     });
-    console.log(`✅ Found ${searchResults.results.length} memories`);
+    const matches = searchResults.data?.results ?? [];
+    console.log(`✅ Found ${matches.length} memories`);
 
     // 3. Update the memory
     console.log('\nUpdating memory...');
-    const updatedMemory = await client.updateMemory(memory.id, {
+    await client.updateMemory(memory.id, {
       content: "Build a personal knowledge management system using AI with semantic search and auto-categorization",
       metadata: {
         ...memory.metadata,
@@ -339,7 +359,7 @@ async function completeExample() {
     // 4. List all memories
     console.log('\nListing all memories...');
     const allMemories = await client.listMemories({ limit: 10 });
-    console.log(`✅ You have ${allMemories.total} total memories`);
+    console.log(`✅ You have ${allMemories.data?.pagination.total ?? 0} total memories`);
 
     console.log('\n🎉 Complete example finished successfully!');
   } catch (error) {

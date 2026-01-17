@@ -17,12 +17,12 @@ pip install lanonasis
 ## Quick Start
 
 ```python
-from lanonasis import LanOnasisClient
+from lanonasis import MemoryClient
 
-client = LanOnasisClient(api_key="your-api-key")
+client = MemoryClient(api_key="your-api-key")
 
 # Create a memory
-memory = client.memories.create(
+memory = client.create_memory(
     title="Important Note",
     content="This is my memory content",
     tags=["work", "project"]

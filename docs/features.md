@@ -67,8 +67,8 @@ npm install -g @lanonasis/cli
 ### 3. Configure Authentication
 
 ```bash
-LanOnasis config set api-key YOUR_API_KEY
-LanOnasis config set endpoint https://api.lanonasis.com/api/v1
+lanonasis config set api-key YOUR_API_KEY
+lanonasis config set api-url https://api.lanonasis.com
 ```
 
 ### 4. Create Your First Memory
@@ -89,22 +89,32 @@ LanOnasis memory search "project meeting"
 ## API Example
 
 ```javascript
-import { LanonasisClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new LanonasisClient({
-  apiKey: 'your-api-key',
-  endpoint: 'https://api.lanonasis.com/api/v1'
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: 'your-api-key'
 });
 
 // Create a memory
-const memory = await client.memories.create({
+const created = await client.createMemory({
+  title: 'Meeting Notes',
   content: 'Important project meeting notes',
-  type: 'meeting',
+  memory_type: 'project',
   tags: ['project', 'meeting', 'notes']
 });
 
+if (created.data) {
+  console.log('Memory ID:', created.data.id);
+}
+
 // Search memories
-const results = await client.memories.search('project meeting');
+const results = await client.searchMemories({
+  query: 'project meeting',
+  limit: 10
+});
+
+console.log('Matches:', results.data?.results);
 ```
 
 ## Architecture

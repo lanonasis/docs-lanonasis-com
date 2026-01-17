@@ -18,7 +18,7 @@ yarn add @lanonasis/memory-client
 ```
 
 **Package**: `@lanonasis/memory-client`  
-**Version**: 1.0.0
+**Version**: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.0<!-- /AUTO -->
 
 ## Basic usage
 
@@ -31,8 +31,7 @@ const client = new MemoryClient({
   apiKey: process.env.LANONASIS_API_KEY,
   // Optional: use bearer token instead
   // authToken: process.env.LANONASIS_TOKEN,
-  timeout: 30000,
-  useGateway: true
+  timeout: 30000
 });
 
 // Or use factory function

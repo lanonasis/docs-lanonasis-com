@@ -10,25 +10,37 @@ Common usage examples for the LanOnasis TypeScript SDK.
 
 ### Creating Memories
 ```typescript
-const memory = await client.memories.create({
+const created = await client.createMemory({
   title: 'Meeting Notes',
   content: 'Discussion about Q4 planning...',
+  memory_type: 'project',
   tags: ['meeting', 'planning', 'q4']
 });
+
+if (created.data) {
+  console.log('Memory ID:', created.data.id);
+}
 ```
 
 ### Searching Memories
 ```typescript
-const results = await client.memories.search('planning', {
+const results = await client.searchMemories({
+  query: 'planning',
   limit: 10,
   tags: ['meeting']
 });
+
+console.log('Matches:', results.data?.results);
 ```
 
 ### Batch Operations
 ```typescript
-const memories = await client.memories.createBatch([
-  { title: 'Note 1', content: 'Content 1' },
-  { title: 'Note 2', content: 'Content 2' }
+const deleted = await client.bulkDeleteMemories([
+  'mem_id_1',
+  'mem_id_2'
 ]);
+
+if (deleted.data) {
+  console.log('Deleted:', deleted.data.deleted_count);
+}
 ```
