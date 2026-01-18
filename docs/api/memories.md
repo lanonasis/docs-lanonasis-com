@@ -21,14 +21,13 @@ POST /api/v1/memory
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `title` | string | Yes | Memory title (max 500 chars) |
-| `content` | string | Yes | Memory content (max 50,000 chars) |
-| `memory_type` | string | No | Memory type (`context`, `project`, `knowledge`, `reference`, `personal`, `workflow`) |
-| `summary` | string | No | Optional summary (max 1,000 chars) |
-| `tags` | array | No | Array of tags for categorization (max 20) |
+| `title` | string | Yes | Memory title (max 255 chars) |
+| `content` | string | Yes | Memory content |
+| `memory_type` | string | No | Preferred memory type (`context`, `project`, `knowledge`, `reference`, `personal`, `workflow`) |
+| `type` | string | No | MCP-compatible alias for `memory_type` |
+| `tags` | array | No | Array of tags for categorization |
 | `metadata` | object | No | Custom metadata object |
 | `topic_id` | string | No | Optional topic UUID |
-| `project_ref` | string | No | Optional project reference |
 
 ### Example Request
 
@@ -68,9 +67,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memory \
       "department": "engineering",
       "deadline": "2024-03-31"
     },
-    "status": "active",
     "topic_id": "3f5d2b3c-9d24-4f92-9b7a-3d2d95b9a1a1",
-    "project_ref": "proj_123",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T10:30:00Z"
   }
@@ -111,7 +108,6 @@ curl -X GET https://api.lanonasis.com/api/v1/memory/mem_456789 \
     "content": "The new feature should include user authentication...",
     "type": "project",
     "memory_type": "project",
-    "status": "active",
     "tags": ["project", "requirements", "high-priority"],
     "metadata": {
       "project_id": "proj_123",
@@ -120,7 +116,6 @@ curl -X GET https://api.lanonasis.com/api/v1/memory/mem_456789 \
       "deadline": "2024-03-31"
     },
     "topic_id": "3f5d2b3c-9d24-4f92-9b7a-3d2d95b9a1a1",
-    "project_ref": "proj_123",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T10:30:00Z",
     "access_count": 5,
@@ -177,7 +172,6 @@ curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_456789 \
     "content": "The new feature should include user authentication...",
     "type": "project",
     "memory_type": "project",
-    "status": "active",
     "tags": ["project", "requirements", "high-priority", "reviewed"],
     "metadata": {
       "project_id": "proj_123",
@@ -187,7 +181,6 @@ curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_456789 \
       "status": "approved"
     },
     "topic_id": "3f5d2b3c-9d24-4f92-9b7a-3d2d95b9a1a1",
-    "project_ref": "proj_123",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-16T14:22:00Z"
   }
@@ -222,14 +215,10 @@ curl -X DELETE https://api.lanonasis.com/api/v1/memory/mem_456789 \
 ```json
 {
   "success": true,
+  "message": "Memory deleted successfully",
   "data": {
     "id": "mem_456789",
-    "deleted": true,
     "deleted_at": "2024-01-16T15:30:00Z"
-  },
-  "meta": {
-    "timestamp": "2024-01-16T15:30:00Z",
-    "request_id": "req_delete_789"
   }
 }
 ```
@@ -248,20 +237,17 @@ GET /api/v1/memory
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `page` | integer | No | Page number (default: 1) |
 | `limit` | integer | No | Results per page (1-100, default: 20) |
-| `memory_type` | string | No | Filter by memory type |
+| `offset` | integer | No | Results offset (default: 0) |
+| `type` | string | No | Filter by memory type |
 | `tags` | string | No | Comma-separated tags to filter by |
-| `topic_id` | string | No | Filter by topic UUID |
-| `project_ref` | string | No | Filter by project reference |
-| `status` | string | No | Filter by status (`active`, `archived`, `draft`, `deleted`) |
-| `sort` | string | No | Sort field (`created_at`, `updated_at`, `title`) |
-| `order` | string | No | Sort order (`asc`, `desc`) |
+| `sortBy` | string | No | Sort field (`created_at`, `updated_at`, `title`) |
+| `sortOrder` | string | No | Sort order (`asc`, `desc`) |
 
 ### Example Request
 
 ```bash
-curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&tags=project,requirements&sort=updated_at&order=desc" \
+curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&offset=0&tags=project,requirements&sortBy=updated_at&sortOrder=desc" \
   -H "X-API-Key: lms_live_your_key_here"
 ```
 
@@ -294,7 +280,7 @@ curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&tags=project,requi
     "total": 25,
     "page": 1,
     "limit": 10,
-    "pages": 3
+    "hasMore": true
   }
 }
 ```
@@ -330,9 +316,9 @@ curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&tags=project,requi
 
 ### TypeScript
 ```typescript
-import { MemoryClient } from '@lanonasis/memory-client';
+import { createMemoryClient } from '@lanonasis/memory-client/core';
 
-const client = new MemoryClient({
+const client = createMemoryClient({
   apiUrl: 'https://api.lanonasis.com',
   apiKey: process.env.LANONASIS_API_KEY
 });

@@ -31,6 +31,7 @@ X-API-Key: YOUR_API_KEY
   "title": "string (required)",
   "content": "string (required)",
   "memory_type": "context",
+  "type": "context",
   "tags": ["string"],
   "metadata": {
     "source": "string",
@@ -45,11 +46,13 @@ X-API-Key: YOUR_API_KEY
 
 ```json
 {
+  "success": true,
   "data": {
     "id": "mem_abc123",
     "title": "Meeting notes from Q4 planning",
     "content": "Meeting notes from Q4 planning...",
     "memory_type": "meeting",
+    "type": "meeting",
     "tags": ["planning", "q4"],
     "metadata": {
       "source": "notebook"
@@ -65,10 +68,18 @@ X-API-Key: YOUR_API_KEY
 ##### 400 Bad Request
 ```json
 {
-  "error": "INVALID_REQUEST",
-  "message": "Text field is required",
-  "details": {
-    "missing_fields": ["text"]
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Text field is required",
+    "details": [
+      {
+        "field": "content",
+        "message": "Required"
+      }
+    ],
+    "request_id": "req_123",
+    "timestamp": "2024-01-15T10:30:00Z"
   }
 }
 ```
@@ -76,17 +87,27 @@ X-API-Key: YOUR_API_KEY
 ##### 401 Unauthorized
 ```json
 {
-  "error": "UNAUTHORIZED",
-  "message": "Invalid or expired API key"
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or expired API key",
+    "request_id": "req_124",
+    "timestamp": "2024-01-15T10:31:00Z"
+  }
 }
 ```
 
 ##### 429 Rate Limited
 ```json
 {
-  "error": "RATE_LIMITED",
-  "message": "Too many requests",
-  "retry_after": 60
+  "success": false,
+  "error": {
+    "code": "RATE_LIMITED",
+    "message": "Too many requests",
+    "details": [],
+    "request_id": "req_125",
+    "timestamp": "2024-01-15T10:32:00Z"
+  }
 }
 ```
 
@@ -176,11 +197,13 @@ X-API-Key: YOUR_API_KEY
 
 ```json
 {
+  "success": true,
   "data": {
     "id": "mem_abc123",
     "title": "Meeting Notes",
     "content": "Meeting notes from Q4 planning",
     "memory_type": "meeting",
+    "type": "meeting",
     "tags": ["planning", "q4"],
     "metadata": {
       "source": "notebook"
@@ -206,7 +229,18 @@ X-API-Key: YOUR_API_KEY
 ### Response
 
 ```http
-204 No Content
+200 OK
+```
+
+```json
+{
+  "success": true,
+  "message": "Memory deleted successfully",
+  "data": {
+    "id": "mem_abc123",
+    "deleted_at": "2024-01-15T10:35:00Z"
+  }
+}
 ```
 
 ---
@@ -233,11 +267,13 @@ Update an existing memory.
 
 ```json
 {
+  "success": true,
   "data": {
     "id": "mem_abc123",
     "title": "Updated Meeting Notes",
     "content": "Updated meeting notes",
     "memory_type": "meeting",
+    "type": "meeting",
     "tags": ["planning", "q4", "revised"],
     "metadata": {
       "source": "notebook"

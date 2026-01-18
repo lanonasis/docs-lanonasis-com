@@ -58,6 +58,7 @@ const config: Config = {
     () => ({
       name: 'path-to-regexp-default-export',
       configureWebpack() {
+        const webpack = require('webpack');
         return {
           resolve: {
             alias: {
@@ -66,7 +67,15 @@ const config: Config = {
                 'src/utils/path-to-regexp-default.js'
               ),
             },
+            fallback: {
+              buffer: require.resolve('buffer/')
+            }
           },
+          plugins: [
+            new webpack.ProvidePlugin({
+              Buffer: ['buffer', 'Buffer']
+            })
+          ]
         };
       },
     }),

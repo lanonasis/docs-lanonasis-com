@@ -14,7 +14,7 @@ Search across all your memories using natural language queries.
 ### Request
 
 ```http
-POST /api/v1/memory/search
+POST /api/v1/memories/search
 ```
 
 ### Request Body
@@ -24,21 +24,19 @@ POST /api/v1/memory/search
 | `query` | string | Yes | Search query (natural language) |
 | `limit` | integer | No | Number of results (1-100, default: 20) |
 | `threshold` | float | No | Minimum similarity score (0.0-1.0, default: 0.7) |
-| `memory_type` | string | No | Filter by memory type |
-| `tags` | array | No | Array of tags to filter by |
+| `type` | string | No | Filter by memory type |
 
 ### Example Request
 
 ```bash
-curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "user authentication requirements",
     "limit": 5,
     "threshold": 0.8,
-    "memory_type": "project",
-    "tags": ["security", "requirements"]
+    "type": "project"
   }'
 ```
 
@@ -46,35 +44,45 @@ curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
 
 ```json
 {
-  "data": [
-    {
-      "id": "mem_456789",
-      "title": "Project Requirements",
-      "content": "The new feature should include user authentication, data visualization, and real-time updates...",
-      "similarity_score": 0.92,
-      "tags": ["project", "requirements", "high-priority"],
-      "metadata": {
-        "project_id": "proj_123",
-        "author": "john.doe@company.com",
-        "department": "engineering"
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "id": "mem_456789",
+        "title": "Project Requirements",
+        "content": "The new feature should include user authentication, data visualization, and real-time updates...",
+        "memory_type": "project",
+        "type": "project",
+        "similarity_score": 0.92,
+        "tags": ["project", "requirements", "high-priority"],
+        "metadata": {
+          "project_id": "proj_123",
+          "author": "john.doe@company.com",
+          "department": "engineering"
+        },
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-16T14:22:00Z"
       },
-      "created_at": "2024-01-15T10:30:00Z",
-      "updated_at": "2024-01-16T14:22:00Z"
-    },
-    {
-      "id": "mem_789012",
-      "title": "Security Guidelines",
-      "content": "All applications must implement secure authentication mechanisms including...",
-      "similarity_score": 0.87,
-      "tags": ["security", "guidelines", "authentication"],
-      "metadata": {
-        "document_type": "policy",
-        "department": "security"
-      },
-      "created_at": "2024-01-10T16:45:00Z",
-      "updated_at": "2024-01-12T09:30:00Z"
-    }
-  ]
+      {
+        "id": "mem_789012",
+        "title": "Security Guidelines",
+        "content": "All applications must implement secure authentication mechanisms including...",
+        "memory_type": "project",
+        "type": "project",
+        "similarity_score": 0.87,
+        "tags": ["security", "guidelines", "authentication"],
+        "metadata": {
+          "document_type": "policy",
+          "department": "security"
+        },
+        "created_at": "2024-01-10T16:45:00Z",
+        "updated_at": "2024-01-12T09:30:00Z"
+      }
+    ],
+    "total": 2,
+    "query": "user authentication requirements",
+    "threshold": 0.8
+  }
 }
 ```
 
@@ -85,20 +93,20 @@ Vector similarity search is available through the same memory search endpoint. A
 ### Request
 
 ```http
-POST /api/v1/memory/search
+POST /api/v1/memories/search
 ```
 
 ### Example Request
 
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory/search \
+curl -X POST https://api.lanonasis.com/api/v1/memories/search \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "project requirements",
     "limit": 5,
     "threshold": 0.85,
-    "tags": ["project"]
+    "type": "project"
   }'
 ```
 
@@ -106,20 +114,28 @@ curl -X POST https://api.lanonasis.com/api/v1/memory/search \
 
 ```json
 {
-  "data": [
-    {
-      "id": "mem_456789",
-      "title": "Project Requirements",
-      "content": "The new feature should include user authentication...",
-      "similarity_score": 0.94,
-      "tags": ["project", "requirements"],
-      "metadata": {
-        "department": "engineering",
-        "project_id": "proj_123"
-      },
-      "created_at": "2024-01-15T10:30:00Z"
-    }
-  ]
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "id": "mem_456789",
+        "title": "Project Requirements",
+        "content": "The new feature should include user authentication...",
+        "memory_type": "project",
+        "type": "project",
+        "similarity_score": 0.94,
+        "tags": ["project", "requirements"],
+        "metadata": {
+          "department": "engineering",
+          "project_id": "proj_123"
+        },
+        "created_at": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "total": 1,
+    "query": "project requirements",
+    "threshold": 0.85
+  }
 }
 ```
 
@@ -183,29 +199,27 @@ curl -X POST https://api.lanonasis.com/api/v1/embeddings \
 Filter search results by metadata fields:
 
 ```bash
-curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "project requirements",
-    "tags": ["security", "compliance"],
-    "memory_type": "project"
+    "type": "project"
   }'
 ```
 
 ### Date Range Filtering
 
-Use `tags` and `memory_type` filters in the search body to narrow results.
+Use the `type` filter in the search body to narrow results.
 
 ### Combined Filtering
 
 ```bash
-curl -X POST "https://api.lanonasis.com/api/v1/memory/search" \
+curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "security requirements",
-    "tags": ["security", "compliance"],
     "threshold": 0.9,
     "limit": 20
   }'

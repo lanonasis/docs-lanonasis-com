@@ -30,7 +30,7 @@ Content-Type: application/json
 
 ```bash
 curl -H "X-API-Key: lms_live_your_key_here" \
-  https://api.lanonasis.com/api/v1/memory
+  https://api.lanonasis.com/api/v1/memories
 ```
 
 ## Quick Start
@@ -68,7 +68,7 @@ console.log('Matches:', results.data?.results);
 
 ```bash
 # Create a memory
-curl -X POST https://api.lanonasis.com/api/v1/memory \
+curl -X POST https://api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -85,19 +85,19 @@ curl -X POST https://api.lanonasis.com/api/v1/memory \
 ## API Endpoints
 
 ### 🧠 Memory Management
-- [`POST /memory`](./memories#create-memory) - Create a new memory
-- [`GET /memory/{id}`](./memories#get-memory) - Retrieve a memory
-- [`PUT /memory/{id}`](./memories#update-memory) - Update a memory
-- [`DELETE /memory/{id}`](./memories#delete-memory) - Delete a memory
-- [`GET /memory`](./memories#list-memories) - List memories with pagination
+- [`POST /memories`](./memories#create-memory) - Create a new memory
+- [`GET /memories/{id}`](./memories#get-memory) - Retrieve a memory
+- [`PUT /memories/{id}`](./memories#update-memory) - Update a memory
+- [`DELETE /memories/{id}`](./memories#delete-memory) - Delete a memory
+- [`GET /memories`](./memories#list-memories) - List memories with pagination
 
 ### 🔍 Search & Discovery
-- [`POST /memory/search`](./endpoints/search#memory-search) - Semantic search across memories
+- [`POST /memories/search`](./endpoints/search#memory-search) - Semantic search across memories
 
 ### 🔐 Authentication
-- [`POST /auth/keys`](./authentication#create-api-key) - Create API key
-- [`GET /auth/keys`](./authentication#list-api-keys) - List API keys
-- [`DELETE /auth/keys/{id}`](./authentication#revoke-api-key) - Revoke API key
+- [`POST /auth/api-keys`](./authentication#create-api-key) - Create API key
+- [`GET /auth/api-keys`](./authentication#list-api-keys) - List API keys
+- [`DELETE /auth/api-keys/{id}`](./authentication#revoke-api-key) - Revoke API key
 
 ### 📊 Analytics
 - [`GET /analytics/usage`](./analytics#usage-stats) - Usage statistics
@@ -161,11 +161,11 @@ We provide official SDKs for popular programming languages:
 ## Getting Help
 
 ### Core Memory Operations
-- [`/api/v1/memory`](/api/endpoints/memory) - Create and list memories
-- [`/api/v1/memory/:id`](/api/endpoints/memory) - Get, update, or delete a memory
+- [`/api/v1/memories`](/api/endpoints/memory) - Create and list memories
+- [`/api/v1/memories/{id}`](/api/endpoints/memory) - Get, update, or delete a memory
 
 ### Search & Discovery
-- [`POST /search`](/api/endpoints/search) - Semantic search across memories
+- [`POST /memories/search`](/api/endpoints/search) - Semantic search across memories
 - [`POST /embeddings`](/api/endpoints/embeddings) - Generate vector embeddings
 
 ### Batch Operations
