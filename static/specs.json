@@ -1,0 +1,42 @@
+{
+  "specs": [
+    {
+      "id": "memory",
+      "name": "MCP Memory API",
+      "icon": "🧠",
+      "description": "Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System",
+      "badge": "MCP v2.0 - 28 Tools",
+      "version": "1.1.0",
+      "hash": "a2040ab655aa7a4cf85c47acd9d99e9ef03048832f3d2df7a08421232ee35395",
+      "paths": [
+        "/memory-api.json",
+        "/memory-api.yaml"
+      ]
+    },
+    {
+      "id": "unified",
+      "name": "Unified Services",
+      "icon": "🔗",
+      "description": "Wallets, Transfers, Payments, KYC",
+      "badge": "Unified Services API",
+      "version": "1.0.0",
+      "hash": "2cb7c466b3ee97206541ff68f69aef72ff29fc66844977e926682d42e8c0df73",
+      "paths": [
+        "/unified-services.yaml"
+      ]
+    },
+    {
+      "id": "docs",
+      "name": "Documentation Search",
+      "icon": "📚",
+      "description": "Search documentation with semantic queries",
+      "badge": "Docs Search API",
+      "version": "1.0.0",
+      "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
+      "paths": [
+        "/openapi.json",
+        "/openapi.yaml"
+      ]
+    }
+  ]
+}
