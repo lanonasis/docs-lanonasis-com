@@ -33,7 +33,7 @@ POST /api/v1/memory
 
 ```bash
 curl -X POST https://api.lanonasis.com/api/v1/memory \
-  -H "X-API-Key: lms_live_your_key_here" \
+  -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Project Requirements",
@@ -94,7 +94,7 @@ GET /api/v1/memory/{id}
 
 ```bash
 curl -X GET https://api.lanonasis.com/api/v1/memory/mem_456789 \
-  -H "X-API-Key: lms_live_your_key_here"
+  -H "X-API-Key: lano_your_api_key_here"
 ```
 
 ### Example Response
@@ -147,7 +147,7 @@ PUT /api/v1/memory/{id}
 
 ```bash
 curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_456789 \
-  -H "X-API-Key: lms_live_your_key_here" \
+  -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
     "tags": ["project", "requirements", "high-priority", "reviewed"],
@@ -207,7 +207,7 @@ DELETE /api/v1/memory/{id}
 
 ```bash
 curl -X DELETE https://api.lanonasis.com/api/v1/memory/mem_456789 \
-  -H "X-API-Key: lms_live_your_key_here"
+  -H "X-API-Key: lano_your_api_key_here"
 ```
 
 ### Example Response
@@ -248,7 +248,7 @@ GET /api/v1/memory
 
 ```bash
 curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&offset=0&tags=project,requirements&sortBy=updated_at&sortOrder=desc" \
-  -H "X-API-Key: lms_live_your_key_here"
+  -H "X-API-Key: lano_your_api_key_here"
 ```
 
 ### Example Response

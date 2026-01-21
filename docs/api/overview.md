@@ -21,7 +21,7 @@ Sandbox:    https://sandbox-api.lanonasis.com/api/v1
 All API requests require authentication. Use an API key header for key-based auth or a bearer token for OAuth/JWT:
 
 ```http
-X-API-Key: lms_live_your_key_here
+X-API-Key: lano_your_api_key_here
 Authorization: Bearer YOUR_TOKEN (OAuth/JWT)
 Content-Type: application/json
 ```
@@ -29,7 +29,7 @@ Content-Type: application/json
 ## Quick Start
 
 ```bash
-curl -H "X-API-Key: lms_live_your_key_here" \
+curl -H "X-API-Key: lano_your_api_key_here" \
   https://api.lanonasis.com/api/v1/memories
 ```
 

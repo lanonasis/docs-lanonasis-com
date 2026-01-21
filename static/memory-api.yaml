@@ -33,7 +33,7 @@ info:
        - Scopes: `mcp:full`, `memories:read`, `memories:write`, `profile`
 
     2. **API Key** (Fallback)
-       - Header: `X-API-Key: lms_live_*`
+       - Header: `X-API-Key: lano_*`
 
     3. **JWT Token** (Legacy)
        - Header: `Authorization: Bearer <jwt_token>`
