@@ -14,7 +14,7 @@ Let's start by creating a simple memory about a project idea.
 
 ### cURL
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory \
+curl -X POST https://api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -123,7 +123,7 @@ Now let's search for your memory using natural language.
 
 ### cURL
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory/search \
+curl -X POST https://api.lanonasis.com/api/v1/memories/search \
   -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -178,7 +178,7 @@ Let's add more details to your memory.
 
 ### cURL
 ```bash
-curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_1234567890abcdef \
+curl -X PUT https://api.lanonasis.com/api/v1/memories/mem_1234567890abcdef \
   -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -255,7 +255,7 @@ Let's see all the memories you've created.
 
 ### cURL
 ```bash
-curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=20" \
+curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=20" \
   -H "X-API-Key: your-api-key"
 ```
 

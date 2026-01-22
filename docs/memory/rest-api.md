@@ -7,7 +7,7 @@ Use the REST API to integrate Memory Suite with any HTTP-capable client.
 
 ## Base URL
 
-`https://api.lanonasis.com/api/v1/memory/`
+`https://api.lanonasis.com/api/v1/memories/`
 
 ## Typical operations
 
@@ -20,7 +20,7 @@ Use the REST API to integrate Memory Suite with any HTTP-capable client.
 ## Example outline
 
 1. Acquire a token with Device Flow or PKCE.
-2. Send authenticated requests to `/api/v1/memory/...`.
+2. Send authenticated requests to `/api/v1/memories/...`.
 3. Handle 429/401/403 according to gateway semantics.
 
 ## Related docs

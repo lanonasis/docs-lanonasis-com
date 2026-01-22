@@ -454,7 +454,7 @@ console.log(sanitized); // "sk_l...f456"
 // Use in logs
 logger.info('API call', {
   api_key: security.sanitize(apiKey),
-  endpoint: '/api/v1/memory'
+  endpoint: '/api/v1/memories'
 });
 ```
 

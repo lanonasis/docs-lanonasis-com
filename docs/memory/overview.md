@@ -14,7 +14,7 @@ LanOnasis Memory Suite provides a unified memory layer for applications and agen
 
 ## Access paths
 
-- REST: `https://api.lanonasis.com/api/v1/memory/...`
+- REST: `https://api.lanonasis.com/api/v1/memories/...`
 - MCP tools: via `https://mcp.lanonasis.com`
 - SDK: `@lanonasis/memory-client`
 - CLI: `@lanonasis/cli`

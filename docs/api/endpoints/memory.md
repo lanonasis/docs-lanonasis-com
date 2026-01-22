@@ -5,7 +5,7 @@ sidebar_label: Memory Management
 
 # Memory Management API
 
-## POST /api/v1/memory
+## POST /api/v1/memories
 
 Store a new memory entry with optional metadata and vector embeddings.
 
@@ -116,7 +116,7 @@ X-API-Key: YOUR_API_KEY
 #### cURL
 
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory \
+curl -X POST https://api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -183,7 +183,7 @@ This endpoint triggers the following webhooks:
 
 ---
 
-## GET /api/v1/memory/:id
+## GET /api/v1/memories/:id
 
 Retrieve a specific memory by ID.
 
@@ -216,7 +216,7 @@ X-API-Key: YOUR_API_KEY
 
 ---
 
-## DELETE /api/v1/memory/:id
+## DELETE /api/v1/memories/:id
 
 Delete a memory entry.
 
@@ -245,7 +245,7 @@ X-API-Key: YOUR_API_KEY
 
 ---
 
-## PUT /api/v1/memory/:id
+## PUT /api/v1/memories/:id
 
 Update an existing memory.
 

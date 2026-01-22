@@ -14,7 +14,7 @@ Create a new memory with content, metadata, and tags.
 ### Request
 
 ```http
-POST /api/v1/memory
+POST /api/v1/memories
 ```
 
 ### Parameters
@@ -32,7 +32,7 @@ POST /api/v1/memory
 ### Example Request
 
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memory \
+curl -X POST https://api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
@@ -81,7 +81,7 @@ Retrieve a specific memory by ID.
 ### Request
 
 ```http
-GET /api/v1/memory/{id}
+GET /api/v1/memories/{id}
 ```
 
 ### Path Parameters
@@ -93,7 +93,7 @@ GET /api/v1/memory/{id}
 ### Example Request
 
 ```bash
-curl -X GET https://api.lanonasis.com/api/v1/memory/mem_456789 \
+curl -X GET https://api.lanonasis.com/api/v1/memories/mem_456789 \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 
@@ -131,7 +131,7 @@ Update an existing memory's content, tags, or metadata.
 ### Request
 
 ```http
-PUT /api/v1/memory/{id}
+PUT /api/v1/memories/{id}
 ```
 
 ### Parameters
@@ -146,7 +146,7 @@ PUT /api/v1/memory/{id}
 ### Example Request
 
 ```bash
-curl -X PUT https://api.lanonasis.com/api/v1/memory/mem_456789 \
+curl -X PUT https://api.lanonasis.com/api/v1/memories/mem_456789 \
   -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
@@ -194,7 +194,7 @@ Permanently delete a memory. This action cannot be undone.
 ### Request
 
 ```http
-DELETE /api/v1/memory/{id}
+DELETE /api/v1/memories/{id}
 ```
 
 ### Path Parameters
@@ -206,7 +206,7 @@ DELETE /api/v1/memory/{id}
 ### Example Request
 
 ```bash
-curl -X DELETE https://api.lanonasis.com/api/v1/memory/mem_456789 \
+curl -X DELETE https://api.lanonasis.com/api/v1/memories/mem_456789 \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 
@@ -230,7 +230,7 @@ Retrieve a paginated list of memories with optional filtering.
 ### Request
 
 ```http
-GET /api/v1/memory
+GET /api/v1/memories
 ```
 
 ### Query Parameters
@@ -247,7 +247,7 @@ GET /api/v1/memory
 ### Example Request
 
 ```bash
-curl -X GET "https://api.lanonasis.com/api/v1/memory?limit=10&offset=0&tags=project,requirements&sortBy=updated_at&sortOrder=desc" \
+curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=10&offset=0&tags=project,requirements&sortBy=updated_at&sortOrder=desc" \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 

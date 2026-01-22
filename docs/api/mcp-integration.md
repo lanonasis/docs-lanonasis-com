@@ -199,7 +199,7 @@ mcp.addEventListener('message', (event) => {
 
 // Send tool requests (via separate HTTP requests)
 async function searchMemories(query) {
-  const response = await fetch('https://api.lanonasis.com/api/v1/memory/search', {
+  const response = await fetch('https://api.lanonasis.com/api/v1/memories/search', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer YOUR_TOKEN',

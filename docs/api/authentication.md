@@ -373,12 +373,12 @@ curl -X GET https://sandbox-api.lanonasis.com/api/v1/auth/test \
   -H "X-API-Key: lk_test_your_key_here"
 
 # 2. Test permissions
-curl -X POST https://sandbox-api.lanonasis.com/api/v1/memory \
+curl -X POST https://sandbox-api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: lk_test_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{"title": "Test", "content": "Testing authentication"}'
 
 # 3. Test invalid key handling
-curl -X GET https://sandbox-api.lanonasis.com/api/v1/memory \
+curl -X GET https://sandbox-api.lanonasis.com/api/v1/memories \
   -H "X-API-Key: invalid_key_123"
 ```

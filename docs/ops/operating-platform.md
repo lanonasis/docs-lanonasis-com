@@ -41,7 +41,7 @@ cd apps/dashboard && bun run dev
 - Auth Gateway: `auth.lanonasis.com` behind the central gateway
 - API Gateway: `api.lanonasis.com` (REST + proxies)
 - MCP Core: `mcp.lanonasis.com` (SSE/HTTP)
-- Memory Suite: REST via `api.lanonasis.com/api/v1/memory`
+- Memory Suite: REST via `api.lanonasis.com/api/v1/memories`
 
 > Exact infrastructure (proxy/CDN/container) is environment‑specific and documented in operator runbooks.
 

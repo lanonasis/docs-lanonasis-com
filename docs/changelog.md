@@ -123,7 +123,7 @@ No breaking changes. New features are backward compatible.
 ## Deprecation Notices
 
 ### Scheduled for Removal in v2.0.0
-- Legacy `/api/v1/store` endpoint (use `/api/v1/memory` instead)
+- Legacy `/api/v1/store` endpoint (use `/api/v1/memories` instead)
 - 768-dimension embedding support
 - API key format v1 (migrate to v2 format)
 
