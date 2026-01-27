@@ -40,7 +40,7 @@ await client.secrets.create({
 ```typescript
 await client.secrets.create({
   name: 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>',
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
   tags: ['production', 'database'],
   metadata: {
     owner: 'backend-team',

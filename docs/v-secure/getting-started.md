@@ -98,7 +98,7 @@ vsecure secrets:create DATABASE_URL=postgresql://<user>:<password>@<host>:<port>
 ```typescript
 const secret = await client.secrets.create({
   name: 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>',
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
   tags: ['production', 'database'],
   expiresIn: '90d'
 });
@@ -152,7 +152,7 @@ vsecure secrets:update DATABASE_URL=postgresql://<user>:<password>@<host>:<port>
 
 ```typescript
 await client.secrets.update('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>'
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
 });
 
 // Retrieve version history
