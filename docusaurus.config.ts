@@ -1,5 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import yaml from 'js-yaml';
 import path from 'path';
@@ -10,6 +10,49 @@ import path from 'path';
 (yaml as any).safeLoad = (yaml as any).load;
 
 // Self-hosted configuration - No external dependencies
+
+// Guard webpack config for Nx compatibility
+const isNxBuild = process.env.NX_BUILD === 'true' || process.env.NX_WORKSPACE_ROOT !== undefined;
+
+// Plugin configuration - only include webpack plugin when NOT using Nx
+const plugins: any[] = [];
+
+// Add webpack plugin only when building with Docusaurus/Bun (not Nx)
+if (!isNxBuild) {
+  plugins.push(
+    () => ({
+      name: 'path-to-regexp-default-export',
+      configureWebpack() {
+        // Webpack is only available in Bun/Docusaurus build context
+        // Nx provides webpack through its own build system
+        try {
+          const webpack = require('webpack');
+          return {
+            resolve: {
+              alias: {
+                'path-to-regexp$': path.resolve(
+                  __dirname,
+                  'src/utils/path-to-regexp-default.js'
+                ),
+              },
+              fallback: {
+                buffer: require.resolve('buffer/')
+              }
+            },
+            plugins: [
+              new webpack.ProvidePlugin({
+                Buffer: ['buffer', 'Buffer']
+              })
+            ]
+          };
+        } catch (e) {
+          // Webpack not available, return empty config
+          return {};
+        }
+      },
+    })
+  );
+}
 
 const config: Config = {
   title: 'LanOnasis Documentation',
@@ -27,12 +70,32 @@ const config: Config = {
   onBrokenLinks: 'ignore',
   onBrokenMarkdownLinks: 'ignore',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+  // Internationalization - Full multilingual support
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es', 'fr', 'de'],
+    locales: ['en', 'de', 'es', 'fr'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+      },
+      de: {
+        label: 'Deutsch',
+        direction: 'ltr',
+        htmlLang: 'de-DE',
+      },
+      es: {
+        label: 'Español',
+        direction: 'ltr',
+        htmlLang: 'es-ES',
+      },
+      fr: {
+        label: 'Français',
+        direction: 'ltr',
+        htmlLang: 'fr-FR',
+      },
+    },
   },
 
   presets: [
@@ -54,32 +117,7 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-  plugins: [
-    () => ({
-      name: 'path-to-regexp-default-export',
-      configureWebpack() {
-        const webpack = require('webpack');
-        return {
-          resolve: {
-            alias: {
-              'path-to-regexp$': path.resolve(
-                __dirname,
-                'src/utils/path-to-regexp-default.js'
-              ),
-            },
-            fallback: {
-              buffer: require.resolve('buffer/')
-            }
-          },
-          plugins: [
-            new webpack.ProvidePlugin({
-              Buffer: ['buffer', 'Buffer']
-            })
-          ]
-        };
-      },
-    }),
-  ],
+  plugins: plugins,
 
   themeConfig: {
     // LanOnasis branding

@@ -3,7 +3,7 @@
   "info": {
     "title": "Lanonasis MCP REST API",
     "version": "1.1.0",
-    "description": "Complete REST API for Lanonasis Memory as a Service (MaaS) platform.\nProvides access to 28 MCP tools through a consistent `/api/v1/**` interface,\nincluding the AI-powered Memory Intelligence suite.\n\n## Architecture\n\nThe platform operates with two parallel routes:\n- **REST API (Supabase Edge Functions)**: This specification documents the edge function endpoints\n- **MCP Server (Direct Supabase)**: The MCP protocol server connects directly to Supabase\n\nBoth routes share the same database schema and are designed to work in parallel.\nThe REST API is a more recent development under active monitoring, replacing older\nNetlify functions.\n\n### Field Naming Compatibility\n\nFor memory operations, both `type` and `memory_type` field names are accepted:\n- `type`: Used by MCP tools for compatibility with the MCP protocol\n- `memory_type`: Preferred REST API field name, matches database column\n\n## Authentication\n\nThis API supports three authentication methods:\n\n1. **OAuth2 PKCE** (Primary)\n   - Authorization URL: `https://auth.lanonasis.com/oauth/authorize`\n   - Token URL: `https://auth.lanonasis.com/oauth/token`\n   - Scopes: `mcp:full`, `memories:read`, `memories:write`, `profile`\n\n2. **API Key** (Fallback)\n   - Header: `X-API-Key: lano_*`\n\n3. **JWT Token** (Legacy)\n   - Header: `Authorization: Bearer <jwt_token>`\n",
+    "description": "Complete REST API for Lanonasis Memory as a Service (MaaS) platform.\nProvides access to 28 MCP tools through a consistent `/api/v1/**` interface,\nincluding the AI-powered Memory Intelligence suite.\n\n## Architecture\n\nThe platform operates with two parallel routes:\n- **REST API (Supabase Edge Functions)**: This specification documents the edge function endpoints\n- **MCP Server (Direct Supabase)**: The MCP protocol server connects directly to Supabase\n\nBoth routes share the same database schema and are designed to work in parallel.\nThe REST API is a more recent development under active monitoring, replacing older\nNetlify functions.\n\n### Field Naming Compatibility\n\nFor memory operations, both `type` and `memory_type` field names are accepted:\n- `type`: Used by MCP tools for compatibility with the MCP protocol\n- `memory_type`: Preferred REST API field name, matches database column\n\n## Authentication\n\nThis API supports three authentication methods:\n\n1. **OAuth2 PKCE** (Primary)\n   - Authorization URL: `https://auth.lanonasis.com/oauth/authorize`\n   - Token URL: `https://auth.lanonasis.com/oauth/token`\n   - Scopes: `mcp:full`, `memories:read`, `memories:write`, `profile`\n\n2. **API Key** (Fallback)\n   - Header: `X-API-Key: lms_live_*`\n\n3. **JWT Token** (Legacy)\n   - Header: `Authorization: Bearer <jwt_token>`\n",
     "contact": {
       "name": "Lanonasis Support",
       "email": "support@lanonasis.com",
@@ -717,6 +717,130 @@
           },
           "403": {
             "$ref": "#/components/responses/PremiumRequiredError"
+          }
+        }
+      }
+    },
+    "/intelligence/behavior-record": {
+      "post": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Record Behavior Pattern",
+        "description": "Record a behavior/workflow pattern with embedding generation and deduplication.\nIf a near-duplicate is found, the existing pattern is updated instead of creating a new one.\n",
+        "operationId": "recordBehaviorPattern",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BehaviorRecordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pattern updated (duplicate detected)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorRecordResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Pattern created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorRecordResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/intelligence/behavior-recall": {
+      "post": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Recall Behavior Patterns",
+        "description": "Recall relevant behavior patterns using vector similarity search.\nUseful for surfacing likely next steps based on current task context.\n",
+        "operationId": "recallBehaviorPatterns",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BehaviorRecallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Behavior pattern recall results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorRecallResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/intelligence/behavior-suggest": {
+      "post": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Suggest Next Actions",
+        "description": "Generate action suggestions based on recalled behavior patterns.\nUseful for proposing the next likely tools or steps.\n",
+        "operationId": "suggestBehaviorActions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BehaviorSuggestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suggested actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorSuggestResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
           }
         }
       }

@@ -7,7 +7,7 @@
       "description": "Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System",
       "badge": "MCP v2.0 - 28 Tools",
       "version": "1.1.0",
-      "hash": "a2040ab655aa7a4cf85c47acd9d99e9ef03048832f3d2df7a08421232ee35395",
+      "hash": "40ab5e2cef9b961c1c021f7c688c7f65e5b0284de041dceb57655ac8988b2441",
       "paths": [
         "/memory-api.json",
         "/memory-api.yaml"

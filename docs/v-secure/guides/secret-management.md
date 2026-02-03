@@ -42,6 +42,7 @@ vsecure secrets:create TEMP_TOKEN "xyz123" \
 ### Use Tags Effectively
 
 Tag secrets by:
+
 - **Environment**: `production`, `staging`, `development`
 - **Service**: `api`, `database`, `cache`
 - **Team**: `backend`, `frontend`, `devops`
@@ -61,9 +62,10 @@ Follow a consistent naming pattern:
 ```
 
 Examples:
-- `USER_API_PRODUCTION_DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+
+- `USER_API_PRODUCTION_DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/[db]`
 - `PAYMENT_SERVICE_STAGING_STRIPE_KEY`
-- `AUTH_SERVICE_PRODUCTION_JWT_SECRET=REDACTED_JWT_SECRET
+- `AUTH_SERVICE_PRODUCTION_JWT_SECRET=REDACTED_JWT_SECRET`
 
 ## Secret Rotation
 
@@ -86,13 +88,13 @@ Configure rotation policy:
 
 ```typescript
 await client.secrets.create({
-  name: 'API_KEY',
-  value: 'initial_value',
+  name: "API_KEY",
+  value: "initial_value",
   rotationPolicy: {
     enabled: true,
-    period: '30d',
-    notifyBefore: '7d'
-  }
+    period: "30d",
+    notifyBefore: "7d",
+  },
 });
 ```
 
@@ -154,16 +156,18 @@ vsecure secrets:rollback DATABASE_URL=postgresql://<user>:<password>@<host>:<por
 ### 1. Never Hardcode Secrets
 
 ❌ **Bad**:
+
 ```typescript
-const apiKey = 'sk_live_abc123';
+const apiKey = process.env.STRIPE_API_KEY; // ❌ Never hardcode
 ```
 
 ✅ **Good**:
+
 ```typescript
-import { VSecureClient } from '@lanonasis/v-secure-sdk';
+import { VSecureClient } from "@lanonasis/v-secure-sdk";
 
 const client = new VSecureClient();
-const apiKey = await client.secrets.get('API_KEY');
+const apiKey = await client.secrets.get("API_KEY");
 ```
 
 ### 2. Use Environment-Specific Secrets
@@ -240,7 +244,7 @@ class SecretManager {
     const secret = await client.secrets.get(name);
     this.cache.set(name, {
       value: secret.value,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return secret.value;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Layout from '@theme/Layout';
-import CodeBlock from '@theme/CodeBlock';
-import clsx from 'clsx';
-import styles from './ApiPlayground.module.css';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Layout from "@theme/Layout";
+import CodeBlock from "@theme/CodeBlock";
+import clsx from "clsx";
+import styles from "./ApiPlayground.module.css";
 
 /**
  * Enhanced API Playground for LanOnasis Documentation
@@ -20,44 +20,45 @@ import styles from './ApiPlayground.module.css';
 // API Spec configuration for multi-service support
 const API_SPECS = [
   {
-    id: 'memory',
-    name: 'MCP Memory API',
-    icon: '🧠',
-    description: 'Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System',
-    paths: ['/memory-api.json', '/memory-api.yaml'],
-    badge: 'MCP v2.0 - 28 Tools'
+    id: "memory",
+    name: "MCP Memory API",
+    icon: "🧠",
+    description:
+      "Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System",
+    paths: ["/memory-api.json", "/memory-api.yaml"],
+    badge: "MCP v2.0 - 28 Tools",
   },
   {
-    id: 'unified',
-    name: 'Unified Services',
-    icon: '🔗',
-    description: 'Wallets, Transfers, Payments, KYC',
-    paths: ['/unified-services.yaml'],
-    badge: 'Unified Services API'
+    id: "unified",
+    name: "Unified Services",
+    icon: "🔗",
+    description: "Wallets, Transfers, Payments, KYC",
+    paths: ["/unified-services.yaml"],
+    badge: "Unified Services API",
   },
   {
-    id: 'docs',
-    name: 'Documentation Search',
-    icon: '📚',
-    description: 'Search documentation with semantic queries',
-    paths: ['/openapi.json', '/openapi.yaml'],
-    badge: 'Docs Search API'
+    id: "docs",
+    name: "Documentation Search",
+    icon: "📚",
+    description: "Search documentation with semantic queries",
+    paths: ["/openapi.json", "/openapi.yaml"],
+    badge: "Docs Search API",
   },
 ] as const;
 
-type ApiSpecId = typeof API_SPECS[number]['id'];
+type ApiSpecId = (typeof API_SPECS)[number]["id"];
 
 // Language configuration for code generation
 const LANGUAGES = [
-  { id: 'curl', name: 'cURL', icon: '🌐' },
-  { id: 'javascript', name: 'JavaScript', icon: '🟨' },
-  { id: 'typescript', name: 'TypeScript', icon: '🔷' },
-  { id: 'python', name: 'Python', icon: '🐍' },
-  { id: 'go', name: 'Go', icon: '🐹' },
-  { id: 'php', name: 'PHP', icon: '🐘' },
+  { id: "curl", name: "cURL", icon: "🌐" },
+  { id: "javascript", name: "JavaScript", icon: "🟨" },
+  { id: "typescript", name: "TypeScript", icon: "🔷" },
+  { id: "python", name: "Python", icon: "🐍" },
+  { id: "go", name: "Go", icon: "🐹" },
+  { id: "php", name: "PHP", icon: "🐘" },
 ] as const;
 
-type LanguageId = typeof LANGUAGES[number]['id'];
+type LanguageId = (typeof LANGUAGES)[number]["id"];
 
 interface Operation {
   path: string;
@@ -70,7 +71,7 @@ interface Operation {
 
 interface Parameter {
   name: string;
-  in: 'query' | 'path' | 'header';
+  in: "query" | "path" | "header";
   required: boolean;
   description: string;
   schema: {
@@ -100,43 +101,43 @@ interface HistoryItem {
 export default function ApiPlayground() {
   // API Spec selection state
   const [selectedSpec, setSelectedSpec] = useState<ApiSpecId>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('lanonasis_selected_spec');
-      if (saved && API_SPECS.some(s => s.id === saved)) {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("lanonasis_selected_spec");
+      if (saved && API_SPECS.some((s) => s.id === saved)) {
         return saved as ApiSpecId;
       }
     }
-    return 'memory';
+    return "memory";
   });
 
   // Core state
   const [operations, setOperations] = useState<Operation[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
-  const [bodyText, setBodyText] = useState('');
+  const [bodyText, setBodyText] = useState("");
   const [apiKey, setApiKey] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('lanonasis_api_key') ?? '';
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("lanonasis_api_key") ?? "";
     }
-    return '';
+    return "";
   });
 
   // Response state
-  const [response, setResponse] = useState<string>('');
+  const [response, setResponse] = useState<string>("");
   const [responseMeta, setResponseMeta] = useState<ResponseMeta | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Code generation state
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageId>('curl');
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageId>("curl");
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedResponse, setCopiedResponse] = useState(false);
 
   // History state
   const [history, setHistory] = useState<HistoryItem[]>(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem('lanonasis_playground_history');
+        const saved = localStorage.getItem("lanonasis_playground_history");
         return saved ? JSON.parse(saved) : [];
       } catch {
         return [];
@@ -149,18 +150,19 @@ export default function ApiPlayground() {
   const [specLoading, setSpecLoading] = useState(true);
 
   // Get current spec config
-  const currentSpecConfig = API_SPECS.find(s => s.id === selectedSpec) || API_SPECS[0];
+  const currentSpecConfig =
+    API_SPECS.find((s) => s.id === selectedSpec) || API_SPECS[0];
 
   // Handle spec change
   const handleSpecChange = useCallback((specId: ApiSpecId) => {
     setSelectedSpec(specId);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lanonasis_selected_spec', specId);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lanonasis_selected_spec", specId);
     }
     // Reset state when switching specs
     setSelectedIndex(null);
     setOperations([]);
-    setResponse('');
+    setResponse("");
     setResponseMeta(null);
     setError(null);
   }, []);
@@ -171,27 +173,27 @@ export default function ApiPlayground() {
       setSpecLoading(true);
       setError(null);
 
-      const specConfig = API_SPECS.find(s => s.id === selectedSpec);
+      const specConfig = API_SPECS.find((s) => s.id === selectedSpec);
       if (!specConfig) {
-        setError('Invalid API specification selected');
+        setError("Invalid API specification selected");
         setSpecLoading(false);
         return;
       }
 
       const candidateUrls = [...specConfig.paths];
       let spec: any = null;
-      let lastError = '';
+      let lastError = "";
 
       for (const url of candidateUrls) {
         try {
           const res = await fetch(url);
           if (res.ok) {
             const text = await res.text();
-            if (url.endsWith('.json')) {
+            if (url.endsWith(".json")) {
               spec = JSON.parse(text);
             } else {
               try {
-                const yaml = await import('js-yaml');
+                const yaml = await import("js-yaml");
                 spec = yaml.load(text);
               } catch (yamlError: any) {
                 lastError = `YAML parsing failed: ${yamlError.message}`;
@@ -218,8 +220,11 @@ export default function ApiPlayground() {
 
   // Save history to localStorage
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lanonasis_playground_history', JSON.stringify(history.slice(0, 20)));
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "lanonasis_playground_history",
+        JSON.stringify(history.slice(0, 20)),
+      );
     }
   }, [history]);
 
@@ -229,26 +234,27 @@ export default function ApiPlayground() {
     if (!spec?.paths) return ops;
 
     Object.entries(spec.paths).forEach(([path, methods]) => {
-      Object.entries(methods as any).forEach(([method, details]) => {
-        if (typeof details !== 'object' || !details) return;
+      Object.entries(methods as any).forEach(([method, detailsRaw]) => {
+        const details = detailsRaw as any;
+        if (typeof details !== "object" || !details) return;
 
         const params: Parameter[] = [];
-        (details.parameters || []).forEach((p: any) => {
+        (details?.parameters || []).forEach((p: any) => {
           params.push({
             name: p.name,
             in: p.in,
             required: Boolean(p.required),
-            description: p.description || '',
+            description: p.description || "",
             schema: p.schema || {},
           });
         });
 
-        const hasBody = Boolean(details.requestBody);
-        let defaultBody = '';
+        const hasBody = Boolean(details?.requestBody);
+        let defaultBody = "";
         if (hasBody) {
           try {
-            const content = details.requestBody?.content || {};
-            const jsonContent = content['application/json'];
+            const content = details?.requestBody?.content || {};
+            const jsonContent = content["application/json"];
             if (jsonContent?.example) {
               defaultBody = JSON.stringify(jsonContent.example, null, 2);
             } else if (jsonContent?.examples) {
@@ -263,7 +269,7 @@ export default function ApiPlayground() {
         ops.push({
           path,
           method,
-          summary: details.summary,
+          summary: details?.summary,
           params,
           hasBody,
           defaultBody,
@@ -276,140 +282,150 @@ export default function ApiPlayground() {
 
   // Handle parameter changes
   const updateParam = useCallback((name: string, value: string) => {
-    setParamValues(prev => ({ ...prev, [name]: value }));
+    setParamValues((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   // Persist API key
   const handleApiKeyChange = useCallback((key: string) => {
     setApiKey(key);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lanonasis_api_key', key);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lanonasis_api_key", key);
     }
   }, []);
 
   // Build full URL for request
-  const buildUrl = useCallback((op: Operation): string => {
-    const spec = specRef.current;
-    const baseUrl = spec?.servers?.[0]?.url?.replace(/\/$/, '') || '';
-    let urlPath = op.path;
+  const buildUrl = useCallback(
+    (op: Operation): string => {
+      const spec = specRef.current;
+      const baseUrl = spec?.servers?.[0]?.url?.replace(/\/$/, "") || "";
+      let urlPath = op.path;
 
-    // Substitute path parameters
-    op.params
-      .filter(p => p.in === 'path')
-      .forEach(p => {
-        const value = paramValues[p.name] || '';
-        urlPath = urlPath.replace(`{${p.name}}`, encodeURIComponent(value));
-      });
+      // Substitute path parameters
+      op.params
+        .filter((p) => p.in === "path")
+        .forEach((p) => {
+          const value = paramValues[p.name] || "";
+          urlPath = urlPath.replace(`{${p.name}}`, encodeURIComponent(value));
+        });
 
-    // Build query string
-    const queryParts = op.params
-      .filter(p => p.in === 'query' && paramValues[p.name])
-      .map(p => `${encodeURIComponent(p.name)}=${encodeURIComponent(paramValues[p.name])}`);
+      // Build query string
+      const queryParts = op.params
+        .filter((p) => p.in === "query" && paramValues[p.name])
+        .map(
+          (p) =>
+            `${encodeURIComponent(p.name)}=${encodeURIComponent(paramValues[p.name])}`,
+        );
 
-    const queryString = queryParts.join('&');
-    return `${baseUrl}${urlPath}${queryString ? (urlPath.includes('?') ? '&' : '?') + queryString : ''}`;
-  }, [paramValues]);
+      const queryString = queryParts.join("&");
+      return `${baseUrl}${urlPath}${queryString ? (urlPath.includes("?") ? "&" : "?") + queryString : ""}`;
+    },
+    [paramValues],
+  );
 
   // Generate code for selected language
-  const generateCode = useCallback((language: LanguageId): string => {
-    if (selectedIndex === null) return '';
-    const op = operations[selectedIndex];
-    const url = buildUrl(op);
-    const method = op.method.toUpperCase();
+  const generateCode = useCallback(
+    (language: LanguageId): string => {
+      if (selectedIndex === null) return "";
+      const op = operations[selectedIndex];
+      const url = buildUrl(op);
+      const method = op.method.toUpperCase();
 
-    const generators: Record<LanguageId, () => string> = {
-      curl: () => {
-        let cmd = `curl -X ${method} "${url}"`;
-        if (apiKey) cmd += ` \\\n  -H "Authorization: Bearer ${apiKey}"`;
-        if (op.hasBody && bodyText) {
-          cmd += ` \\\n  -H "Content-Type: application/json"`;
-          cmd += ` \\\n  -d '${bodyText.replace(/\n/g, '')}'`;
-        }
-        return cmd;
-      },
-      javascript: () => {
-        let code = `const response = await fetch('${url}', {\n`;
-        code += `  method: '${method}',\n`;
-        code += `  headers: {\n`;
-        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
-        code += `    'Content-Type': 'application/json'\n`;
-        code += `  }`;
-        if (op.hasBody && bodyText) {
-          code += `,\n  body: JSON.stringify(${bodyText})`;
-        }
-        code += `\n});\n\nconst data = await response.json();\nconsole.log(data);`;
-        return code;
-      },
-      typescript: () => {
-        let code = `interface ApiResponse {\n  success: boolean;\n  data?: any;\n  error?: { code: string; message: string; };\n}\n\n`;
-        code += `const response = await fetch('${url}', {\n`;
-        code += `  method: '${method}',\n`;
-        code += `  headers: {\n`;
-        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
-        code += `    'Content-Type': 'application/json'\n`;
-        code += `  }`;
-        if (op.hasBody && bodyText) {
-          code += `,\n  body: JSON.stringify(${bodyText})`;
-        }
-        code += `\n});\n\nconst data: ApiResponse = await response.json();\nconsole.log(data);`;
-        return code;
-      },
-      python: () => {
-        let code = `import requests\n\n`;
-        code += `url = '${url}'\n`;
-        code += `headers = {\n`;
-        if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
-        code += `    'Content-Type': 'application/json'\n}\n\n`;
-        if (op.hasBody && bodyText) {
-          code += `data = ${bodyText}\n\n`;
-          code += `response = requests.${method.toLowerCase()}(url, headers=headers, json=data)\n`;
-        } else {
-          code += `response = requests.${method.toLowerCase()}(url, headers=headers)\n`;
-        }
-        code += `print(response.json())`;
-        return code;
-      },
-      go: () => {
-        let code = `package main\n\nimport (\n    "fmt"\n    "net/http"\n`;
-        if (op.hasBody && bodyText) code += `    "bytes"\n`;
-        code += `    "io"\n)\n\nfunc main() {\n`;
-        if (op.hasBody && bodyText) {
-          code += `    body := []byte(\`${bodyText}\`)\n`;
-          code += `    req, _ := http.NewRequest("${method}", "${url}", bytes.NewBuffer(body))\n`;
-        } else {
-          code += `    req, _ := http.NewRequest("${method}", "${url}", nil)\n`;
-        }
-        if (apiKey) code += `    req.Header.Set("Authorization", "Bearer ${apiKey}")\n`;
-        code += `    req.Header.Set("Content-Type", "application/json")\n\n`;
-        code += `    client := &http.Client{}\n`;
-        code += `    resp, _ := client.Do(req)\n`;
-        code += `    defer resp.Body.Close()\n\n`;
-        code += `    data, _ := io.ReadAll(resp.Body)\n`;
-        code += `    fmt.Println(string(data))\n}`;
-        return code;
-      },
-      php: () => {
-        let code = `<?php\n\n$url = '${url}';\n`;
-        code += `$headers = [\n`;
-        if (apiKey) code += `    'Authorization: Bearer ${apiKey}',\n`;
-        code += `    'Content-Type: application/json'\n];\n\n`;
-        code += `$ch = curl_init();\n`;
-        code += `curl_setopt($ch, CURLOPT_URL, $url);\n`;
-        code += `curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n`;
-        code += `curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n`;
-        if (method !== 'GET') {
-          code += `curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');\n`;
-        }
-        if (op.hasBody && bodyText) {
-          code += `curl_setopt($ch, CURLOPT_POSTFIELDS, '${bodyText.replace(/\n/g, '')}');\n`;
-        }
-        code += `\n$response = curl_exec($ch);\ncurl_close($ch);\n\nprint_r(json_decode($response, true));`;
-        return code;
-      },
-    };
+      const generators: Record<LanguageId, () => string> = {
+        curl: () => {
+          let cmd = `curl -X ${method} "${url}"`;
+          if (apiKey) cmd += ` \\\n  -H "Authorization: Bearer ${apiKey}"`;
+          if (op.hasBody && bodyText) {
+            cmd += ` \\\n  -H "Content-Type: application/json"`;
+            cmd += ` \\\n  -d '${bodyText.replace(/\n/g, "")}'`;
+          }
+          return cmd;
+        },
+        javascript: () => {
+          let code = `const response = await fetch('${url}', {\n`;
+          code += `  method: '${method}',\n`;
+          code += `  headers: {\n`;
+          if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+          code += `    'Content-Type': 'application/json'\n`;
+          code += `  }`;
+          if (op.hasBody && bodyText) {
+            code += `,\n  body: JSON.stringify(${bodyText})`;
+          }
+          code += `\n});\n\nconst data = await response.json();\nconsole.log(data);`;
+          return code;
+        },
+        typescript: () => {
+          let code = `interface ApiResponse {\n  success: boolean;\n  data?: any;\n  error?: { code: string; message: string; };\n}\n\n`;
+          code += `const response = await fetch('${url}', {\n`;
+          code += `  method: '${method}',\n`;
+          code += `  headers: {\n`;
+          if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+          code += `    'Content-Type': 'application/json'\n`;
+          code += `  }`;
+          if (op.hasBody && bodyText) {
+            code += `,\n  body: JSON.stringify(${bodyText})`;
+          }
+          code += `\n});\n\nconst data: ApiResponse = await response.json();\nconsole.log(data);`;
+          return code;
+        },
+        python: () => {
+          let code = `import requests\n\n`;
+          code += `url = '${url}'\n`;
+          code += `headers = {\n`;
+          if (apiKey) code += `    'Authorization': 'Bearer ${apiKey}',\n`;
+          code += `    'Content-Type': 'application/json'\n}\n\n`;
+          if (op.hasBody && bodyText) {
+            code += `data = ${bodyText}\n\n`;
+            code += `response = requests.${method.toLowerCase()}(url, headers=headers, json=data)\n`;
+          } else {
+            code += `response = requests.${method.toLowerCase()}(url, headers=headers)\n`;
+          }
+          code += `print(response.json())`;
+          return code;
+        },
+        go: () => {
+          let code = `package main\n\nimport (\n    "fmt"\n    "net/http"\n`;
+          if (op.hasBody && bodyText) code += `    "bytes"\n`;
+          code += `    "io"\n)\n\nfunc main() {\n`;
+          if (op.hasBody && bodyText) {
+            code += `    body := []byte(\`${bodyText}\`)\n`;
+            code += `    req, _ := http.NewRequest("${method}", "${url}", bytes.NewBuffer(body))\n`;
+          } else {
+            code += `    req, _ := http.NewRequest("${method}", "${url}", nil)\n`;
+          }
+          if (apiKey)
+            code += `    req.Header.Set("Authorization", "Bearer ${apiKey}")\n`;
+          code += `    req.Header.Set("Content-Type", "application/json")\n\n`;
+          code += `    client := &http.Client{}\n`;
+          code += `    resp, _ := client.Do(req)\n`;
+          code += `    defer resp.Body.Close()\n\n`;
+          code += `    data, _ := io.ReadAll(resp.Body)\n`;
+          code += `    fmt.Println(string(data))\n}`;
+          return code;
+        },
+        php: () => {
+          let code = `<?php\n\n$url = '${url}';\n`;
+          code += `$headers = [\n`;
+          if (apiKey) code += `    'Authorization: Bearer ${apiKey}',\n`;
+          code += `    'Content-Type: application/json'\n];\n\n`;
+          code += `$ch = curl_init();\n`;
+          code += `curl_setopt($ch, CURLOPT_URL, $url);\n`;
+          code += `curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n`;
+          code += `curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n`;
+          if (method !== "GET") {
+            code += `curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');\n`;
+          }
+          if (op.hasBody && bodyText) {
+            code += `curl_setopt($ch, CURLOPT_POSTFIELDS, '${bodyText.replace(/\n/g, "")}');\n`;
+          }
+          code += `\n$response = curl_exec($ch);\ncurl_close($ch);\n\nprint_r(json_decode($response, true));`;
+          return code;
+        },
+      };
 
-    return generators[language]?.() || '';
-  }, [selectedIndex, operations, buildUrl, apiKey, bodyText]);
+      return generators[language]?.() || "";
+    },
+    [selectedIndex, operations, buildUrl, apiKey, bodyText],
+  );
 
   // Execute API request
   const runRequest = useCallback(async () => {
@@ -418,7 +434,7 @@ export default function ApiPlayground() {
     const op = operations[selectedIndex];
     setIsLoading(true);
     setError(null);
-    setResponse('');
+    setResponse("");
     setResponseMeta(null);
 
     const startTime = performance.now();
@@ -426,15 +442,15 @@ export default function ApiPlayground() {
     try {
       const url = buildUrl(op);
       const headers: Record<string, string> = {};
-      if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+      if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
 
       let body: any;
       if (op.hasBody && bodyText) {
         try {
           body = JSON.parse(bodyText);
-          headers['Content-Type'] = 'application/json';
+          headers["Content-Type"] = "application/json";
         } catch {
-          throw new Error('Invalid JSON in request body');
+          throw new Error("Invalid JSON in request body");
         }
       }
 
@@ -445,11 +461,11 @@ export default function ApiPlayground() {
       });
 
       const endTime = performance.now();
-      const contentType = res.headers.get('content-type') || '';
+      const contentType = res.headers.get("content-type") || "";
       let data: any;
       let responseText: string;
 
-      if (contentType.includes('application/json')) {
+      if (contentType.includes("application/json")) {
         data = await res.json();
         responseText = JSON.stringify(data, null, 2);
       } else {
@@ -475,45 +491,53 @@ export default function ApiPlayground() {
         time: Math.round(endTime - startTime),
         timestamp: new Date(),
       };
-      setHistory(prev => [historyItem, ...prev.slice(0, 19)]);
-
+      setHistory((prev) => [historyItem, ...prev.slice(0, 19)]);
     } catch (e: any) {
-      setError(e.message || 'Request failed');
+      setError(e.message || "Request failed");
     } finally {
       setIsLoading(false);
     }
   }, [selectedIndex, operations, buildUrl, apiKey, bodyText, paramValues]);
 
   // Copy to clipboard
-  const copyToClipboard = useCallback(async (text: string, type: 'code' | 'response') => {
-    try {
-      await navigator.clipboard.writeText(text);
-      if (type === 'code') {
-        setCopiedCode(true);
-        setTimeout(() => setCopiedCode(false), 2000);
-      } else {
-        setCopiedResponse(true);
-        setTimeout(() => setCopiedResponse(false), 2000);
+  const copyToClipboard = useCallback(
+    async (text: string, type: "code" | "response") => {
+      try {
+        await navigator.clipboard.writeText(text);
+        if (type === "code") {
+          setCopiedCode(true);
+          setTimeout(() => setCopiedCode(false), 2000);
+        } else {
+          setCopiedResponse(true);
+          setTimeout(() => setCopiedResponse(false), 2000);
+        }
+      } catch {
+        // Fallback
       }
-    } catch {
-      // Fallback
-    }
-  }, []);
+    },
+    [],
+  );
 
   // Replay history item
-  const replayHistory = useCallback((item: HistoryItem) => {
-    const idx = operations.findIndex(op => op.path === item.path && op.method.toUpperCase() === item.method);
-    if (idx !== -1) {
-      setSelectedIndex(idx);
-      setParamValues(item.params);
-    }
-  }, [operations]);
+  const replayHistory = useCallback(
+    (item: HistoryItem) => {
+      const idx = operations.findIndex(
+        (op) =>
+          op.path === item.path && op.method.toUpperCase() === item.method,
+      );
+      if (idx !== -1) {
+        setSelectedIndex(idx);
+        setParamValues(item.params);
+      }
+    },
+    [operations],
+  );
 
   // Clear history
   const clearHistory = useCallback(() => {
     setHistory([]);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('lanonasis_playground_history');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("lanonasis_playground_history");
     }
   }, []);
 
@@ -522,8 +546,8 @@ export default function ApiPlayground() {
     if (selectedIndex === null) return;
     const op = operations[selectedIndex];
     setParamValues({});
-    setBodyText(op.defaultBody || '');
-    setResponse('');
+    setBodyText(op.defaultBody || "");
+    setResponse("");
     setResponseMeta(null);
     setError(null);
   }, [selectedIndex, operations]);
@@ -531,7 +555,10 @@ export default function ApiPlayground() {
   // Get method badge class
   const getMethodClass = (method: string) => {
     const m = method.toLowerCase();
-    return styles[`method${m.charAt(0).toUpperCase() + m.slice(1)}`] || styles.methodGet;
+    return (
+      styles[`method${m.charAt(0).toUpperCase() + m.slice(1)}`] ||
+      styles.methodGet
+    );
   };
 
   // Get status class
@@ -564,7 +591,7 @@ export default function ApiPlayground() {
                 onClick={() => handleSpecChange(spec.id)}
                 className={clsx(
                   styles.specTab,
-                  selectedSpec === spec.id && styles.specTabActive
+                  selectedSpec === spec.id && styles.specTabActive,
                 )}
                 title={spec.description}
               >
@@ -584,14 +611,18 @@ export default function ApiPlayground() {
           <div className={styles.errorBanner}>
             <span className={styles.errorIcon}>⚠️</span>
             <div className={styles.errorContent}>
-              <h3 className={styles.errorTitle}>Error Loading API Specification</h3>
+              <h3 className={styles.errorTitle}>
+                Error Loading API Specification
+              </h3>
               <p className={styles.errorMessage}>{error}</p>
             </div>
           </div>
         ) : specLoading || !operations.length ? (
           <div className={styles.emptyState}>
             <div className={styles.spinner} />
-            <p className={styles.emptyStateText}>Loading {currentSpecConfig.name} specification...</p>
+            <p className={styles.emptyStateText}>
+              Loading {currentSpecConfig.name} specification...
+            </p>
           </div>
         ) : (
           <>
@@ -609,13 +640,24 @@ export default function ApiPlayground() {
                   {/* Endpoint Selector */}
                   <div className={styles.endpointSelector}>
                     {selectedOp && (
-                      <span className={clsx(styles.methodBadge, getMethodClass(selectedOp.method))}>
+                      <span
+                        className={clsx(
+                          styles.methodBadge,
+                          getMethodClass(selectedOp.method),
+                        )}
+                      >
                         {selectedOp.method.toUpperCase()}
                       </span>
                     )}
                     <select
-                      value={selectedIndex ?? ''}
-                      onChange={(e) => setSelectedIndex(e.target.value === '' ? null : parseInt(e.target.value, 10))}
+                      value={selectedIndex ?? ""}
+                      onChange={(e) =>
+                        setSelectedIndex(
+                          e.target.value === ""
+                            ? null
+                            : parseInt(e.target.value, 10),
+                        )
+                      }
                       className={styles.endpointSelect}
                       aria-label="Select endpoint"
                     >
@@ -640,33 +682,52 @@ export default function ApiPlayground() {
                             <div key={p.name} className={styles.formGroup}>
                               <label className={styles.formLabel}>
                                 {p.name}
-                                {p.required && <span className={styles.required}>*</span>}
+                                {p.required && (
+                                  <span className={styles.required}>*</span>
+                                )}
                                 {p.schema.type && (
-                                  <span className={styles.paramType}>{p.schema.type}</span>
+                                  <span className={styles.paramType}>
+                                    {p.schema.type}
+                                  </span>
                                 )}
                               </label>
                               {p.schema.enum ? (
                                 <select
-                                  value={paramValues[p.name] || p.schema.default || ''}
-                                  onChange={(e) => updateParam(p.name, e.target.value)}
+                                  value={
+                                    paramValues[p.name] ||
+                                    p.schema.default ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    updateParam(p.name, e.target.value)
+                                  }
                                   className={styles.input}
                                 >
                                   <option value="">Select...</option>
                                   {p.schema.enum.map((v) => (
-                                    <option key={v} value={v}>{v}</option>
+                                    <option key={v} value={v}>
+                                      {v}
+                                    </option>
                                   ))}
                                 </select>
                               ) : (
                                 <input
                                   type="text"
-                                  value={paramValues[p.name] || ''}
-                                  onChange={(e) => updateParam(p.name, e.target.value)}
-                                  placeholder={p.schema.default?.toString() || `Enter ${p.name}...`}
+                                  value={paramValues[p.name] || ""}
+                                  onChange={(e) =>
+                                    updateParam(p.name, e.target.value)
+                                  }
+                                  placeholder={
+                                    p.schema.default?.toString() ||
+                                    `Enter ${p.name}...`
+                                  }
                                   className={styles.input}
                                 />
                               )}
                               {p.description && (
-                                <small className={styles.description}>{p.description}</small>
+                                <small className={styles.description}>
+                                  {p.description}
+                                </small>
                               )}
                             </div>
                           ))}
@@ -711,7 +772,10 @@ export default function ApiPlayground() {
                       <button
                         onClick={runRequest}
                         disabled={isLoading}
-                        className={clsx(styles.runButton, isLoading && styles.runButtonLoading)}
+                        className={clsx(
+                          styles.runButton,
+                          isLoading && styles.runButtonLoading,
+                        )}
                       >
                         {isLoading ? (
                           <>
@@ -750,20 +814,31 @@ export default function ApiPlayground() {
                   )}
 
                   {responseMeta && (
-                    <div className={clsx(styles.responseMetadata, styles.fadeIn)}>
+                    <div
+                      className={clsx(styles.responseMetadata, styles.fadeIn)}
+                    >
                       <div className={styles.metadataItem}>
                         <span className={styles.metadataLabel}>Status:</span>
-                        <span className={clsx(styles.metadataValue, getStatusClass(responseMeta.status))}>
+                        <span
+                          className={clsx(
+                            styles.metadataValue,
+                            getStatusClass(responseMeta.status),
+                          )}
+                        >
                           {responseMeta.status} {responseMeta.statusText}
                         </span>
                       </div>
                       <div className={styles.metadataItem}>
                         <span className={styles.metadataLabel}>Time:</span>
-                        <span className={styles.metadataValue}>{responseMeta.time}ms</span>
+                        <span className={styles.metadataValue}>
+                          {responseMeta.time}ms
+                        </span>
                       </div>
                       <div className={styles.metadataItem}>
                         <span className={styles.metadataLabel}>Size:</span>
-                        <span className={styles.metadataValue}>{responseMeta.size}</span>
+                        <span className={styles.metadataValue}>
+                          {responseMeta.size}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -771,10 +846,13 @@ export default function ApiPlayground() {
                   {response ? (
                     <div className={clsx(styles.responseBody, styles.fadeIn)}>
                       <button
-                        onClick={() => copyToClipboard(response, 'response')}
-                        className={clsx(styles.copyButton, copiedResponse && styles.copySuccess)}
+                        onClick={() => copyToClipboard(response, "response")}
+                        className={clsx(
+                          styles.copyButton,
+                          copiedResponse && styles.copySuccess,
+                        )}
                       >
-                        {copiedResponse ? '✓ Copied!' : '📋 Copy'}
+                        {copiedResponse ? "✓ Copied!" : "📋 Copy"}
                       </button>
                       <CodeBlock language="json">{response}</CodeBlock>
                     </div>
@@ -793,7 +871,9 @@ export default function ApiPlayground() {
 
             {/* Code Generation Section */}
             {selectedOp && (
-              <div className={clsx(styles.panel, 'margin-top--lg', styles.fadeIn)}>
+              <div
+                className={clsx(styles.panel, "margin-top--lg", styles.fadeIn)}
+              >
                 <div className={styles.codeTabs}>
                   {LANGUAGES.map((lang) => (
                     <button
@@ -801,7 +881,7 @@ export default function ApiPlayground() {
                       onClick={() => setSelectedLanguage(lang.id)}
                       className={clsx(
                         styles.codeTab,
-                        selectedLanguage === lang.id && styles.codeTabActive
+                        selectedLanguage === lang.id && styles.codeTabActive,
                       )}
                     >
                       <span className={styles.codeTabIcon}>{lang.icon}</span>
@@ -812,12 +892,21 @@ export default function ApiPlayground() {
                 <div className={styles.panelContent}>
                   <div className={styles.responseBody}>
                     <button
-                      onClick={() => copyToClipboard(generateCode(selectedLanguage), 'code')}
-                      className={clsx(styles.copyButton, copiedCode && styles.copySuccess)}
+                      onClick={() =>
+                        copyToClipboard(generateCode(selectedLanguage), "code")
+                      }
+                      className={clsx(
+                        styles.copyButton,
+                        copiedCode && styles.copySuccess,
+                      )}
                     >
-                      {copiedCode ? '✓ Copied!' : '📋 Copy'}
+                      {copiedCode ? "✓ Copied!" : "📋 Copy"}
                     </button>
-                    <CodeBlock language={selectedLanguage === 'curl' ? 'bash' : selectedLanguage}>
+                    <CodeBlock
+                      language={
+                        selectedLanguage === "curl" ? "bash" : selectedLanguage
+                      }
+                    >
                       {generateCode(selectedLanguage)}
                     </CodeBlock>
                   </div>
@@ -832,7 +921,10 @@ export default function ApiPlayground() {
                   <h3 className={styles.historyTitle}>
                     <span>🕒</span> Recent Requests
                   </h3>
-                  <button onClick={clearHistory} className={styles.clearHistoryBtn}>
+                  <button
+                    onClick={clearHistory}
+                    className={styles.clearHistoryBtn}
+                  >
                     Clear History
                   </button>
                 </div>
@@ -843,11 +935,24 @@ export default function ApiPlayground() {
                       onClick={() => replayHistory(item)}
                       className={styles.historyItem}
                     >
-                      <span className={clsx(styles.historyMethod, styles.methodBadge, getMethodClass(item.method))}>
+                      <span
+                        className={clsx(
+                          styles.historyMethod,
+                          styles.methodBadge,
+                          getMethodClass(item.method),
+                        )}
+                      >
                         {item.method}
                       </span>
-                      <span className={styles.historyEndpoint}>{item.path}</span>
-                      <span className={clsx(styles.historyStatus, getStatusClass(item.status))}>
+                      <span className={styles.historyEndpoint}>
+                        {item.path}
+                      </span>
+                      <span
+                        className={clsx(
+                          styles.historyStatus,
+                          getStatusClass(item.status),
+                        )}
+                      >
                         {item.status}
                       </span>
                       <span className={styles.historyTime}>{item.time}ms</span>
