@@ -1,0 +1,208 @@
+/**
+ * MCPInstallButtons Component Styles
+ * Matches the LanOnasis docs theme (indigo/purple with gold accents)
+ */
+
+.container {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.08);
+}
+
+.container.compact {
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.375rem 0;
+  color: var(--ifm-color-primary);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.compact .buttons {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.compact .button {
+  padding: 0.5rem 0.75rem;
+  flex: 1;
+  min-width: 130px;
+  justify-content: center;
+}
+
+.button:hover {
+  border-color: var(--client-color, var(--ifm-color-primary));
+  background: var(--ifm-color-emphasis-100);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(79, 70, 229, 0.15);
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+}
+
+.button:hover .iconWrapper {
+  background: var(--client-color, var(--ifm-color-primary));
+  color: white;
+}
+
+.button:hover .arrow {
+  transform: translateX(3px);
+  color: var(--client-color, var(--ifm-color-primary));
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 6px;
+  color: var(--client-color, var(--ifm-color-primary));
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.compact .iconWrapper {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.compact .icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.buttonContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+}
+
+.compact .buttonContent {
+  flex: none;
+}
+
+.buttonName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.buttonDesc {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.25;
+}
+
+.arrow {
+  font-size: 1.125rem;
+  color: var(--ifm-color-emphasis-400);
+  transition: all 0.2s ease;
+}
+
+.compact .arrow {
+  display: none;
+}
+
+.footer {
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--ifm-toc-border-color);
+  text-align: center;
+}
+
+.footerText {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0;
+}
+
+.footerText code {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 4px;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* Dark mode */
+[data-theme='dark'] .container {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme='dark'] .button {
+  background: var(--onasis-midnight, #0B1220);
+  border-color: #334155;
+}
+
+[data-theme='dark'] .button:hover {
+  background: #1e293b;
+}
+
+[data-theme='dark'] .iconWrapper {
+  background: #334155;
+}
+
+[data-theme='dark'] .footerText code {
+  background: #334155;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .buttons {
+    flex-direction: column;
+  }
+
+  .compact .buttons {
+    flex-direction: column;
+  }
+
+  .compact .button {
+    width: 100%;
+  }
+}
