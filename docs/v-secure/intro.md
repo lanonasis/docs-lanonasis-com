@@ -72,11 +72,11 @@ npm install -g @lanonasis/v-secure-cli
 vsecure login
 
 # Store your first secret
-vsecure secrets:create DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:create DATABASE_URL "postgresql://<user>:<password>@<host>:<port>/<db>" \
   --tags production,database
 
 # Retrieve a secret
-vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:get DATABASE_URL
 ```
 
 [Get Started →](./getting-started)

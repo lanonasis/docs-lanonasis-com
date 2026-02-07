@@ -183,7 +183,7 @@ spec:
     apiEndpoint: "https://api.lanonasis.com/v1/security"
     secrets: |
       - name: database-url
-        secretName: DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+        secretName: DATABASE_URL
       - name: api-key
         secretName: API_KEY
   secretObjects:
@@ -191,7 +191,7 @@ spec:
       type: Opaque
       data:
         - objectName: database-url
-          key: DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+          key: DATABASE_URL
         - objectName: api-key
           key: API_KEY
 ```
@@ -327,7 +327,7 @@ jobs:
 
       - name: Fetch secrets
         run: |
-          vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+          vsecure secrets:get DATABASE_URL
           vsecure secrets:get API_KEY >> .env
 
       - name: Deploy
@@ -340,7 +340,7 @@ jobs:
 deploy:
   image: lanonasis/vsecure-cli:latest
   script:
-    - vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    - vsecure secrets:get DATABASE_URL
     - vsecure secrets:get API_KEY >> .env
     - ./deploy.sh
   variables:

@@ -59,13 +59,13 @@ In Claude, you can now request access to secrets:
 
 ```text
 Claude, I need to debug the database connection.
-Can you read the DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+Can you read the DATABASE_URL?
 ```
 
 Claude will use the MCP protocol to request approval:
 
 ```text
-I need approval to access: vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+I need approval to access: vsecure://secrets/production/DATABASE_URL
 
 Reason: Debugging database connection issue
 Duration: 1 hour
@@ -147,8 +147,8 @@ User: Claude, help me debug why users can't log in to production.
 
 Claude: I'll need to check the authentication service configuration.
 I'm requesting access to:
-- AUTH_SERVICE_DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-- AUTH_SERVICE_JWT_SECRET=REDACTED_JWT_SECRET
+- AUTH_SERVICE_DATABASE_URL
+- AUTH_SERVICE_JWT_SECRET
 - AUTH_SERVICE_REDIS_URL
 
 [Waits for approval]
@@ -170,7 +170,7 @@ Claude: I'll help you set up staging. I need access to:
 
 [After approval]
 Claude: I've created the following staging secrets:
-- STAGING_DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+- STAGING_DATABASE_URL
 - STAGING_API_KEY
 - STAGING_REDIS_URL
 ```

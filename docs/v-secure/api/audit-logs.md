@@ -57,7 +57,7 @@ GET /v1/security/audit-logs
       "resource": {
         "type": "secret",
         "id": "sec_abc123",
-        "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+        "name": "DATABASE_URL",
       },
       "action": "accessed",
       "actor": {
@@ -95,7 +95,7 @@ curl "https://api.lanonasis.com/v1/security/audit-logs?resource=secrets&action=a
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Get logs for specific secret
-curl "https://api.lanonasis.com/v1/security/audit-logs?resource=secrets&name=DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+curl "https://api.lanonasis.com/v1/security/audit-logs?resource=secrets&name=DATABASE_URL"
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Get failed operations
@@ -122,7 +122,7 @@ GET /v1/security/audit-logs/:id
   "resource": {
     "type": "secret",
     "id": "sec_abc123",
-    "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    "name": "DATABASE_URL",
   },
   "action": "updated",
   "actor": {

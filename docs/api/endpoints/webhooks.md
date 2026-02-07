@@ -304,7 +304,7 @@ app.post('/webhooks/lanonasis', (req, res) => {
   const signature = req.headers['x-lanonasis-signature'];
   const payload = JSON.stringify(req.body);
   
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
+  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
     return res.status(400).send('Invalid signature');
   }
   
@@ -336,7 +336,7 @@ def handle_webhook():
     signature = request.headers.get('X-Lanonasis-Signature')
     payload = request.get_data(as_text=True)
     
-    if not verify_webhook_signature(payload, signature, os.environ['WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
+    if not verify_webhook_signature(payload, signature, os.environ['WEBHOOK_SECRET']):
         return jsonify({'error': 'Invalid signature'}), 400
     
     # Process webhook

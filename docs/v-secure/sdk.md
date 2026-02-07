@@ -47,7 +47,7 @@ console.log(decrypted.api_key); // 'sk_live_abc123'
 
 ### Environment Variables
 
-```bash
+```env
 # Required: 32-byte (64 hex characters) master key
 ONASIS_MASTER_KEY=your_64_character_hex_key
 

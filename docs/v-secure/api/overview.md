@@ -79,9 +79,9 @@ The API uses standard HTTP status codes and returns errors in a consistent forma
 {
   "error": {
     "code": "RESOURCE_NOT_FOUND",
-    "message": "Secret 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    "message": "Secret 'DATABASE_URL' not found",
     "details": {
-      "secretName": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      "secretName": "DATABASE_URL"
     }
   }
 }
@@ -111,7 +111,7 @@ curl -X POST https://api.lanonasis.com/v1/security/secrets \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    "name": "DATABASE_URL",
     "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
     "tags": ["production", "database"]
   }'
@@ -124,7 +124,7 @@ All successful responses return data in JSON format:
 ```json
 {
   "id": "sec_abc123",
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
   "version": 1,
   "tags": ["production", "database"],

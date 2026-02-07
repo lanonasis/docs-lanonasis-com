@@ -39,8 +39,8 @@ await client.secrets.create({
 
 ```typescript
 await client.secrets.create({
-  name: 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
+  name: 'DATABASE_URL',
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>',
   tags: ['production', 'database'],
   metadata: {
     owner: 'backend-team',
@@ -73,12 +73,12 @@ console.log(secret.value);
 
 ```typescript
 const secrets = await client.secrets.batchGet([
-  'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  'DATABASE_URL',
   'REDIS_URL',
   'API_KEY'
 ]);
 
-console.log(secrets.DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+console.log(secrets.DATABASE_URL);
 console.log(secrets.REDIS_URL);
 console.log(secrets.API_KEY);
 ```
@@ -173,10 +173,10 @@ async function loadEnvironment() {
   });
 
   const secrets = await client.secrets.batchGet([
-    'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    'DATABASE_URL',
     'REDIS_URL',
     'STRIPE_KEY',
-    'JWT_SECRET=REDACTED_JWT_SECRET
+    'JWT_SECRET'
   ]);
 
   // Load into environment
@@ -346,13 +346,13 @@ interface AppConfig {
 
 async function loadConfig(): Promise<AppConfig> {
   const secrets = await client.secrets.batchGet([
-    'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    'DATABASE_URL',
     'REDIS_URL',
     'STRIPE_KEY'
   ]);
 
   return {
-    database: secrets.DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    database: secrets.DATABASE_URL,
     redis: secrets.REDIS_URL,
     stripe: secrets.STRIPE_KEY
   };

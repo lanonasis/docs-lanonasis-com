@@ -354,7 +354,7 @@ function verifyWebhookSignature(payload, signature, secret) {
 const isValid = verifyWebhookSignature(
   req.body,
   req.headers['x-lanonasis-signature'],
-  process.env.WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
+  process.env.WEBHOOK_SECRET || 'your-webhook-secret'
 );
 ```
 

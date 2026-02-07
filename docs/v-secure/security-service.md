@@ -112,8 +112,8 @@ const apiKeyService = new ApiKeyService();
 
 ```typescript
 await secretService.storeSecret(
-  'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  'postgresql://<user>:<password>@<host>:<port>/<db>
+  'DATABASE_URL',
+  'postgresql://<user>:<password>@<host>:<port>/<db>',
   {
     metadata: { description: 'Production database' },
     tags: ['database', 'production'],
@@ -126,7 +126,7 @@ await secretService.storeSecret(
 #### Retrieve Secret
 
 ```typescript
-const secret = await secretService.getSecret('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+const secret = await secretService.getSecret('DATABASE_URL');
 console.log(secret.value); // Decrypted value
 ```
 

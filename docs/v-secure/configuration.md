@@ -114,7 +114,7 @@ export VSECURE_LOG_LEVEL=info
 
 Create a `.env` file for your project:
 
-```bash
+```env
 # .env
 VSECURE_API_KEY=vsec_key_abc123xyz
 VSECURE_ENDPOINT=https://api.lanonasis.com/v1/security
@@ -247,7 +247,7 @@ vsecure config:set region eu-west-1
 
 ```typescript
 // Override region for specific request
-const secret = await client.secrets.get('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+const secret = await client.secrets.get('DATABASE_URL', {
   region: 'eu-west-1'
 });
 ```

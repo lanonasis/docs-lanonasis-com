@@ -158,7 +158,7 @@ app.post(
     const payload = req.body.toString();
 
     if (
-      !verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET=REDACTED_WEBHOOK_SECRET
+      !verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)
     ) {
       return res.status(401).send("Invalid signature");
     }

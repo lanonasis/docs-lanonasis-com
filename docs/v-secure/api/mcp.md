@@ -66,7 +66,7 @@ GET /v1/security/mcp/resources/:uri
 
 ```json
 {
-  "uri": "vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "uri": "vsecure://secrets/production/DATABASE_URL",
   "name": "Production Database URL",
   "type": "secret",
   "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
@@ -93,7 +93,7 @@ POST /v1/security/mcp/approve
 
 ```json
 {
-  "resource": "vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "resource": "vsecure://secrets/production/DATABASE_URL",
   "operation": "read",
   "reason": "Debugging production database connection issue",
   "requestedBy": "ai-agent-123",
@@ -107,7 +107,7 @@ POST /v1/security/mcp/approve
 {
   "approvalId": "appr_abc123xyz",
   "status": "pending",
-  "resource": "vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "resource": "vsecure://secrets/production/DATABASE_URL",
   "operation": "read",
   "requestedBy": "ai-agent-123",
   "requestedAt": "2024-03-15T10:30:00Z",
@@ -174,7 +174,7 @@ GET /v1/security/mcp/approvals
   "data": [
     {
       "approvalId": "appr_abc123",
-      "resource": "vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      "resource": "vsecure://secrets/production/DATABASE_URL",
       "operation": "read",
       "status": "approved",
       "requestedBy": "ai-agent-123",
@@ -208,7 +208,7 @@ GET /v1/security/mcp/audit
     {
       "id": "log_abc123",
       "timestamp": "2024-03-15T10:32:15Z",
-      "resource": "vsecure://secrets/production/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      "resource": "vsecure://secrets/production/DATABASE_URL",
       "operation": "read",
       "actor": "ai-agent-123",
       "approvalId": "appr_abc123",

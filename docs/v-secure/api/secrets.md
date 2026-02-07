@@ -22,7 +22,7 @@ POST /v1/security/secrets
 
 ```json
 {
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
   "tags": ["production", "database"],
   "metadata": {
@@ -54,7 +54,7 @@ POST /v1/security/secrets
 ```json
 {
   "id": "sec_abc123xyz",
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "version": 1,
   "tags": ["production", "database"],
   "metadata": {
@@ -74,7 +74,7 @@ curl -X POST https://api.lanonasis.com/v1/security/secrets \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    "name": "DATABASE_URL",
     "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
     "tags": ["production", "database"],
     "expiresIn": "90d"
@@ -104,7 +104,7 @@ GET /v1/security/secrets/:name
 ```json
 {
   "id": "sec_abc123xyz",
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "value": "postgresql://<user>:<password>@<host>:<port>/<db>",
   "version": 3,
   "tags": ["production", "database"],
@@ -123,11 +123,11 @@ GET /v1/security/secrets/:name
 
 ```bash
 # Get latest version
-curl https://api.lanonasis.com/v1/security/secrets/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+curl https://api.lanonasis.com/v1/security/secrets/DATABASE_URL
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Get specific version
-curl https://api.lanonasis.com/v1/security/secrets/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+curl https://api.lanonasis.com/v1/security/secrets/DATABASE_URL
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -156,7 +156,7 @@ PUT /v1/security/secrets/:name
 ```json
 {
   "id": "sec_abc123xyz",
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "version": 4,
   "previousVersion": 3,
   "tags": ["production", "database", "updated"],
@@ -167,7 +167,7 @@ PUT /v1/security/secrets/:name
 ### Example
 
 ```bash
-curl -X PUT https://api.lanonasis.com/v1/security/secrets/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+curl -X PUT https://api.lanonasis.com/v1/security/secrets/DATABASE_URL
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -190,7 +190,7 @@ DELETE /v1/security/secrets/:name
 ```json
 {
   "deleted": true,
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "deletedVersions": 4,
   "deletedAt": "2024-03-15T10:30:00Z"
 }
@@ -199,7 +199,7 @@ DELETE /v1/security/secrets/:name
 ### Example
 
 ```bash
-curl -X DELETE https://api.lanonasis.com/v1/security/secrets/DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+curl -X DELETE https://api.lanonasis.com/v1/security/secrets/DATABASE_URL
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -230,7 +230,7 @@ GET /v1/security/secrets
   "data": [
     {
       "id": "sec_abc123",
-      "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+      "name": "DATABASE_URL",
       "version": 3,
       "tags": ["production", "database"],
       "expiresAt": "2024-04-15T00:00:00Z",
@@ -285,7 +285,7 @@ GET /v1/security/secrets/:name/versions
 
 ```json
 {
-  "name": "DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "name": "DATABASE_URL",
   "versions": [
     {
       "version": 3,
@@ -318,7 +318,7 @@ POST /v1/security/secrets/batch/get
 
 ```json
 {
-  "names": ["DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  "names": ["DATABASE_URL"]
 }
 ```
 

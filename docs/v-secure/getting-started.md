@@ -80,13 +80,12 @@ const client = new VSecureClient({
 
 ```bash
 # Store a secret
-vsecure secrets:create DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  "postgresql://<user>:<password>@<host>:<port>/<db>" \
+vsecure secrets:create DATABASE_URL "postgresql://<user>:<password>@<host>:<port>/<db>" \
   --tags production,database \
   --expires-in 90d
 
 # Output:
-# ✓ Secret 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+# ✓ Secret 'DATABASE_URL' created
 # ID: sec_abc123xyz
 # Version: 1
 # Tags: production, database
@@ -97,8 +96,8 @@ vsecure secrets:create DATABASE_URL=postgresql://<user>:<password>@<host>:<port>
 
 ```typescript
 const secret = await client.secrets.create({
-  name: 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
+  name: 'DATABASE_URL',
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>',
   tags: ['production', 'database'],
   expiresIn: '90d'
 });
@@ -112,24 +111,24 @@ console.log('Secret created:', secret.id);
 
 ```bash
 # Get the latest version
-vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:get DATABASE_URL
 
 # Get a specific version
-vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:get DATABASE_URL
 
 # Get as JSON for scripting
-vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:get DATABASE_URL
 ```
 
 ### Using the SDK
 
 ```typescript
 // Get the latest version
-const secret = await client.secrets.get('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+const secret = await client.secrets.get('DATABASE_URL');
 console.log('Value:', secret.value);
 
 // Get a specific version
-const oldSecret = await client.secrets.get('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+const oldSecret = await client.secrets.get('DATABASE_URL');
 ```
 
 ## Step 5: Update a Secret
@@ -139,11 +138,10 @@ When you need to rotate a secret, v-secure automatically versions it:
 ### Using the CLI
 
 ```bash
-vsecure secrets:update DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  "postgresql://<user>:<password>@<host>:<port>/<db>"
+vsecure secrets:update DATABASE_URL "postgresql://<user>:<password>@<host>:<port>/<db>"
 
 # Output:
-# ✓ Secret 'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+# ✓ Secret 'DATABASE_URL' updated
 # Version: 2
 # Previous versions: 1
 ```
@@ -151,12 +149,12 @@ vsecure secrets:update DATABASE_URL=postgresql://<user>:<password>@<host>:<port>
 ### Using the SDK
 
 ```typescript
-await client.secrets.update('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
-  value: 'postgresql://<user>:<password>@<host>:<port>/<db>
+await client.secrets.update('DATABASE_URL', {
+  value: 'postgresql://<user>:<password>@<host>:<port>/<db>'
 });
 
 // Retrieve version history
-const versions = await client.secrets.listVersions('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+const versions = await client.secrets.listVersions('DATABASE_URL');
 console.log('Available versions:', versions.map(v => v.version));
 ```
 
@@ -201,16 +199,16 @@ Deleting a secret is permanent and cannot be undone. Use with caution.
 ### Using the CLI
 
 ```bash
-vsecure secrets:delete DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:delete DATABASE_URL
 
 # With confirmation skip
-vsecure secrets:delete DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:delete DATABASE_URL
 ```
 
 ### Using the SDK
 
 ```typescript
-await client.secrets.delete('DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+await client.secrets.delete('DATABASE_URL');
 ```
 
 ## Common Operations

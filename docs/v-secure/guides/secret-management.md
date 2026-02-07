@@ -24,7 +24,7 @@ vsecure secrets:create API_KEY "sk_live_..." \
 ### With Metadata
 
 ```bash
-vsecure secrets:create DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:create DATABASE_URL "postgresql://<user>:<password>@<host>:<port>/<db>"
   --tags production,database \
   --metadata owner=backend-team \
   --metadata service=user-api
@@ -121,7 +121,7 @@ Define who can access secrets:
 Grant temporary access:
 
 ```bash
-vsecure secrets:grant-access DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:grant-access DATABASE_URL
   --user john@example.com \
   --duration 1h
 ```
@@ -132,23 +132,23 @@ vsecure secrets:grant-access DATABASE_URL=postgresql://<user>:<password>@<host>:
 
 ```bash
 # List all versions
-vsecure secrets:versions DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:versions DATABASE_URL
 
 # Get specific version
-vsecure secrets:get DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:get DATABASE_URL
 
 # Compare versions
-vsecure secrets:diff DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:diff DATABASE_URL
 ```
 
 ### Rollback
 
 ```bash
 # Rollback to previous version
-vsecure secrets:rollback DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:rollback DATABASE_URL
 
 # Rollback to specific version
-vsecure secrets:rollback DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+vsecure secrets:rollback DATABASE_URL
 ```
 
 ## Best Practices
@@ -214,12 +214,12 @@ async function loadSecrets() {
   const client = new VSecureClient();
 
   const secrets = await client.secrets.batchGet([
-    'DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+    'DATABASE_URL',
     'REDIS_URL',
     'API_KEY'
   ]);
 
-  process.env.DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+  process.env.DATABASE_URL = secrets.DATABASE_URL;
   process.env.REDIS_URL = secrets.REDIS_URL;
   process.env.API_KEY = secrets.API_KEY;
 }
