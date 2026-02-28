@@ -13,6 +13,7 @@ import path from 'path';
 
 // Guard webpack config for Nx compatibility
 const isNxBuild = process.env.NX_BUILD === 'true' || process.env.NX_WORKSPACE_ROOT !== undefined;
+const enableGitLastUpdate = !process.env.VERCEL;
 
 // Plugin configuration - only include webpack plugin when NOT using Nx
 const plugins: any[] = [];
@@ -122,8 +123,8 @@ const config: Config = {
           routeBasePath: '/', // Docs at root
           // Enable GitHub editing
           editUrl: 'https://github.com/lanonasis/docs-lanonasis-com/edit/main/',
-          showLastUpdateTime: true,
-          showLastUpdateAuthor: true,
+          showLastUpdateTime: enableGitLastUpdate,
+          showLastUpdateAuthor: enableGitLastUpdate,
         },
         blog: false, // Disable blog - docs only
         theme: {
