@@ -36,36 +36,30 @@ Raw Content
 ```
 mcp-core/
 ├── src/
-│   ├── modules/
-│   │   ├── cleaning/           # Text normalization & noise removal
-│   │   ├── chunking/           # Multiple chunking strategies
-│   │   ├── parsing/            # Content type detection & parsing
-│   │   ├── extraction/         # Entity & keyword extraction
-│   │   ├── validation/         # Content validation & security
-│   │   └── context-builder/    # AI context window generation
-│   ├── types/
-│   │   ├── content.types.ts    # Content input/output types
-│   │   └── config.types.ts     # Configuration types
-│   ├── api/
-│   │   ├── preprocessing.ts    # Main preprocessing endpoint
-│   │   └── config.ts           # Configuration endpoint
-│   └── index.ts                # Service entrypoint
+│   ├── protocols/          # Protocol management (SSE, WebSocket)
+│   ├── workers/            # Async queue workers (Embedding, Batch)
+│   ├── ui/                 # Visualization components (Web, IDE)
+│   ├── services/           # Business logic (Queue, Search, Content)
+│   ├── utils/              # Utility modules (Chunking, Cleaning)
+│   ├── api/                # API controllers (Dashboard)
+│   └── index.ts            # Service entrypoint
 ├── tests/
-│   ├── unit/                   # Unit tests for each module
+│   ├── unit/               # Unit tests for each module
 │   └── integration/            # End-to-end pipeline tests
 └── README.md
 ```
 
 ### Module Responsibilities
 
-| Module              | Purpose                 | Example Input                  | Example Output                             |
-| ------------------- | ----------------------- | ------------------------------ | ------------------------------------------ |
-| **Cleaning**        | Remove noise, normalize | "Hello\n\nWorld @user"         | "Hello World user"                         |
-| **Parsing**         | Detect content type     | Markdown text with code blocks | \{ type: 'markdown', sections: [...] \}    |
-| **Chunking**        | Split intelligently     | 5000-word article              | [chunk1, chunk2, chunk3, ...]              |
-| **Extraction**      | Pull structured data    | "Contact: user@domain"         | \{ entities: ['email'], keywords: [...] \} |
-| **Validation**      | Security & integrity    | User-submitted HTML            | \{ valid: true, fixed: [...] \}            |
-| **Context Builder** | Optimize for AI         | Multiple memories + query      | \{ context: [...], tokens: 2048 \}         |
+| Module              | Purpose                    | Key Components                              |
+| ------------------- | -------------------------- | ------------------------------------------- |
+| **Protocols**       | Multi-transport support    | SSEHandler, WebSocketHandler, ProtocolManager |
+| **Workers**         | Asynchronous processing    | WorkerLauncher, EmbeddingWorker, BatchWorker |
+| **UI / Visualization** | Memory data visualization | MemoryDashboard (Web), MemoryPanel (IDE)    |
+| **Cleaning**        | Remove noise, normalize    | TextCleaner, HTML Entity Decoder            |
+| **Parsing**         | Detect content type        | Markdown/HTML/Plain Text Parsers            |
+| **Chunking**        | Split intelligently        | Fixed-Size, Semantic, Context-Aware         |
+| **Queue Management** | Task orchestration         | QueueService, pg-boss Integration           |
 
 ---
 
@@ -205,6 +199,51 @@ const context = await mcpCore.buildContext({
 4. **Diverse** – Cover different topics
 5. **Hierarchical** – Parent-child relationships
 6. **Hybrid** – Combination of multiple factors
+
+---
+
+## Enterprise Features (v2.0+)
+
+### 6. Multi-Transport Protocol Manager
+
+`mcp-core` supports multiple communication protocols for real-time and high-performance applications.
+
+**Supported Protocols**:
+- **SSE (Server-Sent Events)**: Optimized for unidirectional real-time updates (default for web clients).
+- **WebSocket**: Full-duplex communication for interactive sessions and IDE integrations.
+
+**Usage**:
+```typescript
+import { ProtocolManager } from './protocols/protocol-manager';
+
+const pm = new ProtocolManager(config, logger);
+await pm.initialize(httpServer);
+```
+
+### 7. Background Worker Architecture
+
+For high-volume content processing, `mcp-core` offloads intensive tasks to specialized background workers via a queue system.
+
+- **Embedding Worker**: Calculates vector embeddings for chunks in parallel.
+- **Batch Worker**: Handles massive imports and re-indexing tasks.
+
+**Worker Management**:
+```bash
+# Start worker processes
+bun run workers:start
+```
+
+### 8. Visualization UI
+
+Monitor and visualize your memory ecosystem with built-in UI components.
+
+- **Memory Dashboard**: A React-based web interface for monitoring statistics, queue status, and memory distribution.
+- **IDE Panels**: Specialized panels for VSCode, Cursor, and Windsurf that bring memory insights directly into the developer workflow.
+
+**Dashboard Features**:
+- Real-time queue metrics
+- Search analytics & trend visualization
+- Tag cloud & distribution charts
 
 ---
 
@@ -550,7 +589,7 @@ for await (const chunk of stream) {
 
 - **[Memory Overview](../memory/overview.md)** – Where MCP Core output is stored
 - **[Memory CLI](../memory/cli.md)** – How to manage preprocessed content
-- **[MCP Integration](../mcp/)** – AI agent integration patterns
+- **[MCP Integration](../mcp/overview.md)** – AI agent integration patterns
 - **[Data Masking](./onasis-core.md)** – Privacy-preserving content handling
 
 ---

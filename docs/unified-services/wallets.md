@@ -172,10 +172,10 @@ Each wallet has a dedicated virtual account number. Funds sent to this account a
 ```
 
 ### 2. Card Payment
-Use the [Payments API](/docs/unified-services/payments) to collect card payments into a wallet.
+Use the [Payments API](/unified-services/payments) to collect card payments into a wallet.
 
 ### 3. Wallet-to-Wallet Transfer
-Use the [Transfers API](/docs/unified-services/transfers) to transfer from another wallet.
+Use the [Transfers API](/unified-services/transfers) to transfer from another wallet.
 
 ## SDK Examples
 
@@ -230,4 +230,4 @@ Subscribe to wallet events:
 - `wallet.frozen` - Wallet frozen
 - `wallet.closed` - Wallet closed
 
-See [Webhooks](/docs/unified-services/webhooks) for details.
+See [Webhooks](/unified-services/webhooks) for details.

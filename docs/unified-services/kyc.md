@@ -278,4 +278,4 @@ Subscribe to KYC events:
 - `kyc.verified` - Successfully verified
 - `kyc.failed` - Verification failed
 
-See [Webhooks](/docs/unified-services/webhooks) for details.
+See [Webhooks](/unified-services/webhooks) for details.

@@ -67,8 +67,23 @@ const config: Config = {
   organizationName: 'LanOnasis',
   projectName: 'docs-LanOnasis',
 
-  onBrokenLinks: 'ignore',
-  onBrokenMarkdownLinks: 'ignore',
+  onBrokenLinks: 'warn',
+
+  markdown: {
+    format: 'mdx',
+    mermaid: true,
+    preprocessor: ({ filePath, fileContent }) => {
+      return fileContent;
+    },
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true,
+    },
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // Internationalization - Full multilingual support
   i18n: {

@@ -31,53 +31,53 @@ const SERVICES = [
     icon: "🧠",
     title: "Memory Service",
     description: "AI-native memory management with vector search, semantic understanding, and real-time sync across platforms.",
-    link: "/docs/memory/overview",
+    link: "/memory/overview",
     badge: "Core",
   },
   {
     icon: "💳",
     title: "Unified Payments",
     description: "Accept payments via cards, bank transfers, USSD, and mobile money with a single integration.",
-    link: "/docs/unified-services/payments",
+    link: "/unified-services/payments",
     badge: "New",
   },
   {
     icon: "🏦",
     title: "Wallets & Transfers",
     description: "Create wallets, manage balances, and send instant transfers to bank accounts via NIP.",
-    link: "/docs/unified-services/wallets",
+    link: "/unified-services/wallets",
     badge: "New",
   },
   {
     icon: "🔐",
     title: "KYC Verification",
     description: "Verify customers with BVN, NIN, phone, and document verification in seconds.",
-    link: "/docs/unified-services/kyc",
+    link: "/unified-services/kyc",
     badge: "New",
   },
   {
     icon: "🔗",
     title: "MCP Server",
     description: "Model Context Protocol server for AI agents. Give your LLM access to memories and services.",
-    link: "/docs/mcp/overview",
+    link: "/mcp/overview",
     badge: "AI",
   },
   {
     icon: "🛡️",
     title: "V-Secure",
     description: "Enterprise-grade security with encryption, audit logging, and compliance controls.",
-    link: "/docs/v-secure/overview",
+    link: "/v-secure/intro",
     badge: "Enterprise",
   },
 ];
 
 // SDK badges
 const SDKS = [
-  { name: "TypeScript", icon: "🔷", link: "/docs/sdks/typescript" },
-  { name: "Python", icon: "🐍", link: "/docs/sdks/python" },
-  { name: "Go", icon: "🐹", link: "/docs/sdks/go" },
-  { name: "REST API", icon: "🌐", link: "/docs/api/overview" },
-  { name: "MCP", icon: "🤖", link: "/docs/mcp/overview" },
+  { name: "TypeScript", icon: "🔷", link: "/sdks/typescript" },
+  { name: "Python", icon: "🐍", link: "/sdks/python" },
+  { name: "Go", icon: "🐹", link: "/sdks/go" },
+  { name: "REST API", icon: "🌐", link: "/api/overview" },
+  { name: "MCP", icon: "🤖", link: "/mcp/overview" },
 ];
 
 // Quick start code
@@ -135,7 +135,7 @@ function HeroSection() {
         </p>
 
         <div className={styles.heroActions}>
-          <NavLink to="/docs/intro" className={styles.heroPrimaryBtn}>
+          <NavLink to="/intro" className={styles.heroPrimaryBtn}>
             Get Started
             <span className={styles.heroArrow}>→</span>
           </NavLink>
@@ -345,7 +345,7 @@ function CTASection() {
             Start free, scale as you grow.
           </p>
           <div className={styles.ctaActions}>
-            <NavLink to="/docs/intro" className={styles.ctaPrimaryBtn}>
+            <NavLink to="/intro" className={styles.ctaPrimaryBtn}>
               Start Building
             </NavLink>
             <NavLink

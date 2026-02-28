@@ -111,7 +111,7 @@ Seamless integration with Model Context Protocol for AI applications.
 
 ## Need Help?
 
-- 📖 Browse our [comprehensive guides](/guides/index)
+- 📖 Browse our [comprehensive guides](/guides)
 - 🐛 Report issues in our [feedback system](/support)
 - 💬 Join our community discussions
 - 📧 Contact support at support@lanonasis.com

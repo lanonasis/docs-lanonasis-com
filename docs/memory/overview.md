@@ -359,8 +359,8 @@ lanonasis memory search --query "first" --namespace default
 1. **[CLI Documentation](./cli.md)** – Terminal commands and workflows
 2. **[REST API Reference](./rest-api.md)** – HTTP endpoints
 3. **[TypeScript SDK Guide](./sdk.md)** – Programmatic access
-4. **[Authentication Guide](../auth/)** – OAuth 2.0 flows
-5. **[Advanced Topics](../guides/)** – Retention policies, webhooks, MCP integration
+4. **[Authentication Guide](../auth/central-auth-gateway.md)** – OAuth 2.0 flows
+5. **[Advanced Topics](../guides/index.md)** – Retention policies, webhooks, MCP integration
 
 ---
 
@@ -421,10 +421,10 @@ Team: Product Design
 - **[Memory CLI](./cli.md)** – Terminal commands (device flow, browser flow, topic management, API keys)
 - **[Memory REST API](./rest-api.md)** – HTTP endpoints for integration
 - **[Memory SDK](./sdk.md)** – TypeScript/Node.js programmatic access
-- **[Authentication Guide](../auth/)** – OAuth 2.0 flows and credential management
-- **[MCP Integration](../mcp/)** – AI agent integration with Model Context Protocol
-- **[Deployment Guide](../deployment/)** – Self-hosted setup and operations
-- **[Security & Compliance](../security/)** – Encryption, RBAC, audit logging, certifications
+- **[Authentication Guide](../auth/central-auth-gateway.md)** – OAuth 2.0 flows and credential management
+- **[MCP Integration](../mcp/overview.md)** – AI agent integration with Model Context Protocol
+- **[Operations Guide](../ops/operating-platform.md)** – Self-hosted setup and operations
+- **[Security & Compliance](../security/privacy-implementation.md)** – Encryption, RBAC, audit logging, certifications
 
 ---
 

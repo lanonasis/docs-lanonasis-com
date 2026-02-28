@@ -92,7 +92,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories \
 - [`GET /memories`](./memories#list-memories) - List memories with pagination
 
 ### 🔍 Search & Discovery
-- [`POST /memories/search`](./endpoints/search#memory-search) - Semantic search across memories
+- [`POST /memories/search`](./endpoints/search.md) - Semantic search across memories
 
 ### 🔐 Authentication
 - [`POST /auth/api-keys`](./authentication#create-api-key) - Create API key
@@ -100,8 +100,8 @@ curl -X POST https://api.lanonasis.com/api/v1/memories \
 - [`DELETE /auth/api-keys/{id}`](./authentication#revoke-api-key) - Revoke API key
 
 ### 📊 Analytics
-- [`GET /analytics/usage`](./analytics#usage-stats) - Usage statistics
-- [`GET /analytics/search`](./analytics#search-analytics) - Search analytics
+- [`GET /analytics/usage`](./endpoints/analytics.md) - Usage statistics
+- [`GET /analytics/search`](./endpoints/analytics.md) - Search analytics
 
 ## Response Format
 

@@ -575,7 +575,7 @@ lanonasis memory search --query "test" --log-level debug --verbose
 - **[Memory Overview](./overview.md)** – Architecture and capabilities
 - **[Memory REST API](./rest-api.md)** – HTTP endpoints and webhooks
 - **[Memory SDK](./sdk.md)** – TypeScript/Node.js programmatic access
-- **[Authentication Guide](../auth/)** – OAuth 2.0 flows and security
+- **[Authentication Guide](../auth/central-auth-gateway.md)** – OAuth 2.0 flows and security
 - **[MCP Documentation](https://modelcontextprotocol.io/)** – Model Context Protocol specification
 
 ---

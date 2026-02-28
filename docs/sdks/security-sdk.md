@@ -395,7 +395,7 @@ describe('SecuritySDK', () => {
 
 - [API Authentication](../api/authentication.md)
 - [Security Best Practices](../security/privacy-implementation.md)
-- [Key Management Guide](../guides/key-management.md)
+- [Key Management Guide](../keys/vendor-key-management.md)
 - [Three-System Architecture](../platform/architecture.md)
 
 ## 🆘 Troubleshooting

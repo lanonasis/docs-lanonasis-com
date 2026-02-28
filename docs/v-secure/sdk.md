@@ -487,18 +487,18 @@ logger.info('API call', {
 
 ## Integration with Security Service
 
-This SDK is used by the [Security Service](../security-service/README.md) for:
+This SDK is used by the [Security Service](./security-service.md) for:
 
 - Encrypting vendor API keys
 - Storing secrets securely
 - Key rotation workflows
 - Audit logging (sanitized data)
 
-See [Security Service Documentation](../security-service/README.md) for complete integration guide.
+See [Security Service Documentation](./security-service.md) for complete integration guide.
 
 ## Related Documentation
 
-- [Security Service](../security-service/README.md) - Complete security service documentation
+- [Security Service](./security-service.md) - Complete security service documentation
 - [API Overview](./api/overview.md) - REST API reference
 - [Installation](./installation.md) - Installation guide
 - [Configuration](./configuration.md) - Configuration options

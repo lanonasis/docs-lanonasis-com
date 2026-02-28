@@ -493,7 +493,7 @@ expect(users.data).toEqual([{ id: 1, name: "John" }]);
 
 ## API Reference
 
-For detailed API reference, see [API Client SDK API](/api/api-client)
+For detailed platform API coverage, see [API Overview](/api/overview)
 
 ## Support
 

@@ -321,11 +321,84 @@
       }
     },
     "/memories/search": {
+      "get": {
+        "tags": [
+          "Memories"
+        ],
+        "summary": "Search Memories (GET)",
+        "description": "Search memories using semantic vector search via query parameters (MCP tool `search_memories`)",
+        "operationId": "searchMemoriesGet",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query text (also accepts `q` as alias)"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/MemoryType"
+            },
+            "description": "Filter by memory type (also accepts `memory_type`)"
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "default": 0.55,
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "Comma-separated list of tags to filter by",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchMemoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
       "post": {
         "tags": [
           "Memories"
         ],
-        "summary": "Search Memories",
+        "summary": "Search Memories (POST)",
         "description": "Search memories using semantic vector search (MCP tool `search_memories`)",
         "operationId": "searchMemories",
         "requestBody": {
@@ -1334,6 +1407,16 @@
           "workflow"
         ]
       },
+      "WriteIntent": {
+        "type": "string",
+        "enum": [
+          "new",
+          "continue",
+          "auto"
+        ],
+        "default": "auto",
+        "description": "Write routing intent for memory writes.\n- `new`: force creation of a new memory entry\n- `continue`: prefer updating an existing continuity-linked memory\n- `auto`: backend decides based on continuity/idempotency signals\n"
+      },
       "Memory": {
         "type": "object",
         "description": "Memory entry response. Contains both `type` (for MCP compatibility)\nand `memory_type` (canonical database field) in responses.\n",
@@ -1406,7 +1489,7 @@
           "title",
           "content"
         ],
-        "description": "Create a new memory entry. Either `type` or `memory_type` must be provided.\nBoth field names are accepted for compatibility between MCP (uses `type`)\nand REST API (prefers `memory_type`). If both are provided, `memory_type` takes precedence.\n",
+        "description": "Create a new memory entry. Either `type` or `memory_type` must be provided.\nBoth field names are accepted for compatibility between MCP (uses `type`)\nand REST API (prefers `memory_type`). If both are provided, `memory_type` takes precedence.\n`user_id` is inferred from the authenticated principal and should not be sent by clients.\n",
         "properties": {
           "title": {
             "type": "string",
@@ -1443,6 +1526,18 @@
             "type": "string",
             "format": "uuid",
             "description": "Optional topic ID for grouping related memories"
+          },
+          "continuity_key": {
+            "type": "string",
+            "description": "Optional continuity key for session-style write updates"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional idempotency key to dedupe retried writes"
+          },
+          "write_intent": {
+            "$ref": "#/components/schemas/WriteIntent",
+            "description": "Optional write intent for backend write routing"
           }
         }
       },
@@ -1480,6 +1575,18 @@
             "type": "object",
             "additionalProperties": true,
             "description": "Updated metadata (merged with existing)"
+          },
+          "continuity_key": {
+            "type": "string",
+            "description": "Optional continuity key for route-to-update behavior"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional idempotency key for lookup when ID is omitted"
+          },
+          "write_intent": {
+            "$ref": "#/components/schemas/WriteIntent",
+            "description": "Optional write intent for backend write routing"
           }
         }
       },
@@ -1499,7 +1606,7 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1,
-            "default": 0.8
+            "default": 0.55
           },
           "limit": {
             "type": "integer",

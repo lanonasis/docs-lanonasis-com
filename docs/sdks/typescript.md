@@ -48,9 +48,11 @@ if (created.data) {
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.0<!-- /AUTO -->
+- ✅ Version: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.1<!-- /AUTO -->
 - ✅ Size: ~150 KB
 - ✅ TypeScript support
+
+For intelligence and behavior APIs, the current source package in this monorepo is `@lanonasis/mem-intel-sdk` (`2.0.6`).
 
 ---
 

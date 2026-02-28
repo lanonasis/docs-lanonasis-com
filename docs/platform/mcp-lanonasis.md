@@ -602,7 +602,7 @@ Claude: Let me search for recent Q2 memories with fewer results.
 - **[Memory Suite Overview](../memory/overview.md)** – Full Memory API
 - **[Memory CLI](../memory/cli.md)** – Terminal-based access
 - **[Model Context Protocol Spec](https://modelcontextprotocol.io/)** – MCP standard
-- **[MCP Integration Guide](../mcp/)** – Implementation patterns
+- **[MCP Integration Guide](../mcp/overview.md)** – Implementation patterns
 
 ---
 

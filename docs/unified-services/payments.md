@@ -284,4 +284,4 @@ Subscribe to payment events:
 - `payment.failed` - Payment failed
 - `payment.refunded` - Payment refunded
 
-See [Webhooks](/docs/unified-services/webhooks) for details.
+See [Webhooks](/unified-services/webhooks) for details.

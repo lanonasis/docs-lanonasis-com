@@ -18,6 +18,23 @@ interface SearchContextType {
 }
 
 const SearchContext = createContext<SearchContextType | null>(null);
+type SearchCapableMemoryClient = MemoryClient & {
+  search?: (
+    query: string,
+    options?: { namespace?: string; topK?: number; includeMetadata?: boolean },
+  ) => Promise<{
+    matches?: Array<{
+      text?: string;
+      score?: number;
+      highlights?: string[];
+      metadata?: {
+        title?: string;
+        section?: string;
+        url?: string;
+      };
+    }>;
+  }>;
+};
 
 export const useSearch = () => {
   const context = useContext(SearchContext);
@@ -43,6 +60,7 @@ export function MaaSSearchProvider({
     apiKey: process.env.NEXT_PUBLIC_MAAS_DOCS_KEY || "",
   };
   const memoryClient: MemoryClient = new MemoryClient(memoryClientConfig);
+  const searchCapableMemoryClient = memoryClient as SearchCapableMemoryClient;
 
   const performSemanticSearch = useCallback(
     async (query: string): Promise<SearchResult[]> => {
@@ -54,19 +72,39 @@ export function MaaSSearchProvider({
       setIsSearching(true);
 
       try {
-        // Use your MaaS vector search
-        const results = await memoryClient.search(query, {
-          namespace: "documentation",
-          topK: 10,
-          includeMetadata: true,
-        });
+        const results =
+          typeof searchCapableMemoryClient.search === "function"
+            ? await searchCapableMemoryClient.search(query, {
+                namespace: "documentation",
+                topK: 10,
+                includeMetadata: true,
+              })
+            : {
+                matches:
+                  (
+                    await memoryClient.searchMemories({
+                      query,
+                      limit: 10,
+                      status: "active",
+                      threshold: 0.55,
+                    })
+                  ).data?.results?.map((item) => ({
+                    text: item.content,
+                    score: item.similarity_score,
+                    metadata: {
+                      title: item.title,
+                      section: "General",
+                      url: "#",
+                    },
+                  })) ?? [],
+              };
 
         // Transform results for documentation display
-        const docResults = results.matches.map((match) => ({
+        const docResults = (results.matches ?? []).map((match) => ({
           title: match.metadata?.title || "Untitled",
           section: match.metadata?.section || "General",
-          content: match.text,
-          score: match.score,
+          content: match.text || "",
+          score: match.score || 0,
           url: match.metadata?.url || "#",
           highlights: match.highlights,
         }));
