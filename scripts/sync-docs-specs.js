@@ -105,8 +105,8 @@ try {
         id: 'memory',
         name: 'MCP Memory API',
         icon: '🧠',
-        description: 'Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System',
-        badge: 'MCP v2.0 - 28 Tools',
+        description: 'Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System',
+        badge: 'MCP v2.0 - 31 Tools',
         version: memorySpec.data?.info?.version || 'unknown',
         hash: hashContent(memorySpec.content),
         paths: ['/memory-api.json', '/memory-api.yaml']

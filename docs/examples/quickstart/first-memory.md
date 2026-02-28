@@ -430,10 +430,10 @@ complete_example()
 
 Now that you've created your first memory, explore more advanced features:
 
-- [Basic Search](/examples/quickstart/basic-search) - Learn about search capabilities
-- [Authentication](/examples/quickstart/authentication) - Set up proper authentication
-- [Advanced Examples](/examples/advanced) - Explore advanced use cases
-- [SDK Documentation](/sdks) - Complete SDK reference
+- [Basic Search](/api/endpoints/search) - Learn about search capabilities
+- [Authentication](/auth/central-auth-gateway) - Set up proper authentication
+- [Advanced Guides](/guides/vector-search) - Explore advanced use cases
+- [SDK Documentation](/sdks/overview) - Complete SDK reference
 
 ## Troubleshooting
 

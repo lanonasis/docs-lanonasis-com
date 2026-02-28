@@ -244,10 +244,59 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
 
   /memories/search:
+    get:
+      tags:
+        - Memories
+      summary: Search Memories (GET)
+      description: Search memories using semantic vector search via query parameters (MCP tool `search_memories`)
+      operationId: searchMemoriesGet
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query text (also accepts `q` as alias)
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/MemoryType'
+          description: Filter by memory type (also accepts `memory_type`)
+        - name: threshold
+          in: query
+          schema:
+            type: number
+            default: 0.55
+            minimum: 0
+            maximum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: tags
+          in: query
+          description: Comma-separated list of tags to filter by
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMemoriesResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
     post:
       tags:
         - Memories
-      summary: Search Memories
+      summary: Search Memories (POST)
       description: Search memories using semantic vector search (MCP tool `search_memories`)
       operationId: searchMemories
       requestBody:
@@ -969,6 +1018,16 @@ components:
       type: string
       enum: [context, project, knowledge, reference, personal, workflow]
 
+    WriteIntent:
+      type: string
+      enum: [new, continue, auto]
+      default: auto
+      description: |
+        Write routing intent for memory writes.
+        - `new`: force creation of a new memory entry
+        - `continue`: prefer updating an existing continuity-linked memory
+        - `auto`: backend decides based on continuity/idempotency signals
+
     Memory:
       type: object
       description: |
@@ -1030,6 +1089,7 @@ components:
         Create a new memory entry. Either `type` or `memory_type` must be provided.
         Both field names are accepted for compatibility between MCP (uses `type`)
         and REST API (prefers `memory_type`). If both are provided, `memory_type` takes precedence.
+        `user_id` is inferred from the authenticated principal and should not be sent by clients.
       properties:
         title:
           type: string
@@ -1059,6 +1119,15 @@ components:
           type: string
           format: uuid
           description: Optional topic ID for grouping related memories
+        continuity_key:
+          type: string
+          description: Optional continuity key for session-style write updates
+        idempotency_key:
+          type: string
+          description: Optional idempotency key to dedupe retried writes
+        write_intent:
+          $ref: '#/components/schemas/WriteIntent'
+          description: Optional write intent for backend write routing
 
     UpdateMemoryRequest:
       type: object
@@ -1090,6 +1159,15 @@ components:
           type: object
           additionalProperties: true
           description: Updated metadata (merged with existing)
+        continuity_key:
+          type: string
+          description: Optional continuity key for route-to-update behavior
+        idempotency_key:
+          type: string
+          description: Optional idempotency key for lookup when ID is omitted
+        write_intent:
+          $ref: '#/components/schemas/WriteIntent'
+          description: Optional write intent for backend write routing
 
     SearchMemoriesRequest:
       type: object
@@ -1104,7 +1182,7 @@ components:
           type: number
           minimum: 0
           maximum: 1
-          default: 0.8
+          default: 0.55
         limit:
           type: integer
           minimum: 1

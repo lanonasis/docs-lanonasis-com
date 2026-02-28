@@ -4,10 +4,10 @@
       "id": "memory",
       "name": "MCP Memory API",
       "icon": "🧠",
-      "description": "Complete MCP REST API with 28 tools - Memory, API Keys, Intelligence, System",
-      "badge": "MCP v2.0 - 28 Tools",
+      "description": "Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System",
+      "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
-      "hash": "40ab5e2cef9b961c1c021f7c688c7f65e5b0284de041dceb57655ac8988b2441",
+      "hash": "e643026d92e5626ac2b2824d70e4bd1f7f86df3de2dc04ec5e2a84ea7f28a147",
       "paths": [
         "/memory-api.json",
         "/memory-api.yaml"

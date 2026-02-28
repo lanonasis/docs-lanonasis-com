@@ -101,9 +101,9 @@ console.log(transfer.data.status); // 'pending'
 
 ## Next Steps
 
-1. [Authentication](/docs/unified-services/authentication) - Get your API keys
-2. [Wallets](/docs/unified-services/wallets) - Create and manage wallets
-3. [Transfers](/docs/unified-services/transfers) - Send money
-4. [Payments](/docs/unified-services/payments) - Accept payments
-5. [KYC](/docs/unified-services/kyc) - Verify identities
-6. [Webhooks](/docs/unified-services/webhooks) - Handle events
+1. [Authentication](/unified-services/authentication) - Get your API keys
+2. [Wallets](/unified-services/wallets) - Create and manage wallets
+3. [Transfers](/unified-services/transfers) - Send money
+4. [Payments](/unified-services/payments) - Accept payments
+5. [KYC](/unified-services/kyc) - Verify identities
+6. [Webhooks](/unified-services/webhooks) - Handle events

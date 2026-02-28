@@ -125,7 +125,7 @@ lan-onasis delete --id memory-id --confirm
 
 - [Video Tutorials](https://youtube.com/@LanOnasis)
 - [Blog](https://blog.LanOnasis.local)
-- [Case Studies](/use-cases)
+- [Case Studies](/use-cases/personal-knowledge)
 - [Roadmap](https://github.com/LanOnasis/roadmap)
 
 ## 🔍 Debugging Tips

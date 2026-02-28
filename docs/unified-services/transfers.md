@@ -304,4 +304,4 @@ Subscribe to transfer events:
 - `transfer.failed` - Transfer failed
 - `transfer.reversed` - Transfer reversed
 
-See [Webhooks](/docs/unified-services/webhooks) for details.
+See [Webhooks](/unified-services/webhooks) for details.

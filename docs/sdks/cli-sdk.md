@@ -441,7 +441,7 @@ cli.on("error", (error) => {
 
 ## API Reference
 
-For detailed API reference, see [CLI SDK API](/api/cli-sdk)
+For detailed platform API coverage, see [API Overview](/api/overview)
 
 ## Support
 

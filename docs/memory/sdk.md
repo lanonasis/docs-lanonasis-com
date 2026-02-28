@@ -18,7 +18,9 @@ yarn add @lanonasis/memory-client
 ```
 
 **Package**: `@lanonasis/memory-client`  
-**Version**: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.0<!-- /AUTO -->
+**Version**: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.1<!-- /AUTO -->
+
+> This page covers the REST-focused memory client. For intelligence and behavior workflows used by the current CLI and `mcp-core`, use `@lanonasis/mem-intel-sdk` (current monorepo source version `2.0.6`).
 
 ## Basic usage
 
@@ -348,4 +350,3 @@ interface MemoryEntry {
 - REST API: [Memory REST API](./rest-api.md)
 - CLI: [Memory CLI](./cli.md)
 - TypeScript SDK: [TypeScript SDK Reference](../sdks/typescript/api-reference.md)
-

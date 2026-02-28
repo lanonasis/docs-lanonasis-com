@@ -379,7 +379,7 @@ try {
 
 ## API Reference
 
-For detailed API reference, see [AI SDK API](/api/ai-sdk)
+For detailed platform API coverage, see [API Overview](/api/overview)
 
 ## Support
 
