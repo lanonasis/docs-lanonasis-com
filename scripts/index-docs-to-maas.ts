@@ -17,6 +17,14 @@ const memoryClientConfig = {
   apiKey: process.env.MAAS_ADMIN_KEY || ''
 };
 const memoryClient: MemoryClient = new MemoryClient(memoryClientConfig);
+type UpsertableMemoryClient = MemoryClient & {
+  upsert?: (payload: {
+    id: string;
+    text: string;
+    metadata: Record<string, unknown>;
+  }) => Promise<unknown>;
+};
+const upsertableMemoryClient = memoryClient as UpsertableMemoryClient;
 
 interface DocumentChunk {
   id: string;
@@ -31,7 +39,36 @@ interface DocumentChunk {
     type: string;
     lastModified: string;
     tags?: string[];
+    [key: string]: unknown;
   };
+}
+
+async function storeDocumentChunk(document: DocumentChunk) {
+  if (typeof upsertableMemoryClient.upsert === 'function') {
+    await upsertableMemoryClient.upsert({
+      id: document.id,
+      text: document.text,
+      metadata: document.metadata
+    });
+    return;
+  }
+
+  const result = await memoryClient.createMemory({
+    title: document.metadata.title,
+    content: document.text,
+    memory_type: 'reference',
+    tags: document.metadata.tags,
+    metadata: {
+      ...document.metadata,
+      doc_chunk_id: document.id
+    }
+  });
+
+  if (result.error) {
+    throw new Error(
+      typeof result.error === 'string' ? result.error : JSON.stringify(result.error)
+    );
+  }
 }
 
 async function indexDocumentation() {
@@ -80,11 +117,7 @@ async function indexDocumentation() {
         };
 
         try {
-          await memoryClient.upsert({
-            id: document.id,
-            text: document.text,
-            metadata: document.metadata
-          });
+          await storeDocumentChunk(document);
           successCount++;
         } catch (error) {
           console.error(`   ❌ Failed to index chunk ${i}: ${error.message}`);
@@ -190,14 +223,21 @@ function extractTags(filePath: string): string[] {
 
 async function createSearchMetadata(fileCount: number, chunkCount: number) {
   // Store metadata about the indexed documentation
-  await memoryClient.upsert({
+  await storeDocumentChunk({
     id: 'search-metadata',
-    text: `Documentation search index metadata`,
+    text: 'Documentation search index metadata',
     metadata: {
+      title: 'Documentation Search Metadata',
+      section: 'System',
+      url: '/api/playground',
+      filePath: 'system/search-metadata',
+      chunkIndex: 0,
+      totalChunks: 1,
       type: 'system',
+      lastModified: new Date().toISOString(),
+      tags: ['system', 'docs-index'],
       totalFiles: fileCount,
-      totalChunks: chunkCount,
-      indexedAt: new Date().toISOString(),
+      totalChunksIndexed: chunkCount,
       version: '1.0.0',
       chunkSize: CHUNK_SIZE
     }
@@ -226,7 +266,7 @@ async function indexSingleFile(filePath: string) {
     const chunkId = `${filePath.replace(/[\/\\]/g, '-')}-chunk-${i}`;
 
     try {
-      await memoryClient.upsert({
+      await storeDocumentChunk({
         id: chunkId,
         text: chunks[i],
         metadata: {

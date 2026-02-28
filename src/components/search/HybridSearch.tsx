@@ -23,6 +23,27 @@ const memoryClientConfig = {
   apiKey: process.env.NEXT_PUBLIC_MAAS_DOCS_KEY || "",
 };
 const memoryClient: MemoryClient = new MemoryClient(memoryClientConfig);
+type SemanticSearchMatch = {
+  id?: string;
+  text?: string;
+  score?: number;
+  metadata?: {
+    title?: string;
+    url?: string;
+  };
+};
+type SearchCapableMemoryClient = MemoryClient & {
+  search?: (
+    query: string,
+    options?: { namespace?: string; topK?: number },
+  ) => Promise<{ hits?: SemanticSearchMatch[]; matches?: SemanticSearchMatch[] }>;
+  rerank?: (
+    query: string,
+    docs: Array<{ id: string; text: string }>,
+    options?: { topK?: number },
+  ) => Promise<Array<{ score?: number }>>;
+};
+const searchCapableMemoryClient = memoryClient as SearchCapableMemoryClient;
 
 export function useHybridSearch() {
   const [isSearching, setIsSearching] = useState(false);
@@ -43,18 +64,60 @@ export function useHybridSearch() {
       setIsSearching(true);
 
       try {
+        const semanticSearchPromise =
+          typeof searchCapableMemoryClient.search === "function"
+            ? searchCapableMemoryClient
+                .search(query, {
+                  namespace: "documentation",
+                  topK: Math.ceil(topK * 1.5),
+                })
+                .catch((err) => {
+                  console.error("Semantic search failed:", err);
+                  return {
+                    hits: [] as SemanticSearchMatch[],
+                    matches: [] as SemanticSearchMatch[],
+                  };
+                })
+            : memoryClient
+                .searchMemories({
+                  query,
+                  limit: Math.ceil(topK * 1.5),
+                  status: "active",
+                  threshold: 0.55,
+                })
+                .then((result) => ({
+                  hits:
+                    result.data?.results?.map((item) => ({
+                      id: item.id,
+                      text: item.content,
+                      score: item.similarity_score,
+                      metadata: {
+                        title: item.title,
+                        url: "#",
+                      },
+                    })) ?? [],
+                  matches:
+                    result.data?.results?.map((item) => ({
+                      id: item.id,
+                      text: item.content,
+                      score: item.similarity_score,
+                      metadata: {
+                        title: item.title,
+                        url: "#",
+                      },
+                    })) ?? [],
+                }))
+                .catch((err) => {
+                  console.error("Semantic search failed:", err);
+                  return {
+                    hits: [] as SemanticSearchMatch[],
+                    matches: [] as SemanticSearchMatch[],
+                  };
+                });
+
         // Parallel search for best performance
         const [semanticResults, keywordResults] = await Promise.all([
-          // MaaS semantic search
-          memoryClient
-            .search(query, {
-              namespace: "documentation",
-              topK: Math.ceil(topK * 1.5), // Get more candidates for merging
-            })
-            .catch((err) => {
-              console.error("Semantic search failed:", err);
-              return { matches: [] };
-            }),
+          semanticSearchPromise,
 
           // MeiliSearch keyword search
           meiliClient
@@ -71,16 +134,19 @@ export function useHybridSearch() {
 
         // Transform and merge results
         const mergedResults = mergeSearchResults(
-          semanticResults.hits || [],
+          semanticResults.hits ?? semanticResults.matches ?? [],
           keywordResults.hits || [],
           semanticWeight,
           keywordWeight,
         );
 
         // Re-rank using MaaS if available
-        if (mergedResults.length > 0) {
+        if (
+          mergedResults.length > 0 &&
+          typeof searchCapableMemoryClient.rerank === "function"
+        ) {
           try {
-            const rerankedResults = await memoryClient.rerank(
+            const rerankedResults = await searchCapableMemoryClient.rerank(
               query,
               mergedResults.map((r) => ({
                 id: r.id,
