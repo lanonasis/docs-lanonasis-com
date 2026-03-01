@@ -1,0 +1,10 @@
+{
+  "name": "docs-lanonasis",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/docs-lanonasis/src",
+  "projectType": "application",
+  "tags": [
+    "scope:docs",
+    "type:app"
+  ]
+}
