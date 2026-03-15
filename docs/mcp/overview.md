@@ -16,6 +16,8 @@ The Model Context Protocol is a standardized protocol for AI assistants to inter
 - **Real-time Communication**: SSE (Server-Sent Events) and WebSocket support
 - **Multi-Protocol Support**: HTTP REST, WebSocket, SSE, and stdio transports
 - **Enterprise Security**: Authentication, authorization, and audit logging
+- **Memory Intelligence**: Advanced analytics, pattern detection, and insights
+- **Behavior Operations**: Record, recall, and suggest workflow operations
 
 ## Production Endpoint
 
@@ -39,6 +41,12 @@ lanonasis auth login
 
 # Or via PKCE in browser
 # Visit: https://api.lanonasis.com/auth/pkce
+
+# Check authentication status with live API probe
+lanonasis auth status
+
+# View your user profile
+lanonasis whoami
 ```
 
 ### 2. Connect to MCP Server
@@ -56,6 +64,9 @@ lanonasis mcp connect --websocket
 
 # Local development
 lanonasis mcp connect --local
+
+# Check connection status
+lanonasis mcp status
 ```
 
 **Using SDK:**
@@ -87,7 +98,7 @@ const result = await client.callTool('create_memory', {
 
 ## Available Tools
 
-### Memory Tools
+### Memory Operations
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
@@ -99,7 +110,33 @@ const result = await client.callTool('create_memory', {
 | `search_memories` | Semantic search across memories | `query`, `limit?`, `threshold?`, `type?` |
 | `bulk_delete_memories` | Delete multiple memories | `memory_ids[]` |
 
-### API Key Tools
+### Memory Intelligence (NEW!)
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `memory_health` | Check memory bank health and statistics | `user_id?` |
+| `suggest_tags` | Suggest relevant tags for content | `content`, `existing_tags?` |
+| `find_related` | Find memories related to given content | `memory_id` or `content`, `limit?` |
+| `detect_duplicates` | Detect potential duplicate memories | `memory_id` or `content`, `threshold?` |
+| `extract_insights` | Extract key insights from memories | `memory_ids[]`, `topic?` |
+| `analyze_patterns` | Analyze usage patterns and trends | `time_range?`, `type?` |
+
+### Behavior Operations (NEW!)
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `behavior_record` | Record behavior/workflow context | `action`, `context`, `metadata` |
+| `behavior_recall` | Recall relevant behavior patterns | `query`, `context?`, `limit?` |
+| `behavior_suggest` | Suggest next actions based on patterns | `current_context`, `goal?` |
+
+### Session Management (NEW!)
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `save_session` | Save current session context as memory | `branch?`, `status?`, `changed_files?` |
+| `get_session` | Retrieve saved session context | `session_id` |
+
+### API Key Management
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
@@ -109,13 +146,14 @@ const result = await client.callTool('create_memory', {
 | `rotate_api_key` | Rotate an API key | `key_id` |
 | `revoke_api_key` | Revoke an API key | `key_id` |
 
-### System Tools
+### System & Auth Tools
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
 | `health_check` | Check MCP server health | - |
 | `get_stats` | Get memory statistics | `user_id?` |
 | `list_topics` | List memory topics | `user_id?` |
+| `get_me` | Get current user profile | - |
 
 ## Transport Protocols
 
@@ -181,9 +219,36 @@ Best for: Local development, CLI tools, desktop applications
 # Start local MCP server
 lanonasis mcp-server start --stdio
 
+# Or start HTTP server
+lanonasis mcp-server start --http --port 3001
+
 # Connect via stdio
 # (automatically handled by CLI)
 ```
+
+## CLI-Embedded MCP Server
+
+The CLI includes an embedded MCP server that uses the same configuration and authentication:
+
+```bash
+# Check MCP server status
+lanonasis mcp-server status
+
+# Start MCP server in stdio mode (default)
+lanonasis mcp-server start
+
+# Start MCP server in HTTP mode
+lanonasis mcp-server start --http --port 3001
+
+# Start with verbose logging
+lanonasis mcp-server start --verbose
+```
+
+**Features:**
+- Uses CLI configuration (`~/.maas/config.json`)
+- Supports vendor key and JWT authentication
+- Auto-discovers and configures embedded server
+- Can run standalone or be invoked by CLI commands
 
 ## Authentication
 
@@ -199,6 +264,21 @@ X-API-Key: your-api-key
 Authorization: Bearer your-token
 ```
 
+### OAuth 2.0 with PKCE
+
+For interactive applications and IDE integrations:
+
+```bash
+# Initiate OAuth flow
+lanonasis auth login
+
+# Check status with live profile
+lanonasis auth status
+
+# View profile
+lanonasis whoami
+```
+
 ### Token Scopes
 
 Tokens can have different scopes:
@@ -208,6 +288,7 @@ Tokens can have different scopes:
 - `apikeys:read` - Read API keys
 - `apikeys:write` - Manage API keys
 - `mcp:access` - Access MCP resources
+- `mcp:full` - Full MCP access (all scopes)
 
 ## Error Handling
 
@@ -264,6 +345,32 @@ X-RateLimit-Reset: 1640995200
 5. **Cache Tool Definitions**: Cache `tools/list` results to reduce API calls
 6. **Batch Operations**: Use bulk operations when possible
 7. **Error Handling**: Always handle errors gracefully with retries
+8. **Token Refresh**: Proactively refresh OAuth tokens before expiry
+9. **Live Verification**: Use `auth status` to verify end-to-end access
+
+## IDE Integration
+
+### VSCode Extension (v2.1.1+)
+
+The VSCode extension now supports:
+- **Web Extensions**: Works in vscode.dev and github.dev
+- **Virtual Workspaces**: Full support with limited features
+- **CLI Integration**: Auto-discovers and uses local MCP server
+- **Enhanced UI**: React-based interface (experimental)
+
+**Configuration:**
+```json
+{
+  "lanonasis.enableMCP": true,
+  "lanonasis.mcpAutoDiscover": true,
+  "lanonasis.transportPreference": "auto",
+  "lanonasis.websocketUrl": "wss://mcp.lanonasis.com/ws"
+}
+```
+
+### Cursor & Windsurf
+
+Similar configuration available for Cursor and Windsurf IDEs.
 
 ## Related Documentation
 
@@ -272,4 +379,4 @@ X-RateLimit-Reset: 1640995200
 - [Memory Tools](../memory/overview.md) - Memory operations via MCP
 - [API Keys](../keys/vendor-key-management.md) - API key management
 - [Authentication](../auth/central-auth-gateway.md) - Authentication guide
-
+- [CLI Reference](../cli/reference.md) - CLI commands and options
