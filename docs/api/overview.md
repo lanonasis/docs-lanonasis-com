@@ -176,7 +176,7 @@ We provide official SDKs for popular programming languages:
 - [`POST /webhooks`](/api/endpoints/webhooks) - Configure webhook notifications
 
 ### Analytics & Monitoring
-- [`GET /analytics`](/api/endpoints/analytics) - Retrieve usage analytics and metrics
+- [`GET /analytics`](/api/analytics) - Retrieve usage analytics and metrics
 
 ## Response Format
 

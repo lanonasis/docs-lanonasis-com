@@ -1,4 +1,7 @@
-# Analytics API
+---
+title: Analytics API
+slug: /api/analytics
+---
 
 Retrieve comprehensive analytics and insights about your memory usage, performance metrics, and system health.
 
