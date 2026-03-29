@@ -1,6 +1,7 @@
 ---
 title: Welcome to LanOnasis
 sidebar_position: 1
+description: 'LanOnasis Developer Platform — Memory-as-a-Service API, SDKs, MCP integration, v-secure compliance, and full TypeScript/Python/Go SDK references.'
 ---
 
 # LanOnasis Memory Service Documentation

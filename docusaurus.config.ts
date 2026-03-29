@@ -68,7 +68,7 @@ const config: Config = {
   organizationName: 'LanOnasis',
   projectName: 'docs-LanOnasis',
 
-  onBrokenLinks: 'warn',
+  onBrokenLinks: 'throw',
 
   markdown: {
     format: 'mdx',
@@ -127,6 +127,10 @@ const config: Config = {
           showLastUpdateAuthor: enableGitLastUpdate,
         },
         blog: false, // Disable blog - docs only
+        sitemap: {
+          lastmod: 'date',
+          ignorePatterns: ['/tags/**', '/markdown-page'],
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
