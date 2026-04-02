@@ -81,7 +81,7 @@ onasis memory behavior suggest \
 onasis memory save-session --title "Feature Development"
 ```
 
-[CLI Reference →](./reference.md)
+[CLI Reference →](../cli/reference.md)
 
 ---
 
@@ -445,7 +445,7 @@ Install "LanOnasis Memory Assistant" v2.1.1+ from your IDE's extension marketpla
 ## 📞 Need Help?
 
 - **Documentation**: [docs.lanonasis.com](https://docs.lanonasis.com)
-- **CLI Reference**: [CLI Commands](./reference.md)
+- **CLI Reference**: [CLI Commands](../cli/reference.md)
 - **API Reference**: [API Docs](../api/overview.md)
 - **Issues**: [GitHub Issues](https://github.com/lanonasis/lanonasis-maas/issues)
 - **Enterprise**: enterprise@lanonasis.com

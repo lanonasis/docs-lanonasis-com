@@ -10,6 +10,7 @@
     "start": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus start",
     "prebuild": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js && bun run check:endpoints || true",
     "build": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus build",
+    "postbuild": "bash scripts/sentry-sourcemaps.sh || true",
     "generate:openapi-json": "node scripts/generate-openapi-json.js",
     "sync:docs": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js",
     "check:docs-sync": "node scripts/sync-docs-specs.js --check && node scripts/sync-docs-versions.js --check && node scripts/generate-openapi-json.js --check",
@@ -30,6 +31,7 @@
     "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints"
   },
   "dependencies": {
+    "@sentry/react": "^8.0.0",
     "@docusaurus/core": "3.9.0",
     "@docusaurus/preset-classic": "3.9.0",
     "@lanonasis/memory-client": "^2.2.0",
@@ -49,6 +51,7 @@
     "@docusaurus/module-type-aliases": "3.9.0",
     "@docusaurus/tsconfig": "3.9.0",
     "@docusaurus/types": "3.9.0",
+    "@sentry/cli": "^2.0.0",
     "typescript": "~5.6.2"
   },
   "browserslist": {

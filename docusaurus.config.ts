@@ -137,6 +137,9 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+  clientModules: [
+    require.resolve('./src/sentry.client.ts'),
+  ],
   plugins: plugins,
 
   themeConfig: {

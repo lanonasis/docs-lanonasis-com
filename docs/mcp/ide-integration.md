@@ -324,7 +324,7 @@ lanonasis auth status
 - [Production Server](./production-server.md) - Production deployment
 - [Authentication Guide](../auth/central-auth-gateway.md) - OAuth and API keys
 - [CLI Reference](../cli/reference.md) - CLI commands
-- [VSCode Extension](../extensions/vscode.md) - VSCode-specific features
+- [VSCode Extension](./overview.md) - VSCode-specific features
 
 ---
 
