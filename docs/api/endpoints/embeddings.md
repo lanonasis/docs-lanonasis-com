@@ -1,6 +1,7 @@
 # Embeddings API
 
-Generate and manage vector embeddings for your content using LanOnasis's advanced embedding models.
+Generate OpenAI-compatible vector embeddings for your content using the
+LanOnasis embeddings endpoint backed by Voyage AI.
 
 ## Endpoint
 
@@ -15,7 +16,7 @@ The Embeddings API allows you to convert text into high-dimensional vector repre
 ## Authentication
 
 ```http
-Authorization: Bearer <your-api-key>
+Authorization: Bearer lano_your_api_key_here
 ```
 
 ## Request
@@ -32,25 +33,18 @@ Authorization: Bearer <your-api-key>
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `text` | string | Yes | Text content to generate embeddings for |
-| `model` | string | No | Embedding model to use (default: `text-embedding-3-large`) |
-| `dimensions` | number | No | Number of dimensions for the embedding (default: 1536) |
-| `metadata` | object | No | Additional metadata to store with the embedding |
+| `input` | string or string[] | Yes | Text content or list of texts to embed |
+| `model` | string | No | Embedding model to use (default: `voyage-4`) |
 
 ### Example Request
 
 ```bash
 curl -X POST https://api.lanonasis.com/api/v1/embeddings \
-  -H "Authorization: Bearer your-api-key" \
+  -H "Authorization: Bearer lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "LanOnasis provides intelligent memory management for AI applications",
-    "model": "text-embedding-3-large",
-    "dimensions": 1536,
-    "metadata": {
-      "source": "documentation",
-      "category": "introduction"
-    }
+    "input": "LanOnasis provides intelligent memory management for AI applications",
+    "model": "voyage-4"
   }'
 ```
 
@@ -63,16 +57,11 @@ const client = new MemoryClient({
 });
 
 const embedding = await client.generateEmbedding({
-  text: "LanOnasis provides intelligent memory management for AI applications",
-  model: "text-embedding-3-large",
-  dimensions: 1536,
-  metadata: {
-    source: "documentation",
-    category: "introduction"
-  }
+  input: "LanOnasis provides intelligent memory management for AI applications",
+  model: "voyage-4"
 });
 
-console.log(embedding.vector); // [0.1, -0.2, 0.3, ...]
+console.log(embedding.data[0].embedding); // [0.1, -0.2, 0.3, ...]
 ```
 
 ```python
@@ -84,16 +73,11 @@ client = MemoryClient(
 )
 
 embedding = client.generate_embedding(
-    text="LanOnasis provides intelligent memory management for AI applications",
-    model="text-embedding-3-large",
-    dimensions=1536,
-    metadata={
-        "source": "documentation",
-        "category": "introduction"
-    }
+    input="LanOnasis provides intelligent memory management for AI applications",
+    model="voyage-4",
 )
 
-print(embedding.vector)  # [0.1, -0.2, 0.3, ...]
+print(embedding["data"][0]["embedding"])  # [0.1, -0.2, 0.3, ...]
 ```
 
 ## Response
@@ -102,22 +86,18 @@ print(embedding.vector)  # [0.1, -0.2, 0.3, ...]
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "emb_1234567890abcdef",
-    "vector": [0.1, -0.2, 0.3, 0.4, -0.5, ...],
-    "model": "text-embedding-3-large",
-    "dimensions": 1536,
-    "text": "LanOnasis provides intelligent memory management for AI applications",
-    "metadata": {
-      "source": "documentation",
-      "category": "introduction"
-    },
-    "created_at": "2024-01-15T10:30:00Z",
-    "usage": {
-      "tokens": 12,
-      "cost": 0.0001
+  "object": "list",
+  "data": [
+    {
+      "object": "embedding",
+      "embedding": [0.1, -0.2, 0.3, 0.4, -0.5],
+      "index": 0
     }
+  ],
+  "model": "voyage-4",
+  "usage": {
+    "prompt_tokens": 12,
+    "total_tokens": 12
   }
 }
 ```
@@ -130,9 +110,9 @@ print(embedding.vector)  # [0.1, -0.2, 0.3, ...]
   "success": false,
   "error": {
     "code": "INVALID_REQUEST",
-    "message": "Text content is required",
-    "details": {
-      "field": "text",
+      "message": "Input is required",
+      "details": {
+      "field": "input",
       "reason": "missing_required_field"
     }
   }
@@ -173,9 +153,7 @@ print(embedding.vector)  # [0.1, -0.2, 0.3, ...]
 
 | Model | Dimensions | Max Tokens | Use Case |
 |-------|------------|------------|----------|
-| `text-embedding-3-small` | 512, 1024, 1536 | 8191 | Fast, cost-effective |
-| `text-embedding-3-large` | 1024, 1536, 3072 | 8191 | High quality, balanced |
-| `text-embedding-ada-002` | 1536 | 8191 | Legacy, stable |
+| `voyage-4` | 1024 | Provider managed | Default production model |
 
 ## Rate Limits
 
@@ -185,10 +163,10 @@ print(embedding.vector)  # [0.1, -0.2, 0.3, ...]
 
 ## Best Practices
 
-1. **Batch Processing**: Use the batch endpoint for multiple texts
-2. **Model Selection**: Choose appropriate model based on use case
+1. **Batch Processing**: Use `input: string[]` to embed multiple texts in one request
+2. **Model Selection**: Omit `model` unless you have an explicit provider override requirement
 3. **Caching**: Cache embeddings for repeated text
-4. **Error Handling**: Implement retry logic for rate limits
+4. **Error Handling**: Implement retry logic for rate limits and upstream provider failures
 
 ## Use Cases
 

@@ -5,8 +5,7 @@ sidebar_position: 1
 
 # LanOnasis API Reference
 
-Welcome to the LanOnasis API documentation. Our REST API provides complete access to the Memory-as-a-Service platform with comprehensive endpoints for memory management, search, analytics, and real-time features.
-Welcome to the LanOnasis Memory-as-a-Service API documentation. Our REST API allows you to integrate powerful memory management and semantic search capabilities into your applications.
+Welcome to the LanOnasis Memory-as-a-Service API documentation. Our REST API provides complete access to the memory platform, including memory management, semantic search, analytics, embeddings, and the intelligence suite.
 
 ## Base URL
 
@@ -25,6 +24,14 @@ X-API-Key: lano_your_api_key_here
 Authorization: Bearer YOUR_TOKEN (OAuth/JWT)
 Content-Type: application/json
 ```
+
+Public API key examples use the `lano_` platform prefix. The edge auth layer
+still accepts several legacy/internal prefixes for compatibility, but new
+clients should treat `lano_*` as the canonical public contract.
+
+Public memory routes are documented under the plural `/api/v1/memories/*`
+family. The production redirect layer still accepts singular `/api/v1/memory/*`
+aliases for compatibility, but new clients should target the plural form.
 
 ## Quick Start
 
@@ -86,7 +93,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories \
 
 ### 🧠 Memory Management
 - [`POST /memories`](./memories#create-memory) - Create a new memory
-- [`GET /memories/{id}`](./memories#get-memory) - Retrieve a memory
+- [`GET /memories/{id}`](./memories#get-memory) - Retrieve a memory by full UUID or unambiguous 8+ character UUID prefix
 - [`PUT /memories/{id}`](./memories#update-memory) - Update a memory
 - [`DELETE /memories/{id}`](./memories#delete-memory) - Delete a memory
 - [`GET /memories`](./memories#list-memories) - List memories with pagination

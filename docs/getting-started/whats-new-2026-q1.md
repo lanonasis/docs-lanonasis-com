@@ -266,7 +266,11 @@ onasis memory create --content-file ./memory.md
 - Improved error handling
 - Intelligence and behavior operations
 
-**Endpoint:** `https://api.lanonasis.com/api/v1/memory`
+**Endpoint:** `https://api.lanonasis.com/api/v1/memories`
+
+Public documentation now treats the plural `/api/v1/memories/*` family as
+canonical. Singular `/api/v1/memory/*` routes remain available as compatibility
+aliases in the redirect layer.
 
 ---
 

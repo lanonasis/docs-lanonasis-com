@@ -1,9 +1,18 @@
-const { readdirSync, readFileSync, statSync } = require('fs');
+const { existsSync, readdirSync, readFileSync, statSync } = require('fs');
 const { join, extname } = require('path');
+
+function resolveDocsPath() {
+  const candidates = [
+    join(process.cwd(), 'docs'),
+    join(__dirname, '..', 'docs'),
+  ];
+
+  return candidates.find(candidate => existsSync(candidate)) || candidates[0];
+}
 
 class LanOnasisDocsSearch {
   constructor() {
-    this.docsPath = join(process.cwd(), 'docs');
+    this.docsPath = resolveDocsPath();
     this.baseUrl = 'https://docs.lanonasis.com';
   }
 
@@ -251,4 +260,3 @@ module.exports = async function handler(req, res) {
     });
   }
 };
-

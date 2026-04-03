@@ -167,7 +167,7 @@ client.memories.get(id: string): Promise<Memory>
 
 **Example:**
 ```typescript
-const memory = await client.memories.get('mem_456789');
+const memory = await client.memories.get('4a4a675f-2e35-4598-ae7a-1c1f35730226');
 console.log('Memory title:', memory.title);
 console.log('Memory content:', memory.content);
 ```
@@ -182,7 +182,7 @@ client.memories.update(id: string, data: UpdateMemoryData): Promise<Memory>
 
 **Example:**
 ```typescript
-const updatedMemory = await client.memories.update('mem_456789', {
+const updatedMemory = await client.memories.update('4a4a675f-2e35-4598-ae7a-1c1f35730226', {
   tags: ['project', 'requirements', 'high-priority', 'reviewed'],
   metadata: {
     ...existingMetadata,
@@ -202,7 +202,7 @@ client.memories.delete(id: string): Promise<void>
 
 **Example:**
 ```typescript
-await client.memories.delete('mem_456789');
+await client.memories.delete('4a4a675f-2e35-4598-ae7a-1c1f35730226');
 console.log('Memory deleted successfully');
 ```
 
@@ -362,7 +362,7 @@ client.embeddings.generate(text: string, options?: EmbeddingOptions): Promise<Em
 ```typescript
 const embedding = await client.embeddings.generate(
   'User authentication and security requirements',
-  { model: 'text-embedding-ada-002' }
+  { model: 'voyage-4' }
 );
 
 console.log('Embedding dimensions:', embedding.dimensions);

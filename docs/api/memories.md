@@ -55,7 +55,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories \
 {
   "success": true,
   "data": {
-    "id": "mem_456789",
+    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
     "title": "Project Requirements",
     "content": "The new feature should include user authentication...",
     "type": "project",
@@ -76,7 +76,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories \
 
 ## Get Memory
 
-Retrieve a specific memory by ID.
+Retrieve a specific memory by full UUID or an unambiguous UUID prefix.
 
 ### Request
 
@@ -88,14 +88,19 @@ GET /api/v1/memories/{id}
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | Memory ID (e.g., mem_456789) |
+| `id` | string | Yes | Full UUID or an unambiguous UUID prefix of at least 8 characters |
 
 ### Example Request
 
 ```bash
-curl -X GET https://api.lanonasis.com/api/v1/memories/mem_456789 \
+curl -X GET https://api.lanonasis.com/api/v1/memories/4a4a675f \
   -H "X-API-Key: lano_your_api_key_here"
 ```
+
+The same route also accepts a full UUID, for example
+`4a4a675f-2e35-4598-ae7a-1c1f35730226`. Too-short prefixes are rejected, and
+ambiguous prefixes return an error without leaking records outside the caller's
+existing scope.
 
 ### Example Response
 
@@ -103,7 +108,7 @@ curl -X GET https://api.lanonasis.com/api/v1/memories/mem_456789 \
 {
   "success": true,
   "data": {
-    "id": "mem_456789",
+    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
     "title": "Project Requirements",
     "content": "The new feature should include user authentication...",
     "type": "project",
@@ -146,7 +151,7 @@ PUT /api/v1/memories/{id}
 ### Example Request
 
 ```bash
-curl -X PUT https://api.lanonasis.com/api/v1/memories/mem_456789 \
+curl -X PUT https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
   -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
@@ -167,7 +172,7 @@ curl -X PUT https://api.lanonasis.com/api/v1/memories/mem_456789 \
 {
   "success": true,
   "data": {
-    "id": "mem_456789",
+    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
     "title": "Project Requirements",
     "content": "The new feature should include user authentication...",
     "type": "project",
@@ -206,7 +211,7 @@ DELETE /api/v1/memories/{id}
 ### Example Request
 
 ```bash
-curl -X DELETE https://api.lanonasis.com/api/v1/memories/mem_456789 \
+curl -X DELETE https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 
@@ -217,7 +222,7 @@ curl -X DELETE https://api.lanonasis.com/api/v1/memories/mem_456789 \
   "success": true,
   "message": "Memory deleted successfully",
   "data": {
-    "id": "mem_456789",
+    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
     "deleted_at": "2024-01-16T15:30:00Z"
   }
 }
@@ -258,7 +263,7 @@ curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=10&offset=0&tags=pr
   "success": true,
   "data": [
     {
-      "id": "mem_456789",
+      "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
       "title": "Project Requirements",
       "content": "The new feature should include user authentication...",
       "memory_type": "project",
@@ -267,7 +272,7 @@ curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=10&offset=0&tags=pr
       "updated_at": "2024-01-16T14:22:00Z"
     },
     {
-      "id": "mem_789012",
+      "id": "7b7c1a6d-58d0-4c3d-b679-2e1ac0a4ef10",
       "title": "Technical Specifications",
       "content": "Database schema and API design for the new feature...",
       "memory_type": "project",

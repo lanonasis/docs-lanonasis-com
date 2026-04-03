@@ -48,7 +48,7 @@ curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
   "data": {
     "results": [
       {
-        "id": "mem_456789",
+        "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
         "title": "Project Requirements",
         "content": "The new feature should include user authentication, data visualization, and real-time updates...",
         "memory_type": "project",
@@ -64,7 +64,7 @@ curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
         "updated_at": "2024-01-16T14:22:00Z"
       },
       {
-        "id": "mem_789012",
+        "id": "7b7c1a6d-58d0-4c3d-b679-2e1ac0a4ef10",
         "title": "Security Guidelines",
         "content": "All applications must implement secure authentication mechanisms including...",
         "memory_type": "project",
@@ -118,7 +118,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories/search \
   "data": {
     "results": [
       {
-        "id": "mem_456789",
+        "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
         "title": "Project Requirements",
         "content": "The new feature should include user authentication...",
         "memory_type": "project",
@@ -157,8 +157,8 @@ POST /api/v1/embeddings
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `text` | string | Yes | Text to generate embeddings for |
-| `model` | string | No | Embedding model (default: text-embedding-ada-002) |
+| `input` | string or string[] | Yes | Text or list of texts to generate embeddings for |
+| `model` | string | No | Embedding model (default: voyage-4) |
 
 ### Example Request
 
@@ -167,8 +167,8 @@ curl -X POST https://api.lanonasis.com/api/v1/embeddings \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "User authentication and security requirements",
-    "model": "text-embedding-ada-002"
+    "input": "User authentication and security requirements",
+    "model": "voyage-4"
   }'
 ```
 
@@ -184,7 +184,7 @@ curl -X POST https://api.lanonasis.com/api/v1/embeddings \
       "index": 0
     }
   ],
-  "model": "text-embedding-ada-002",
+  "model": "voyage-4",
   "usage": {
     "prompt_tokens": 6,
     "total_tokens": 6
