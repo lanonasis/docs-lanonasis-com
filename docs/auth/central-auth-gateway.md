@@ -3,6 +3,12 @@ title: Central Auth Gateway
 sidebar_label: Central Auth Gateway
 ---
 
+> **Deprecation notice (task #128/#129):** The Central Auth Gateway is the underlying
+> platform auth infrastructure. For **dashboard web apps**, the supported owner model is
+> `direct-auth` (direct Supabase sessions). The gateway is used by the dashboard only for
+> token-exchange bridging and SSO cookie sync — not as the primary interactive auth path.
+> See [direct-auth](#) and the [migration guide](../changes/migrations.md) for details.
+
 The Central Auth Gateway is the canonical authentication entry for all LanOnasis clients and services. It standardizes OAuth (Device Flow and PKCE) and enforces project-scoped access across the platform.
 
 ## Endpoints
@@ -22,8 +28,12 @@ Typical OAuth routes (representative):
 
 ## Which clients use which flow
 
-- CLI / IDE extensions / MCP-integrated agents: Device Flow (user-friendly, headless-safe), backed by PKCE.
-- Web dashboards and first‑party apps: PKCE in browser contexts.
+- CLI / IDE extensions / MCP-integrated agents: Device Flow via the gateway (user-friendly, headless-safe), backed by PKCE.
+- **Web dashboards and first‑party apps (task #128/#129): direct-auth is the supported owner model.**
+  The dashboard uses Supabase direct sessions (`direct-auth`) as the primary interactive auth path.
+  The gateway is still used for token-exchange bridging (Supabase session → platform SSO cookies) and
+  for platform-wide API key / service token management, but it is no longer the dashboard's primary
+  interactive auth entrypoint.
 - Service-to-service: short‑lived, scoped tokens via the gateway; avoid long‑lived static keys.
 - Raw API keys: legacy/limited; only where explicitly documented and scoped. Plan upgrades to OAuth.
 

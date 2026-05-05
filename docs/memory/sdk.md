@@ -3,29 +3,29 @@ title: Memory SDK
 sidebar_label: SDK
 ---
 
-The official TypeScript SDK `@lanonasis/memory-client` offers a typed interface to the Memory Suite.
+The official TypeScript SDK `@lanonasis/memory-sdk` offers a typed interface to the Memory as a Service (MaaS) REST API.
 
 ## Install
 
 Use your workspace's package manager (Bun recommended).
 
 ```bash
-bun add @lanonasis/memory-client
+bun add @lanonasis/memory-sdk
 # or
-npm install @lanonasis/memory-client
+npm install @lanonasis/memory-sdk
 # or
-yarn add @lanonasis/memory-client
+yarn add @lanonasis/memory-sdk
 ```
 
-**Package**: `@lanonasis/memory-client`  
-**Version**: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.1<!-- /AUTO -->
+**Package**: `@lanonasis/memory-sdk`  
+**Version**: <!-- AUTO:MEMORY_SDK_VERSION -->1.0.0<!-- /AUTO -->
 
 > This page covers the REST-focused memory client. For intelligence and behavior workflows used by the current CLI and `mcp-core`, use `@lanonasis/mem-intel-sdk` (current monorepo source version `2.0.6`).
 
 ## Basic usage
 
 ```typescript
-import { MemoryClient, createMemoryClient } from "@lanonasis/memory-client";
+import { MemoryClient, MultiModalMemoryClient, createMaaSClient } from "@lanonasis/memory-sdk";
 
 // Create client with required apiUrl
 const client = new MemoryClient({
@@ -36,8 +36,8 @@ const client = new MemoryClient({
   timeout: 30000
 });
 
-// Or use factory function
-const client = createMemoryClient({
+// Factory function alias
+const clientFromFactory = createMaaSClient({
   apiUrl: "https://api.lanonasis.com",
   apiKey: process.env.LANONASIS_API_KEY
 });
@@ -272,35 +272,43 @@ interface MemoryClientConfig {
 
 ### Default Configurations
 
+The SDK does not export pre-defined `defaultConfigs`. Configure your client directly:
+
 ```typescript
-import { defaultConfigs } from "@lanonasis/memory-client";
-
-// Development
-const devClient = new MemoryClient({
-  ...defaultConfigs.development,
-  apiKey: process.env.API_KEY
-});
-
-// Production
-const prodClient = new MemoryClient({
-  ...defaultConfigs.production,
-  apiKey: process.env.API_KEY
+const client = new MemoryClient({
+  apiUrl: process.env.LANONASIS_API_URL || "https://api.lanonasis.com",
+  apiKey: process.env.LANONASIS_API_KEY,
+  timeout: 30000
 });
 ```
 
 ## Enhanced Client
 
-For advanced features including CLI integration:
+For multi-modal support (images, audio, video, documents, code), use `MultiModalMemoryClient`:
 
 ```typescript
-import { EnhancedMemoryClient } from "@lanonasis/memory-client";
+import { MultiModalMemoryClient } from "@lanonasis/memory-sdk";
 
-const enhancedClient = new EnhancedMemoryClient({
+const mmClient = new MultiModalMemoryClient({
   apiUrl: "https://api.lanonasis.com",
-  apiKey: process.env.API_KEY,
-  enableCLI: true,
-  enableMCP: true
+  apiKey: process.env.LANONASIS_API_KEY
 });
+
+// Create memory from an image (performs OCR and AI description automatically)
+await mmClient.createImageMemory(
+  "Business card",
+  imageBuffer,
+  { extractText: true, generateDescription: true }
+);
+
+// Create memory from audio (transcribes automatically)
+await mmClient.createAudioMemory("Meeting recording", audioBuffer);
+
+// Create memory from code (extracts functions, classes, imports)
+await mmClient.createCodeMemory("Utility module", codeContent, "typescript");
+
+// Create memory from document (extracts text, generates summary)
+await mmClient.createDocumentMemory("Contract", pdfBuffer, "pdf");
 ```
 
 ## Error Handling

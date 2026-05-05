@@ -42,7 +42,7 @@ bun add @lanonasis/security-sdk
 ```typescript
 import { SecuritySDK } from '@lanonasis/security-sdk';
 
-// Initialize with master key
+// Initialize with master key (32 bytes / 64 hex chars)
 const security = new SecuritySDK(process.env.ONASIS_MASTER_KEY);
 
 // Encrypt sensitive data
@@ -50,6 +50,8 @@ const encrypted = security.encrypt(
   { stripe_key: 'sk_live_abc123' },
   'user_123_stripe' // context for key derivation
 );
+// Returns: { encrypted, iv, authTag, keyId, algorithm, version }
+// Note: keyId is auto-generated, not user-provided
 
 // Store encrypted data in database
 await db.insert({
@@ -102,15 +104,15 @@ const token = generateToken(32); // 64 hex characters
 
 #### `encrypt(data, context, options?)`
 
-Encrypts data using AES-256-GCM.
+Encrypts data using AES-256-GCM. The `keyId` is auto-generated from the context.
 
 ```typescript
 const encrypted = security.encrypt(
   'sensitive-data',
   'user_context',
-  { keyId: 'optional-key-id' }
+  { algorithm: 'aes-256-gcm', keyDerivation: 'hkdf' }
 );
-// Returns: { encrypted, iv, authTag, keyId }
+// Returns: { encrypted, iv, authTag, keyId, algorithm, version }
 ```
 
 #### `decrypt(encryptedData, context)`
@@ -177,12 +179,12 @@ Rotates encryption keys without downtime.
 const newEncrypted = security.rotate(oldEncrypted, 'user_context');
 ```
 
-#### `generateApiKey(prefix?)`
+#### `generateAPIKey(prefix?)`
 
-Generates cryptographically secure API keys.
+Generates cryptographically secure API keys with a prefix.
 
 ```typescript
-const apiKey = generateApiKey(); // 'lns_...'
+const apiKey = security.generateAPIKey('lns'); // 'lns_...' (default prefix: 'onasis')
 ```
 
 #### `generateToken(bytes?)`

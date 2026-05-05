@@ -1,334 +1,545 @@
 ---
 title: Memory SDK
 sidebar_label: Memory SDK
-description: Semantic search and memory indexing SDK for storing and retrieving contextual information
+description: Official TypeScript SDK for Lanonasis Memory as a Service (MaaS)
 tags:
   - sdk
   - memory
-  - search
-  - semantic
+  - maas
+  - typescript
 ---
 
-# Memory SDK
+# @lanonasis/memory-sdk
 
-The Memory SDK provides semantic search and intelligent memory management capabilities for storing, indexing, and retrieving contextual information in your applications.
+Official TypeScript SDK for Lanonasis Memory as a Service (MaaS). Provides typed access to memory CRUD, search, topics, and multi-modal content processing.
 
 ## Installation
 
 ```bash
-npm install @lanonasis/memory-client
+bun add @lanonasis/memory-sdk
 # or
-yarn add @lanonasis/memory-client
+npm install @lanonasis/memory-sdk
+# or
+yarn add @lanonasis/memory-sdk
 ```
+
+**Package**: `@lanonasis/memory-sdk`
+**Version**: 1.0.0
 
 ## Quick Start
 
 ```typescript
-import { MemoryClient } from "@lanonasis/memory-client";
+import { MemoryClient, createMaaSClient } from "@lanonasis/memory-sdk";
 
 // Initialize the client
-const memoryClient = new MemoryClient({
-  apiUrl: process.env.MAAS_ENDPOINT || "http://localhost:8000",
-  apiKey: process.env.MAAS_API_KEY,
+const memory = new MemoryClient({
+  apiUrl: "https://api.lanonasis.com",
+  apiKey: process.env.LANONASIS_API_KEY,
+  timeout: 30000
 });
 
-// Index documents
-await memoryClient.upsert([
-  {
-    id: "doc-1",
-    text: "Semantic search allows finding similar documents by meaning",
-    metadata: {
-      title: "Semantic Search",
-      category: "nlp",
-      source: "documentation",
-    },
-  },
-]);
-
-// Search for documents
-const results = await memoryClient.search("How does semantic search work?", {
-  topK: 5,
+// Or use the factory function
+const memory = createMaaSClient({
+  apiUrl: "https://api.lanonasis.com",
+  apiKey: process.env.LANONASIS_API_KEY
 });
 
-console.log(
-  results.hits.map((hit) => ({
-    id: hit.id,
-    score: hit.score,
-    text: hit.payload?.text,
-  })),
-);
+// Create a memory
+const result = await memory.createMemory({
+  title: "My Memory",
+  content: "Memory content here",
+  memory_type: "knowledge",
+  tags: ["example"]
+});
+
+if (result.data) {
+  console.log("Memory created:", result.data.id);
+} else {
+  console.error("Error:", result.error);
+}
+
+// Search memories
+const searchResult = await memory.searchMemories({
+  query: "search query",
+  limit: 10,
+  threshold: 0.7
+});
+
+// List memories
+const listResult = await memory.listMemories({
+  page: 1,
+  limit: 20,
+  memory_type: "knowledge"
+});
+```
+
+## Environment Variables
+
+```bash
+LANONASIS_API_URL=https://api.lanonasis.com
+LANONASIS_API_KEY=your-api-key
 ```
 
 ## Core Concepts
 
-### Documents
-
-Documents in the Memory SDK consist of:
-
-- **id**: Unique identifier for the document
-- **text**: The content to be embedded and searched
-- **metadata**: Arbitrary metadata attached to the document
+### Memory Types
 
 ```typescript
-interface Document {
-  id: string;
-  text: string;
-  metadata?: Record<string, any>;
+type MemoryType = 'context' | 'project' | 'knowledge' | 'reference' | 'personal' | 'workflow';
+```
+
+### Memory Status
+
+```typescript
+type MemoryStatus = 'active' | 'archived' | 'draft' | 'deleted';
+```
+
+### Response Format
+
+All methods return `Promise<ApiResponse<T>>` where `ApiResponse` has:
+
+```typescript
+interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+  message?: string;
 }
 ```
 
-### Search Results
+## API Methods
 
-Search results include relevance scores and metadata:
+### Memory Operations
+
+#### `createMemory(memory: CreateMemoryRequest)`
+
+Create a new memory.
 
 ```typescript
-interface SearchResult {
-  hits: Array<{
-    id: string;
-    score: number;
-    payload?: any;
-    metadata?: Record<string, any>;
-  }>;
-  took?: number;
+const result = await memory.createMemory({
+  title: "Memory Title",
+  content: "Memory content",
+  memory_type: "knowledge", // context | project | knowledge | reference | personal | workflow
+  tags: ["tag1", "tag2"],
+  topic_id: "optional-topic-id",
+  project_ref: "optional-project-ref",
+  metadata: { custom: "data" }
+});
+```
+
+#### `createMemoryWithPreprocessing(memory: CreateMemoryRequest & options)`
+
+Create memory with intelligent preprocessing (chunking, content cleaning).
+
+```typescript
+const result = await memory.createMemoryWithPreprocessing({
+  title: "Long Document",
+  content: largeContent,
+  memory_type: "knowledge",
+  chunkingStrategy: "semantic", // fixed-size | semantic | paragraph | sentence | code-block
+  maxChunkSize: 1000,
+  chunkOverlap: 200
+});
+```
+
+#### `getMemory(id: string)`
+
+Get a memory by ID.
+
+```typescript
+const result = await memory.getMemory("memory-id");
+if (result.data) {
+  console.log(result.data.title, result.data.content);
 }
 ```
 
-## Methods
+#### `updateMemory(id: string, updates: UpdateMemoryRequest)`
 
-### upsert(documents, options)
-
-Insert or update documents in the memory store.
+Update an existing memory.
 
 ```typescript
-// Single document
-await memoryClient.upsert({
-  id: "doc-1",
-  text: "Content here",
-  metadata: { title: "Title" },
-});
-
-// Multiple documents
-await memoryClient.upsert([
-  { id: "doc-1", text: "Content 1", metadata: { type: "article" } },
-  { id: "doc-2", text: "Content 2", metadata: { type: "guide" } },
-]);
-```
-
-### search(query, options)
-
-Perform semantic search across indexed documents.
-
-```typescript
-const results = await memoryClient.search("How to use the API?", {
-  topK: 10,
-  includeMetadata: true,
-  filters: {
-    type: "documentation",
-  },
-});
-
-results.hits.forEach((hit) => {
-  console.log(`Score: ${hit.score}, Document: ${hit.id}`);
+const result = await memory.updateMemory("memory-id", {
+  title: "Updated Title",
+  content: "Updated content",
+  tags: ["updated", "tags"]
 });
 ```
 
-**Options:**
+#### `deleteMemory(id: string)`
 
-- `topK` (number): Maximum number of results to return (default: 10)
-- `includeMetadata` (boolean): Include metadata in results
-- `filters` (object): Filter results by metadata fields
-- `threshold` (number): Minimum similarity score (0-1)
-
-### rerank(query, documents, options)
-
-Re-rank documents using a semantic similarity model.
+Delete a memory.
 
 ```typescript
-const reranked = await memoryClient.rerank(
-  "What is semantic search?",
-  [
-    { id: "doc-1", text: "Semantic search uses embeddings" },
-    { id: "doc-2", text: "Full-text search uses keywords" },
-    { id: "doc-3", text: "Hybrid search combines both approaches" },
-  ],
-  { topK: 2 },
+const result = await memory.deleteMemory("memory-id");
+```
+
+#### `listMemories(options?)`
+
+List memories with pagination and filtering.
+
+```typescript
+const result = await memory.listMemories({
+  page: 1,
+  limit: 20,
+  memory_type: "knowledge",
+  topic_id: "topic-id",
+  project_ref: "project-ref",
+  status: "active",
+  tags: ["tag1"],
+  sort: "created_at",
+  order: "desc"
+});
+```
+
+#### `searchMemories(request: SearchMemoryRequest)`
+
+Semantic search across memories.
+
+```typescript
+const result = await memory.searchMemories({
+  query: "search query",
+  memory_types: ["knowledge", "project"],
+  tags: ["tag1"],
+  topic_id: "topic-id",
+  project_ref: "project-ref",
+  status: "active",
+  limit: 10,
+  threshold: 0.7
+});
+
+if (result.data) {
+  console.log(`Found ${result.data.total_results} results in ${result.data.search_time_ms}ms`);
+  result.data.results.forEach(r => {
+    console.log(r.memory_id, r.title, r.relevance_score);
+  });
+}
+```
+
+#### `buildContext(options)`
+
+Build intelligent context from memories for AI interactions.
+
+```typescript
+const result = await memory.buildContext({
+  query: "What is the project status?",
+  memoryIds: ["id1", "id2"],
+  strategy: "relevance", // relevance | temporal | conversational | diverse | hierarchical | hybrid
+  maxTokens: 4000,
+  minRelevanceScore: 0.7
+});
+
+if (result.data) {
+  console.log(result.data.context); // Assembled context string
+  console.log("Quality scores:", result.data.quality);
+}
+```
+
+#### `searchWithContext(query, options?)`
+
+Convenience method combining search and context building.
+
+```typescript
+const result = await memory.searchWithContext(
+  "What decisions were made about the architecture?",
+  { limit: 10, strategy: "hybrid" }
 );
 
-console.log(reranked); // Top 2 most relevant documents
+if (result.data) {
+  console.log(result.data.context);
+  console.log("Search results:", result.data.searchResults);
+}
+```
+
+#### `bulkDeleteMemories(memoryIds: string[])`
+
+Delete multiple memories.
+
+```typescript
+const result = await memory.bulkDeleteMemories(["id1", "id2", "id3"]);
+if (result.data) {
+  console.log(`Deleted ${result.data.deleted_count} memories`);
+  console.log("Failed:", result.data.failed_ids);
+}
+```
+
+### Topic Operations
+
+#### `createTopic(topic: CreateTopicRequest)`
+
+Create a new topic.
+
+```typescript
+const result = await memory.createTopic({
+  name: "Topic Name",
+  description: "Topic description",
+  color: "#FF5733",
+  icon: "folder",
+  parent_topic_id: "optional-parent-id"
+});
+```
+
+#### `getTopics()`
+
+Get all topics.
+
+```typescript
+const result = await memory.getTopics();
+```
+
+#### `getTopic(id: string)`
+
+Get a topic by ID.
+
+```typescript
+const result = await memory.getTopic("topic-id");
+```
+
+#### `updateTopic(id: string, updates)`
+
+Update a topic.
+
+```typescript
+const result = await memory.updateTopic("topic-id", {
+  name: "Updated Name",
+  description: "Updated description"
+});
+```
+
+#### `deleteTopic(id: string)`
+
+Delete a topic.
+
+```typescript
+const result = await memory.deleteTopic("topic-id");
+```
+
+### Statistics
+
+#### `getMemoryStats()`
+
+Get user memory statistics.
+
+```typescript
+const result = await memory.getMemoryStats();
+if (result.data) {
+  console.log("Total memories:", result.data.total_memories);
+  console.log("By type:", result.data.memories_by_type);
+}
+```
+
+### Authentication Methods
+
+#### `setAuthToken(token: string)`
+
+Update authentication token (Bearer).
+
+```typescript
+memory.setAuthToken("new-bearer-token");
+```
+
+#### `setApiKey(apiKey: string)`
+
+Update API key.
+
+```typescript
+memory.setApiKey("new-api-key");
+```
+
+#### `clearAuth()`
+
+Clear authentication.
+
+```typescript
+memory.clearAuth();
+```
+
+### API Key Management
+
+The SDK also provides API key management methods:
+
+```typescript
+// Create project
+const project = await memory.createProject({
+  name: "My Project",
+  organizationId: "org-123"
+});
+
+// Create API key
+const apiKey = await memory.createApiKey({
+  name: "Production Key",
+  keyType: "standard",
+  environment: "production",
+  accessLevel: "authenticated",
+  projectId: project.data.id
+});
+
+// List API keys
+const keys = await memory.listApiKeys({ projectId: project.data.id });
+
+// Rotate API key
+const rotated = await memory.rotateApiKey(keyId);
+
+// Delete API key
+await memory.deleteApiKey(keyId);
+```
+
+### MCP Integration
+
+```typescript
+// Register MCP tool
+await memory.registerMCPTool({
+  toolId: "my-tool",
+  toolName: "My Tool",
+  organizationId: "org-123",
+  permissions: {
+    keys: ["read"],
+    environments: ["development", "production"]
+  }
+});
+
+// Create MCP access request
+const request = await memory.createMCPAccessRequest({
+  toolId: "my-tool",
+  organizationId: "org-123",
+  keyNames: ["read"],
+  environment: "development",
+  justification: "Need access for testing",
+  estimatedDuration: 3600
+});
+
+// Create MCP session
+const session = await memory.createMCPSession(request.data.requestId);
 ```
 
 ## Configuration
 
-### Initialization Options
+### MaaSClientConfig
 
 ```typescript
-const client = new MemoryClient({
-  apiUrl: "https://api.example.com", // API endpoint
-  apiKey: "sk-xxxxx", // Authentication key
-  project: "my-project", // Project/namespace
-  timeout: 30000, // Request timeout in ms
-  retries: 3, // Number of retries
+interface MaaSClientConfig {
+  apiUrl: string;              // Required: API base URL
+  apiKey?: string;             // Optional: API key (X-API-Key header)
+  authToken?: string;          // Optional: Bearer token (alternative to apiKey)
+  timeout?: number;            // Optional: Request timeout in ms (default: 30000)
+}
+```
+
+### Default Configurations
+
+```typescript
+import { defaultConfigs } from "@lanonasis/memory-sdk";
+
+// Development
+const devClient = new MemoryClient({
+  ...defaultConfigs.development,
+  apiKey: process.env.LANONASIS_API_KEY
+});
+
+// Production
+const prodClient = new MemoryClient({
+  ...defaultConfigs.production,
+  apiKey: process.env.LANONASIS_API_KEY
 });
 ```
 
-### Environment Variables
+## MultiModal Memory Client
 
-For easier configuration, set these environment variables:
-
-```bash
-MAAS_ENDPOINT=https://api.example.com
-MAAS_API_KEY=sk-xxxxx
-MAAS_PROJECT=my-project
-```
-
-Then initialize without parameters:
+For processing images, audio, video, documents, and code:
 
 ```typescript
-const client = new MemoryClient();
-```
+import { MultiModalMemoryClient } from "@lanonasis/memory-sdk";
 
-## Examples
+const multimodal = new MultiModalMemoryClient({
+  apiUrl: "https://api.lanonasis.com",
+  apiKey: process.env.LANONASIS_API_KEY
+});
 
-### Indexing Documentation
+// Process an image with OCR
+const imageMemory = await multimodal.createImageMemory(
+  "Document Screenshot",
+  imageBuffer,
+  { extractText: true, generateDescription: true }
+);
 
-```typescript
-import { MemoryClient } from "@lanonasis/memory-client";
-import fs from "fs";
-import matter from "gray-matter";
+// Process audio with transcription
+const audioMemory = await multimodal.createAudioMemory(
+  "Meeting Recording",
+  audioBuffer
+);
 
-const client = new MemoryClient();
+// Process code with semantic analysis
+const codeMemory = await multimodal.createCodeMemory(
+  "Algorithm Implementation",
+  codeContent,
+  "typescript",
+  { extractFunctions: true, generateDocs: true }
+);
 
-async function indexMarkdownDocs(directory: string) {
-  const files = fs.readdirSync(directory);
-
-  for (const file of files) {
-    if (!file.endsWith(".md")) continue;
-
-    const content = fs.readFileSync(`${directory}/${file}`, "utf-8");
-    const { data, content: text } = matter(content);
-
-    await client.upsert({
-      id: file.replace(".md", ""),
-      text: text.slice(0, 2000), // Store first 2000 chars
-      metadata: {
-        title: data.title,
-        fileName: file,
-        category: data.category,
-      },
-    });
-  }
-}
-```
-
-### RAG (Retrieval Augmented Generation) Pipeline
-
-```typescript
-import { MemoryClient } from "@lanonasis/memory-client";
-
-const memory = new MemoryClient();
-
-async function augmentPrompt(userQuestion: string): Promise<string> {
-  // Retrieve relevant context
-  const results = await memory.search(userQuestion, { topK: 3 });
-
-  // Build context from results
-  const context = results.hits
-    .map((hit) => hit.payload?.text || "")
-    .join("\n\n");
-
-  // Return augmented prompt
-  return `Context:\n${context}\n\nQuestion: ${userQuestion}`;
-}
-```
-
-### Semantic Similarity Search
-
-```typescript
-const products = [
-  {
-    id: "p1",
-    text: "Red wireless Bluetooth headphones with noise cancellation",
-  },
-  { id: "p2", text: "Blue corded USB headphones" },
-  { id: "p3", text: "Black sports smartwatch" },
-];
-
-// Index products
-await client.upsert(products);
-
-// Search for similar products
-const results = await client.search("wireless headphones", { topK: 2 });
-// Returns: p1, p2 (headphone related items)
+// Process a PDF document
+const docMemory = await multimodal.createDocumentMemory(
+  "Research Paper",
+  documentBuffer,
+  "pdf"
+);
 ```
 
 ## Error Handling
 
 ```typescript
-try {
-  const results = await client.search("query");
-} catch (error) {
-  if (error.code === "NETWORK_ERROR") {
-    console.error("Network connectivity issue");
-  } else if (error.code === "AUTH_ERROR") {
-    console.error("Invalid API key");
-  } else if (error.code === "RATE_LIMIT") {
-    console.error("Rate limit exceeded, retry later");
-  } else {
-    console.error("Unknown error:", error.message);
-  }
+const result = await memory.createMemory({...});
+
+if (result.error) {
+  console.error("Error:", result.error);
+  // Handle error
+} else if (result.data) {
+  console.log("Success:", result.data);
+  // Use data
 }
 ```
 
-## Best Practices
+## Type Definitions
 
-1. **Batch Upserts**: Insert multiple documents at once for better performance
+### MemoryEntry
 
-   ```typescript
-   // Good
-   await client.upsert(documents); // 100+ docs at once
+```typescript
+interface MemoryEntry {
+  id: string;
+  title: string;
+  content: string;
+  summary?: string;
+  memory_type: MemoryType;
+  status: MemoryStatus;
+  relevance_score?: number;
+  access_count: number;
+  last_accessed?: string;
+  user_id: string;
+  topic_id?: string;
+  project_ref?: string;
+  tags: string[];
+  metadata?: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+```
 
-   // Avoid
-   for (const doc of documents) {
-     await client.upsert(doc); // One at a time
-   }
-   ```
+### CreateMemoryRequest
 
-2. **Metadata Structure**: Use consistent, queryable metadata
+```typescript
+interface CreateMemoryRequest {
+  title: string;
+  content: string;
+  memory_type: MemoryType;
+  tags?: string[];
+  topic_id?: string;
+  project_ref?: string;
+  metadata?: Record<string, unknown>;
+}
+```
 
-   ```typescript
-   // Good
-   { metadata: { category: 'guides', level: 'beginner', published: true } }
+> Always retrieve short‑lived tokens via the [Central Auth Gateway](../auth/central-auth-gateway.md). Do not embed long‑lived secrets.
 
-   // Avoid
-   { metadata: { info: 'some guide for beginners' } }
-   ```
+## Related docs
 
-3. **Document Size**: Keep individual documents focused (500-2000 chars)
-
-   ```typescript
-   // Good - focused chunk
-   text: "How to authenticate: First create an API key in the dashboard...";
-
-   // Avoid - too long
-   text: "[entire 10000 word tutorial]";
-   ```
-
-4. **Filtering**: Use metadata filters to narrow search scope
-   ```typescript
-   await client.search(query, {
-     topK: 10,
-     filters: { type: "api-docs", language: "typescript" },
-   });
-   ```
-
-## API Reference
-
-For detailed API reference, see [Memory SDK API](/api/memory-client)
-
-## Support
-
-For issues and questions:
-
-- GitHub: [lanonasis/memory-sdk](https://github.com/lanonasis/memory-sdk)
-- Discord: [Join our community](https://discord.gg/lanonasis)
-- Email: support@lanonasis.com
+- Overview: [Memory Overview](../memory/overview.md)
+- REST API: [Memory REST API](../memory/rest-api.md)
+- CLI: [Memory CLI](../memory/cli.md)
+- Security SDK: [Security SDK](./security-sdk.md)
