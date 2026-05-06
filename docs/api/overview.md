@@ -185,37 +185,7 @@ We provide official SDKs for popular programming languages:
 ### Analytics & Monitoring
 - [`GET /analytics`](/api/analytics) - Retrieve usage analytics and metrics
 
-## Response Format
 
-All API responses follow a consistent format:
-
-### Success Response
-```json
-{
-  "success": true,
-  "data": {
-    // Response data here
-  },
-  "metadata": {
-    "request_id": "req_1234567890",
-    "timestamp": "2024-01-15T10:30:00Z"
-  }
-}
-```
-
-### Error Response
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human-readable error message",
-    "details": {
-      // Additional error details
-    }
-  }
-}
-```
 
 ## Rate Limits
 

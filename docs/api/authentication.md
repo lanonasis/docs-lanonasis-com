@@ -46,13 +46,13 @@ API keys are only shown once. Store them securely and never share them publicly.
 
 ### Production
 ```bash
-export LANONASIS_API_KEY="lk_prod_your_key_here"
+export LANONASIS_API_KEY="lano_prod_your_key_here"
 export LANONASIS_BASE_URL="https://api.lanonasis.com"
 ```
 
 ### Sandbox
 ```bash
-export LANONASIS_API_KEY="lk_test_your_key_here"
+export LANONASIS_API_KEY="lano_test_your_key_here"
 export LANONASIS_BASE_URL="https://sandbox-api.lanonasis.com"
 ```
 
@@ -95,7 +95,7 @@ curl -X POST https://api.lanonasis.com/api/v1/auth/api-keys \
   "data": {
     "id": "key_789abc",
     "name": "Production API Key",
-    "key": "lk_prod_1234567890abcdef",
+    "key": "lano_prod_1234567890abcdef",
     "permissions": ["memories:read", "memories:write", "search:read"],
     "created_at": "2024-01-15T10:30:00Z",
     "expires_at": "2024-12-31T23:59:59Z",
@@ -142,7 +142,7 @@ curl -X GET https://api.lanonasis.com/api/v1/auth/api-keys \
       {
         "id": "key_789abc",
         "name": "Production API Key",
-        "key_preview": "lk_prod_1234...cdef",
+        "key_preview": "lano_prod_1234...cdef",
         "permissions": ["memories:read", "memories:write", "search:read"],
         "created_at": "2024-01-15T10:30:00Z",
         "expires_at": "2024-12-31T23:59:59Z",
@@ -151,7 +151,7 @@ curl -X GET https://api.lanonasis.com/api/v1/auth/api-keys \
       {
         "id": "key_456def",
         "name": "Development Key",
-        "key_preview": "lk_test_5678...9abc",
+        "key_preview": "lano_test_5678...9abc",
         "permissions": ["memories:read", "search:read"],
         "created_at": "2024-01-10T14:20:00Z",
         "expires_at": null,
@@ -361,7 +361,7 @@ const isValid = verifyWebhookSignature(
 ## Testing Authentication
 
 ### Sandbox Environment
-- Use test API keys (prefix: `lk_test_`)
+- Use test API keys (prefix: `lano_test_`)
 - No charges apply to sandbox usage
 - Data is reset weekly
 - Rate limits are more relaxed
@@ -370,11 +370,11 @@ const isValid = verifyWebhookSignature(
 ```bash
 # 1. Test basic authentication
 curl -X GET https://sandbox-api.lanonasis.com/api/v1/auth/test \
-  -H "X-API-Key: lk_test_your_key_here"
+  -H "X-API-Key: lano_test_your_key_here"
 
 # 2. Test permissions
 curl -X POST https://sandbox-api.lanonasis.com/api/v1/memories \
-  -H "X-API-Key: lk_test_your_key_here" \
+  -H "X-API-Key: lano_test_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{"title": "Test", "content": "Testing authentication"}'
 
