@@ -17,6 +17,14 @@ This page maps public guarantees to the high‑level mechanisms used in the plat
 - Minimal data retention with explicit TTLs where applicable
 - Optional anonymization/pseudonymization for logs and analytics
 
+## API key classes
+
+The platform supports distinct key classes with different operational intent:
+
+- Internal platform keys: `access_level` values such as `admin` or `team` for trusted platform and operator workflows.
+- User personal keys: `key_context: personal` for individual user automation and least-privilege access.
+- External/scoped keys: `service_scopes[]` grants scoped per-service permissions and rate limits for integrations.
+
 ## Audit & observability
 
 - Gateway and service calls are logged with project, user, and operation context
@@ -38,4 +46,3 @@ This page maps public guarantees to the high‑level mechanisms used in the plat
 - Auth: [Central Auth Gateway](../auth/central-auth-gateway.md)
 - Keys: [Vendor Key Management](../keys/vendor-key-management.md)
 - Platform: [Architecture & Domains](../platform/architecture.md)
-

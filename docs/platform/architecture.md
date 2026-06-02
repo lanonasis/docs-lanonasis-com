@@ -40,6 +40,14 @@ flowchart LR
 | `dashboard.lanonasis.com` | Admin/Operator dashboard | `apps/dashboard` | Authenticated operator interface. |
 | Memory Suite (MaaS) | Memory Service + SDK/CLI | `apps/lanonasis-maas`, SDK in external package, CLI tooling | Exposed via REST and MCP tools. |
 
+## API Key routing paths
+
+| Consumer | Public path | Backend |
+| --- | --- | --- |
+| CLI / SDK (`--no-mcp`) | `/api/v1/api-keys/*` on `api.lanonasis.com` | Netlify proxy to auth-gateway (`auth.lanonasis.com`, VPS :4000) |
+| MCP tools | `mcp.lanonasis.com` tool invocations | MCP server direct DB/tool execution |
+| Supabase EF mirror | `/api/v1/keys/*` on `api.lanonasis.com` | Netlify proxy to Supabase Edge Functions (`api-key-*`) |
+
 > For operators: external gateway/proxy infra details are referenced in internal docs and deployment manifests. This page is focused on the public-facing map and cross-links.
 
 ## Why REST and MCP are separate
@@ -54,4 +62,3 @@ flowchart LR
 - Memory Suite (REST, SDK, CLI): see [Memory → Overview](../memory/overview.md)
 - Vendor API Keys (storage, rotation, auditing): see [Keys → Vendor Key Management](../keys/vendor-key-management.md)
 - Changes & migrations across releases: see [Changelog & Migration](../changes/index.md)
-

@@ -147,6 +147,49 @@ lanonasis memory delete mem_1234567890abcdef
 lanonasis memory delete mem_1234567890abcdef --force
 ```
 
+## API Key Commands
+
+Use `api-keys` for REST API key lifecycle operations.
+
+### Create API Key
+
+```bash
+lanonasis api-keys create \
+  --name "ci-release-key" \
+  --access-level team \
+  --expires-in-days 30
+```
+
+### List API Keys
+
+```bash
+lanonasis api-keys list
+lanonasis api-keys list --all
+lanonasis api-keys list --json
+```
+
+### Get API Key Details
+
+```bash
+lanonasis api-keys get <key-id>
+lanonasis api-keys get <key-id> --json
+```
+
+### Update API Key
+
+```bash
+lanonasis api-keys update <key-id> \
+  --name "ci-release-key-rotated" \
+  --access-level admin \
+  --expires-in-days 7
+```
+
+### Delete API Key
+
+```bash
+lanonasis api-keys delete <key-id> --force
+```
+
 ## Search Commands
 
 ### Search Memories
