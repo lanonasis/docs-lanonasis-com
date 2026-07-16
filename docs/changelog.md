@@ -7,6 +7,53 @@ sidebar_position: 100
 
 All notable changes to the LanOnasis platform will be documented here.
 
+## [2026-Q2] - 2026-07
+
+### 🚀 CLI v3.11.0 - Current Release
+
+**New Commands:**
+- **REPL Enhancements**: `onasis repl` command with `--mcp`, `--api`, `--token` options for interactive session management
+- **Additional Subcommands**: Extended `topic` command with `get` and `update` subcommands, supporting `--description`, `--color`, `--icon`, and `--parent` options
+- **Service & Deployment Commands**: Added `service`, `deploy`, `dashboard`, `documentation`, `sdk`, `api` management commands
+- **`onasis docs`**: Open documentation in browser directly from CLI
+
+**Improvements:**
+- MCP auto-connect on startup for non-MCP flows when credentials are available
+- Enhanced `mcp-server init` with auto-connect and clear guidance
+- Better error handling and user guidance across all commands
+- Improved `auth status` live probe with memory API access verification
+- Enhanced `whoami` with full user profile (organization, plan, provider, last login, member since)
+
+---
+
+### 🚀 CLI v3.10.1 - Secret Prescan
+
+**New Features:**
+- **Secret Prescan**: Local filesystem prescan for secrets and PII before MIRA context extraction
+- **`onasis prescan run <path>`**: Scan directories with `--save`, `--ci`, `--fail-on`, `--json`, `--exclude` options
+- **`onasis prescan status`**: View last scan results and statistics
+- **No authentication required** — runs entirely locally, value-stripped reports
+
+**Prescan Features:**
+- CI-friendly exit codes (`--ci` flag)
+- Machine-parseable JSON output for piping
+- Pattern-based detection across file system
+- Secure local report storage at `~/.lanonasis/security/prescan/`
+
+---
+
+### 🚀 CLI v3.10.0 - Interactive REPL
+
+**New Features:**
+- **`onasis repl`**: Lightweight REPL for interactive memory operations
+- `--mcp`, `--api`, `--token` options for flexible configuration
+- Auto-discovery of `@lanonasis/repl-cli` package from local dependencies, workspace, and global paths
+- Full REPL experience with child process management
+
+**Note:** Requires `@lanonasis/repl-cli` package. Install via `npm install -g @lanonasis/repl-cli` or run from monorepo context.
+
+---
+
 ## [2026-Q1] - 2026-02-25
 
 ### 🚀 Major Platform Updates

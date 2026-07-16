@@ -5,7 +5,7 @@ sidebar_label: CLI Reference
 
 # LanOnasis CLI Reference
 
-Complete reference for the `@lanonasis/cli` v3.9.8+ - Professional CLI for Memory as a Service (MaaS).
+Complete reference for the `@lanonasis/cli` v3.11.0 - Professional CLI for Memory as a Service (MaaS).
 
 ## Installation
 
@@ -472,6 +472,23 @@ onasis memory behavior suggest \
 
 ---
 
+## REPL Command ✨
+
+Start a lightweight REPL session for memory operations.
+
+```bash
+onasis repl
+```
+
+**Options:**
+- `--mcp`: Use MCP mode
+- `--api <url>`: Override API URL
+- `--token <token>`: Authentication token
+
+The REPL session provides an interactive environment for browsing, searching, and managing memories without typing full commands.
+
+---
+
 ## MCP Commands
 
 ### `onasis mcp connect`
@@ -514,18 +531,15 @@ onasis mcp status
 
 ---
 
-### `onasis mcp list-tools`
+### `onasis mcp tools`
 
 List available MCP tools.
 
 ```bash
-onasis mcp list-tools
-
-# Filter by category
-onasis mcp list-tools --category memory
+onasis mcp tools
 
 # JSON output
-onasis mcp list-tools --output json
+onasis mcp tools --output json
 ```
 
 ---
@@ -601,6 +615,58 @@ onasis mcp-server stop
 
 ---
 
+## Prescan Commands ✨
+
+Local filesystem prescan for secrets and PII before MIRA context extraction. Reports are value-stripped — never exposes raw secrets. No authentication required.
+
+### `onasis prescan run <path>`
+
+Scan a directory for secrets and PII.
+
+```bash
+# Scan a directory tree
+onasis prescan run ./src
+
+# Save a local report for `prescan status`
+onasis prescan run ./src --save
+
+# CI-friendly gate (exit codes: 0=safe 1=flagged 2=quarantined)
+onasis prescan run ./src --ci
+
+# Custom fail threshold
+onasis prescan run ./src --fail-on flagged
+
+# Exclude patterns
+onasis prescan run ./src --exclude node_modules --exclude .git
+
+# JSON output for piping
+onasis prescan run ./src --json
+```
+
+**Options:**
+- `--save`: Write report to `~/.lanonasis/security/prescan/`
+- `--ci`: CI mode (equivalent to `--fail-on quarantined --json`)
+- `--fail-on <threshold>`: Exit non-zero if classification meets threshold (none, quarantined, flagged)
+- `--exclude <patterns...>`: Glob patterns to exclude
+- `--json`: Output machine-parseable JSON summary
+
+### `onasis prescan status`
+
+Show last prescan state and statistics.
+
+```bash
+onasis prescan status
+```
+
+**Shows:**
+- Report directory
+- Registered pattern count
+- Last scan timestamp and target
+- Results breakdown (safe, flagged, quarantined, errors)
+- Total detections and detection types
+
+---
+
 ## API Key Commands
 
 ### `onasis api-keys list`
@@ -655,35 +721,37 @@ onasis api-keys revoke <key-id>
 
 ## Topic Commands
 
-### `onasis topics list`
+Topics can be managed using the `topic` command (alias: `topics`).
+
+### `onasis topic list`
 
 List memory topics.
 
 ```bash
-onasis topics list
+onasis topic list
 
 # With pagination
-onasis topics list --limit 20
+onasis topic list --limit 20
 ```
 
 ---
 
-### `onasis topics create`
+### `onasis topic create`
 
 Create a new topic.
 
 ```bash
-onasis topics create --name "My Topic"
+onasis topic create --name "My Topic" --description "Topic description" --color blue --icon "💻"
 ```
 
 ---
 
-### `onasis topics delete`
+### `onasis topic delete`
 
 Delete a topic.
 
 ```bash
-onasis topics delete <topic-id>
+onasis topic delete <topic-id>
 ```
 
 ---
@@ -762,6 +830,21 @@ onasis health
 - Authentication status
 - MCP server status
 - Service registry
+
+---
+
+### `onasis status`
+
+Show overall system status and authentication state.
+
+```bash
+onasis status
+```
+
+**Shows:**
+- API URL
+- Authentication status with live server verification
+- Current user profile (email, name, role)
 
 ---
 
