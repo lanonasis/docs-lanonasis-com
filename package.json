@@ -28,7 +28,8 @@
     "mcp": "node mcp-bridge.js",
     "check:links": "node scripts/check-links.js",
     "check:endpoints": "node scripts/smoke-endpoints.js",
-    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints"
+    "validate:cli-docs": "node scripts/validate-cli-docs.mjs",
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints && bun run validate:cli-docs"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
