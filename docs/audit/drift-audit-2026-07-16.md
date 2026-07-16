@@ -135,7 +135,7 @@ Create a checked-in docs contract test that:
 - **Verification command:** `node scripts/validate-cli-docs.mjs`
 
 **Failure examples:**
-```
+```text
 ❌ Docs reference "mcp list-tools" but CLI registers "mcp tools"
 ❌ Docs missing required command: "repl"
 ❌ Docs missing required command: "prescan"

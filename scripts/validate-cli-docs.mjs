@@ -39,13 +39,11 @@ const ALLOW_LIST = new Set(['guide']);
  */
 function buildCLICommandRegistry() {
   const commands = new Set();
-  const commandRef = /\.command\(['"]([a-z][\w-]*)['"]\)/g;
-  const addCmdRef = /addCommand\((\w+)/g;
 
   // Scan index.ts
   const indexPath = join(CLI_SRC, 'index.ts');
   if (existsSync(indexPath)) {
-    scanFile(indexPath, commandRef, addCmdRef, commands);
+    scanFile(indexPath, commands);
   }
 
   // Scan all .ts files in commands/ dir (catches mcp.ts, prescan.ts, api-keys.ts, etc.)
@@ -53,7 +51,7 @@ function buildCLICommandRegistry() {
     const files = readdirSync(COMMANDS_DIR);
     for (const file of files) {
       if (file.endsWith('.ts')) {
-        scanFile(join(COMMANDS_DIR, file), commandRef, addCmdRef, commands);
+        scanFile(join(COMMANDS_DIR, file), commands);
       }
     }
   }
@@ -61,11 +59,12 @@ function buildCLICommandRegistry() {
   return commands;
 }
 
-function scanFile(filePath, commandRef, addCmdRef, commands) {
+function scanFile(filePath, commands) {
   const content = readFileSync(filePath, 'utf8');
   let match;
 
   // .command('name')
+  const commandRef = /\.command\(['"]([a-z][\w-]*)['"]\)/g;
   while ((match = commandRef.exec(content)) !== null) {
     if (!match[1].startsWith('$')) {
       commands.add(match[1]);
@@ -94,7 +93,7 @@ function extractDocCommandRefs(docContent) {
   const refs = new Set();
 
   // Match: `onasis <command>` or `lanonasis <command>` (inline code)
-  const inlineRef = /`(?:onasis|lanonasis|memory|maas)\s+([a-z][\w-]*)`/g;
+  const inlineRef = /`(?:onasis|lanonasis|memory|maas)\s+([a-z][\w-]*)(?:\s+[^`]*)?`/g;
   let match;
   while ((match = inlineRef.exec(docContent)) !== null) {
     refs.add(match[1]);
