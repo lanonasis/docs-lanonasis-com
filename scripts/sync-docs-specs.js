@@ -3,7 +3,8 @@
 /**
  * Sync canonical OpenAPI specs into docs static assets.
  *
- * - Copies MCP Memory spec from apps/onasis-core into docs static
+ * - Copies MCP Memory spec from apps/onasis-core when running in the monorepo
+ * - Uses the committed static spec when the standalone docs repository builds
  * - Generates memory-api.json for playground compatibility
  * - Syncs docs search openapi.yaml into static
  * - Generates specs.json manifest for the playground UI
@@ -39,7 +40,6 @@ const memorySpecJson = path.join(staticDir, 'memory-api.json');
 const docsSearchSpecSource = path.join(docsRoot, 'openapi.yaml');
 const docsSearchSpecYaml = path.join(staticDir, 'openapi.yaml');
 
-const unifiedSpecYaml = path.join(staticDir, 'unified-services.yaml');
 const manifestPath = path.join(staticDir, 'specs.json');
 
 const hashContent = (content) =>
@@ -79,20 +79,18 @@ const readYaml = (sourcePath) => {
 try {
   console.log('📦 Syncing OpenAPI specs into docs static assets...');
 
-  if (!fs.existsSync(memorySpecSource)) {
-    throw new Error(`Memory spec not found at ${memorySpecSource}`);
-  }
-
   if (!fs.existsSync(docsSearchSpecSource)) {
     throw new Error(`Docs search spec not found at ${docsSearchSpecSource}`);
   }
 
-  const memorySpec = readYaml(memorySpecSource);
-  const docsSearchSpec = readYaml(docsSearchSpecSource);
-  const unifiedSpec = fs.existsSync(unifiedSpecYaml)
-    ? readYaml(unifiedSpecYaml)
-    : { content: '', data: {} };
+  const memorySpec = fs.existsSync(memorySpecSource)
+    ? readYaml(memorySpecSource)
+    : readYaml(memorySpecYaml);
 
+  if (!fs.existsSync(memorySpecSource)) {
+    console.log('ℹ️  Monorepo memory spec unavailable; using committed static/memory-api.yaml.');
+  }
+  const docsSearchSpec = readYaml(docsSearchSpecSource);
   const memoryJson = JSON.stringify(memorySpec.data, null, 2);
 
   ensureFile(memorySpecYaml, memorySpec.content, 'Memory OpenAPI YAML');
@@ -110,16 +108,6 @@ try {
         version: memorySpec.data?.info?.version || 'unknown',
         hash: hashContent(memorySpec.content),
         paths: ['/memory-api.json', '/memory-api.yaml']
-      },
-      {
-        id: 'unified',
-        name: 'Unified Services',
-        icon: '🔗',
-        description: 'Wallets, Transfers, Payments, KYC',
-        badge: 'Unified Services API',
-        version: unifiedSpec.data?.info?.version || 'unknown',
-        hash: unifiedSpec.content ? hashContent(unifiedSpec.content) : null,
-        paths: ['/unified-services.yaml']
       },
       {
         id: 'docs',

@@ -18,7 +18,7 @@ interface MCPInstallButtonsProps {
 
 const CLIENT_CONFIG: Record<ClientType, {
   name: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   color: string;
   getUrl: (mcpbUrl: string, mcpServerUrl: string, name: string) => string;
   description: string;
@@ -68,7 +68,7 @@ export default function MCPInstallButtons({
   clients = ['claude', 'cursor', 'windsurf'],
   compact = false,
   showHeader = true,
-}: MCPInstallButtonsProps): JSX.Element {
+}: MCPInstallButtonsProps): React.ReactElement {
   const serverName = 'Lanonasis';
 
   return (

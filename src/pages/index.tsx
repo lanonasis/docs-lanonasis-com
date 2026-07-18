@@ -17,12 +17,12 @@ const NavLink = Link as unknown as ComponentType<{
   children?: ReactNode;
 }>;
 
-// Stats data
+// Verified platform interfaces
 const STATS = [
-  { value: "99.99%", label: "Uptime SLA" },
-  { value: "<50ms", label: "Avg Latency" },
-  { value: "10M+", label: "API Calls/Day" },
-  { value: "50+", label: "Integrations" },
+  { value: "REST", label: "Memory API" },
+  { value: "MCP", label: "Agent tools" },
+  { value: "OAuth", label: "Interactive auth" },
+  { value: "API keys", label: "Automation auth" },
 ];
 
 // Service cards
@@ -30,79 +30,74 @@ const SERVICES = [
   {
     icon: "🧠",
     title: "Memory Service",
-    description: "AI-native memory management with vector search, semantic understanding, and real-time sync across platforms.",
+    description: "Store, retrieve, and semantically search durable context for applications and AI agents.",
     link: "/memory/overview",
     badge: "Core",
   },
   {
-    icon: "💳",
-    title: "Unified Payments",
-    description: "Accept payments via cards, bank transfers, USSD, and mobile money with a single integration.",
-    link: "/unified-services/payments",
-    badge: "New",
-  },
-  {
-    icon: "🏦",
-    title: "Wallets & Transfers",
-    description: "Create wallets, manage balances, and send instant transfers to bank accounts via NIP.",
-    link: "/unified-services/wallets",
-    badge: "New",
+    icon: "🔗",
+    title: "MCP Server",
+    description: "Connect AI assistants to memory operations through the Model Context Protocol.",
+    link: "/mcp/overview",
+    badge: "Agents",
   },
   {
     icon: "🔐",
-    title: "KYC Verification",
-    description: "Verify customers with BVN, NIN, phone, and document verification in seconds.",
-    link: "/unified-services/kyc",
-    badge: "New",
+    title: "Authentication",
+    description: "Use OAuth for interactive sessions or scoped API keys for applications and automation.",
+    link: "/auth/central-auth-gateway",
+    badge: "Access",
   },
   {
-    icon: "🔗",
-    title: "MCP Server",
-    description: "Model Context Protocol server for AI agents. Give your LLM access to memories and services.",
-    link: "/mcp/overview",
-    badge: "AI",
+    icon: "⌨️",
+    title: "CLI & SDK",
+    description: "Work with memories from the Onasis CLI or the TypeScript memory client.",
+    link: "/sdks/overview",
+    badge: "Developer",
+  },
+  {
+    icon: "🖥️",
+    title: "Developer Dashboard",
+    description: "Manage account access and API keys from the LanOnasis dashboard.",
+    link: "https://dashboard.lanonasis.com",
+    badge: "Console",
   },
   {
     icon: "🛡️",
     title: "V-Secure",
-    description: "Enterprise-grade security with encryption, audit logging, and compliance controls.",
+    description: "Explore the security tooling documentation and current integration guidance.",
     link: "/v-secure/intro",
-    badge: "Enterprise",
+    badge: "Preview",
   },
 ];
 
 // SDK badges
 const SDKS = [
   { name: "TypeScript", icon: "🔷", link: "/sdks/typescript" },
-  { name: "Python", icon: "🐍", link: "/sdks/python" },
-  { name: "Go", icon: "🐹", link: "/sdks/go" },
+  { name: "CLI", icon: "⌨️", link: "/sdks/cli" },
   { name: "REST API", icon: "🌐", link: "/api/overview" },
   { name: "MCP", icon: "🤖", link: "/mcp/overview" },
 ];
 
 // Quick start code
-const QUICK_START_CODE = `import { LanOnasis } from '@lanonasis/sdk';
+const QUICK_START_CODE = `import { createMemoryClient } from '@lanonasis/memory-client';
 
-const client = new LanOnasis({ apiKey: 'sk_live_xxx' });
-
-// Create a wallet
-const wallet = await client.wallets.create({
-  name: 'Customer Wallet',
-  currency: 'NGN',
+const client = createMemoryClient({
+  apiUrl: 'https://api.lanonasis.com',
+  apiKey: process.env.LANONASIS_API_KEY,
 });
 
-// Send a transfer
-const transfer = await client.transfers.create({
-  source_wallet_id: wallet.data.id,
-  amount: 50000, // ₦500.00
-  destination: {
-    type: 'bank',
-    account_number: '0123456789',
-    bank_code: '058',
-  },
+await client.createMemory({
+  title: 'Project context',
+  content: 'The deployment uses the production memory API.',
+  memory_type: 'context',
+  tags: ['project'],
 });
 
-console.log(\`Transfer \${transfer.data.id}: \${transfer.data.status}\`);`;
+const results = await client.searchMemories({
+  query: 'production deployment',
+  limit: 5,
+});`;
 
 function HeroSection() {
   return (
@@ -116,10 +111,7 @@ function HeroSection() {
         <div className={styles.heroBadges}>
           <span className={styles.heroBadge}>
             <span className={styles.heroBadgeDot} />
-            All Systems Operational
-          </span>
-          <span className={clsx(styles.heroBadge, styles.heroBadgeNew)}>
-            Unified Services API Now Live
+            Memory API + MCP
           </span>
         </div>
 
@@ -130,8 +122,8 @@ function HeroSection() {
         </Heading>
 
         <p className={styles.heroSubtitle}>
-          Build intelligent applications with memory management, payments, wallets,
-          transfers, and KYC verification — all through a single, unified API.
+          Give applications and AI agents durable, searchable context through a
+          focused memory API, MCP tools, CLI, and TypeScript SDK.
         </p>
 
         <div className={styles.heroActions}>
@@ -187,7 +179,7 @@ function ServicesSection() {
             Everything you need to build
           </Heading>
           <p className={styles.sectionSubtitle}>
-            One platform, multiple services. Integrate memory, payments, verification, and more.
+            Use the supported interfaces that connect applications, operators, and AI agents to memory.
           </p>
         </div>
 
@@ -238,7 +230,7 @@ function QuickStartSection() {
                 <span className={styles.stepNumber}>1</span>
                 <div>
                   <h4>Install the SDK</h4>
-                  <code>npm install @lanonasis/sdk</code>
+                  <code>npm install @lanonasis/memory-client</code>
                 </div>
               </div>
               <div className={styles.quickStartStep}>
@@ -252,7 +244,7 @@ function QuickStartSection() {
                 <span className={styles.stepNumber}>3</span>
                 <div>
                   <h4>Make your first request</h4>
-                  <p>Create wallets, send transfers, verify identities</p>
+                  <p>Create a memory, then retrieve it with semantic search</p>
                 </div>
               </div>
             </div>
@@ -310,14 +302,14 @@ function APIHighlightSection() {
             <p>Built-in idempotency keys to safely retry requests without duplicate operations.</p>
           </div>
           <div className={styles.apiFeature}>
-            <div className={styles.apiFeatureIcon}>🪝</div>
-            <h3>Webhooks</h3>
-            <p>Real-time event notifications with signature verification and retry logic.</p>
+            <div className={styles.apiFeatureIcon}>🔑</div>
+            <h3>Scoped access</h3>
+            <p>Authenticate with OAuth or API keys and apply personal, team, or enterprise memory context.</p>
           </div>
           <div className={styles.apiFeature}>
-            <div className={styles.apiFeatureIcon}>⚡</div>
-            <h3>Low Latency</h3>
-            <p>Optimized for speed with edge deployments and efficient data structures.</p>
+            <div className={styles.apiFeatureIcon}>🤖</div>
+            <h3>MCP tools</h3>
+            <p>Expose supported memory operations to compatible AI clients and agents.</p>
           </div>
         </div>
 
@@ -341,8 +333,7 @@ function CTASection() {
             Ready to build something amazing?
           </Heading>
           <p className={styles.ctaSubtitle}>
-            Join thousands of developers building with LanOnasis.
-            Start free, scale as you grow.
+            Start with the memory API, then connect the same context to your tools and agents.
           </p>
           <div className={styles.ctaActions}>
             <NavLink to="/intro" className={styles.ctaPrimaryBtn}>
@@ -365,7 +356,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Developer Platform"
-      description="Build intelligent applications with memory management, payments, wallets, transfers, and KYC verification — all through a single, unified API."
+      description="Build applications and AI agents with durable memory, semantic search, MCP tools, and supported developer clients."
     >
       <HeroSection />
       <main>

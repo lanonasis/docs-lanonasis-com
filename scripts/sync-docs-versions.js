@@ -22,20 +22,35 @@ const docsRoot = path.resolve(__dirname, '..');
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-const versions = {
-  MEMORY_CLIENT_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'packages', 'memory-client', 'package.json')
-  ).version,
-  CLI_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json')
-  ).version,
-  LANONASIS_SDK_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'packages', 'lanonasis-sdk', 'package.json')
-  ).version,
+const versionSources = {
+  MEMORY_CLIENT_VERSION: path.join(
+    repoRoot,
+    'apps',
+    'lanonasis-maas',
+    'packages',
+    'memory-client',
+    'package.json'
+  ),
+  CLI_VERSION: path.join(repoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json'),
+  LANONASIS_SDK_VERSION: path.join(
+    repoRoot,
+    'apps',
+    'lanonasis-maas',
+    'packages',
+    'lanonasis-sdk',
+    'package.json'
+  ),
 };
+
+const versions = Object.fromEntries(
+  Object.entries(versionSources)
+    .filter(([, sourcePath]) => fs.existsSync(sourcePath))
+    .map(([markerId, sourcePath]) => [markerId, readJson(sourcePath).version])
+);
 
 const docsTargets = [
   path.join(docsRoot, 'docs', 'memory', 'sdk.md'),
+  path.join(docsRoot, 'docs', 'intro.md'),
   path.join(docsRoot, 'docs', 'sdks', 'cli.md'),
   path.join(docsRoot, 'docs', 'sdks', 'typescript.md'),
 ];
@@ -86,6 +101,10 @@ const updateFile = (filePath) => {
 
 try {
   console.log('🔄 Syncing docs versions...');
+  if (Object.keys(versions).length !== Object.keys(versionSources).length) {
+    console.log('ℹ️  Monorepo package metadata unavailable; preserving committed version markers.');
+    process.exit(0);
+  }
   docsTargets.forEach(updateFile);
   console.log('✅ Docs version sync complete.');
 } catch (error) {

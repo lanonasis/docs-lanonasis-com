@@ -1,234 +1,105 @@
 ---
 title: API Overview
 sidebar_position: 1
+description: Production endpoints, authentication, memory operations, and supported LanOnasis clients.
 ---
 
 # LanOnasis API Reference
 
-Welcome to the LanOnasis Memory-as-a-Service API documentation. Our REST API provides complete access to the memory platform, including memory management, semantic search, analytics, embeddings, and the intelligence suite.
+The LanOnasis API provides authenticated memory storage and semantic retrieval for applications and AI agents.
 
 ## Base URL
 
+```text
+https://api.lanonasis.com
 ```
-https://api.lanonasis.com/api/v1
-Production: https://api.lanonasis.com/api/v1
-Sandbox:    https://sandbox-api.lanonasis.com/api/v1
-```
+
+The TypeScript client accepts this origin as `apiUrl`. Endpoint-specific examples below include the public API route prefix where required.
 
 ## Authentication
 
-All API requests require authentication. Use an API key header for key-based auth or a bearer token for OAuth/JWT:
+Use one of the supported authentication methods:
 
 ```http
-X-API-Key: lano_your_api_key_here
-Authorization: Bearer YOUR_TOKEN (OAuth/JWT)
-Content-Type: application/json
+X-API-Key: lano_your_api_key
 ```
 
-Public API key examples use the `lano_` platform prefix. The edge auth layer
-still accepts several legacy/internal prefixes for compatibility, but new
-clients should treat `lano_*` as the canonical public contract.
+```http
+Authorization: Bearer your_oauth_access_token
+```
 
-Public memory routes are documented under the plural `/api/v1/memories/*`
-family. The production redirect layer still accepts singular `/api/v1/memory/*`
-aliases for compatibility, but new clients should target the plural form.
+API keys may carry personal, team, or enterprise memory context. The service enforces the corresponding read boundary on context-aware memory query paths. See [Authentication](./authentication.md) and [Vendor Key Management](../keys/vendor-key-management.md).
 
-## Quick Start
+## Quick start
+
+### TypeScript
 
 ```bash
-curl -H "X-API-Key: lano_your_api_key_here" \
-  https://api.lanonasis.com/api/v1/memories
+npm install @lanonasis/memory-client
 ```
 
-## Quick Start
-
-Get started with our API in minutes:
-
 ```typescript
-import { createMemoryClient } from '@lanonasis/memory-client/core';
+import { createMemoryClient } from '@lanonasis/memory-client';
 
 const client = createMemoryClient({
   apiUrl: 'https://api.lanonasis.com',
-  apiKey: 'your-api-key'
+  apiKey: process.env.LANONASIS_API_KEY,
 });
 
-// Create a memory
 const created = await client.createMemory({
-  title: 'Project Notes',
-  content: 'Important project notes',
-  metadata: { project: 'web-app' },
-  tags: ['work', 'important']
+  title: 'Release decision',
+  content: 'Deploy only after the production smoke test passes.',
+  memory_type: 'context',
+  tags: ['release'],
 });
 
-if (created.data) {
-  console.log('Memory ID:', created.data.id);
-}
-
-// Search memories
-const results = await client.searchMemories({
-  query: 'project notes',
-  limit: 10
+const matches = await client.searchMemories({
+  query: 'production smoke test',
+  limit: 5,
 });
-
-console.log('Matches:', results.data?.results);
 ```
+
+### cURL
 
 ```bash
-# Create a memory
-curl -X POST https://api.lanonasis.com/api/v1/memories \
-  -H "X-API-Key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Meeting Notes",
-    "content": "Discussed project timeline and deliverables",
-    "tags": ["meeting", "project"],
-    "metadata": {
-      "date": "2024-01-15",
-      "participants": ["john", "jane"]
-    }
-  }'
+curl -X POST 'https://api.lanonasis.com/api/v1/memories/search' \
+  -H 'Content-Type: application/json' \
+  -H "X-API-Key: $LANONASIS_API_KEY" \
+  -d '{"query":"production smoke test","limit":5}'
 ```
 
-## API Endpoints
+## Memory operations
 
-### 🧠 Memory Management
-- [`POST /memories`](./memories#create-memory) - Create a new memory
-- [`GET /memories/{id}`](./memories#get-memory) - Retrieve a memory by full UUID or unambiguous 8+ character UUID prefix
-- [`PUT /memories/{id}`](./memories#update-memory) - Update a memory
-- [`DELETE /memories/{id}`](./memories#delete-memory) - Delete a memory
-- [`GET /memories`](./memories#list-memories) - List memories with pagination
+| Operation | Method and route | Guide |
+| --- | --- | --- |
+| Create memory | `POST /api/v1/memories` | [Memory endpoints](./endpoints/memory.md) |
+| List memories | `GET /api/v1/memories` | [Memory endpoints](./endpoints/memory.md) |
+| Get memory | `GET /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
+| Update memory | `PUT /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
+| Delete memory | `DELETE /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
+| Search memories | `POST /api/v1/memories/search` | [Search](./endpoints/search.md) |
 
-### 🔍 Search & Discovery
-- [`POST /memories/search`](./endpoints/search.md) - Semantic search across memories
+The canonical OpenAPI assets used by the [API playground](/api/playground) are generated from the repository's memory API specification.
 
-### 🔐 Authentication
-- [`POST /auth/api-keys`](./authentication#create-api-key) - Create API key
-- [`GET /auth/api-keys`](./authentication#list-api-keys) - List API keys
-- [`DELETE /auth/api-keys/{id}`](./authentication#revoke-api-key) - Revoke API key
+## Errors and limits
 
-### 📊 Analytics
-- [`GET /analytics/usage`](./endpoints/analytics.md) - Usage statistics
-- [`GET /analytics/search`](./endpoints/analytics.md) - Search analytics
+Failed requests return an HTTP status and a structured error response. Handle the status code first, then use the response code and message for application behavior. See [Error Codes](./error-codes.md).
 
-## Response Format
+Request limits depend on the account policy in effect. Applications should honor rate-limit response headers and retry only after the indicated interval; contact support for current plan limits rather than relying on hardcoded documentation values.
 
-All API responses follow a consistent format:
+## Supported clients
 
-```json
-{
-  "success": true,
-  "data": {
-    // Response data here
-  },
-  "meta": {
-    "timestamp": "2024-01-15T10:30:00Z",
-    "request_id": "req_123456789"
-  }
-}
-```
+- **TypeScript/JavaScript:** `@lanonasis/memory-client`
+- **Command line:** `@lanonasis/cli`, invoked as `onasis`
+- **Protocol:** REST and MCP
 
-## Error Handling
-
-Error responses include detailed information:
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid request parameters",
-    "details": {
-      "field": "title",
-      "issue": "Title is required"
-    }
-  },
-  "meta": {
-    "timestamp": "2024-01-15T10:30:00Z",
-    "request_id": "req_123456789"
-  }
-}
-```
-
-## Rate Limits
-
-| Plan | Requests/minute | Requests/hour | Storage |
-|------|----------------|---------------|----------|
-| Free | 100 | 1,000 | 10MB |
-| Pro | 1,000 | 10,000 | 1GB |
-| Enterprise | 10,000 | 100,000 | Unlimited |
-
-## SDKs & Libraries
-
-We provide official SDKs for popular programming languages:
-
-- [TypeScript/JavaScript SDK](../sdks/typescript)
-- [Python SDK](../sdks/python)
-- [CLI Tool](../sdks/cli)
-
-## Getting Help
-
-### Core Memory Operations
-- [`/api/v1/memories`](/api/endpoints/memory) - Create and list memories
-- [`/api/v1/memories/{id}`](/api/endpoints/memory) - Get, update, or delete a memory
-
-### Search & Discovery
-- [`POST /memories/search`](/api/endpoints/search) - Semantic search across memories
-- [`POST /embeddings`](/api/endpoints/embeddings) - Generate vector embeddings
-
-### Batch Operations
-- [`POST /batch`](/api/endpoints/batch) - Perform multiple operations in a single request
-
-### Real-time Features
-- [`GET /stream`](/api/endpoints/stream) - Server-sent events for real-time updates
-- [`POST /webhooks`](/api/endpoints/webhooks) - Configure webhook notifications
-
-### Analytics & Monitoring
-- [`GET /analytics`](/api/analytics) - Retrieve usage analytics and metrics
-
-
-
-## Rate Limits
-
-| Tier | Requests/Minute | Requests/Hour | Burst Limit |
-|------|----------------|---------------|-------------|
-| Free | 60 | 1,000 | 100 |
-| Pro | 300 | 10,000 | 500 |
-| Enterprise | Custom | Custom | Custom |
-
-## SDKs & Libraries
-
-We provide official SDKs for popular languages:
-
-- **TypeScript/JavaScript**: `@lanonasis/memory-client`
-- **Python**: `lanonasis-python`
-- **CLI**: `lanonasis-cli`
-
-[View all SDKs →](/sdks/overview)
-
-## Interactive API Explorer
-
-Try our API directly in your browser with our interactive explorer:
-
-[Open API Explorer →](https://api.lanonasis.com/explorer)
+See [SDKs and Libraries](../sdks/overview.md) for the maintained client documentation. Language pages that describe planned or experimental clients are not a production availability guarantee.
 
 ## Support
 
-Need help? We're here to assist:
+- Browse the [Memory Service](../memory/overview.md) and [MCP](../mcp/overview.md) guides.
+- Use the [API playground](/api/playground) with a non-production test key.
+- Report documentation issues on [GitHub](https://github.com/lanonasis/docs-lanonasis-com/issues).
+- Contact [support@lanonasis.com](mailto:support@lanonasis.com).
 
-- **Documentation**: Browse our comprehensive guides
-- **Community**: Join our Discord community
-- **Support**: Contact our support team
-- **Status**: Check our system status
-
-[Get Support →](/support)
-- 📚 [Guides & Tutorials](../tutorial-basics/create-a-document)
-- 💬 [Community Support](../support)
-- 🐛 [Report Issues](https://github.com/lanonasis/docs-lanonasis-com/issues)
-- 📧 [Contact Support](mailto:support@lanonasis.com)
-
-## Next Steps
-
-1. [Get your API key](./authentication#create-api-key)
-2. [Create your first memory](./memories#create-memory)
-3. [Try semantic search](./search#semantic-search)
-4. [Explore our SDKs](../sdks/overview)
+**Last verified:** July 18, 2026

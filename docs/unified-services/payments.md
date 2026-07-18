@@ -1,4 +1,5 @@
 ---
+draft: true
 sidebar_position: 5
 title: Payments
 description: Accept payments from customers

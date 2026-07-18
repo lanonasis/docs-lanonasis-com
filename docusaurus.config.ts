@@ -86,30 +86,15 @@ const config: Config = {
     },
   },
 
-  // Internationalization - Full multilingual support
+  // Add locales only when translated documentation exists for the full site.
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'de', 'es', 'fr'],
+    locales: ['en'],
     localeConfigs: {
       en: {
         label: 'English',
         direction: 'ltr',
         htmlLang: 'en-US',
-      },
-      de: {
-        label: 'Deutsch',
-        direction: 'ltr',
-        htmlLang: 'de-DE',
-      },
-      es: {
-        label: 'Español',
-        direction: 'ltr',
-        htmlLang: 'es-ES',
-      },
-      fr: {
-        label: 'Français',
-        direction: 'ltr',
-        htmlLang: 'fr-FR',
       },
     },
   },
@@ -182,10 +167,6 @@ const config: Config = {
           label: 'API Playground',
         },
         {
-          type: 'localeDropdown',
-          position: 'right',
-        },
-        {
           label: 'Dashboard',
           href: 'https://dashboard.lanonasis.com',
           position: 'right',
@@ -243,10 +224,6 @@ const config: Config = {
             {
               label: 'Support',
               to: '/support',
-            },
-            {
-              label: 'Status',
-              href: 'https://status.lanonasis.com',
             },
           ],
         },

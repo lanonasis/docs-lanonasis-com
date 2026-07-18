@@ -4,6 +4,7 @@
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
     "skipLibCheck": true,
+    "types": ["node"],
     "paths": {
       "@lanonasis/sdk": [
         "./src/mocks/@lanonasis/sdk"
@@ -15,6 +16,7 @@
   },
   "exclude": [
     ".docusaurus",
-    "build"
+    "build",
+    "scripts/index-docs-to-maas.ts"
   ]
 }

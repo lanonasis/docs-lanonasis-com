@@ -26,7 +26,7 @@ The LanOnasis Memory Assistant is now available in **web-based IDEs**, bringing 
 3. Authenticate with OAuth
 4. Start managing memories instantly!
 
-[Learn more →](../mcp/ide-integration.md#vscode-web-vscode-dev--githubdev-)
+[Learn more →](../mcp/ide-integration.md#vscode-web)
 
 ---
 

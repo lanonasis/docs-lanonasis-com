@@ -22,7 +22,7 @@ export default function CodeGenerator({
   endpoint,
   method,
   parameters = {}
-}: CodeGeneratorProps): JSX.Element {
+}: CodeGeneratorProps): React.ReactElement {
   const [selectedLanguage, setSelectedLanguage] = useState('curl');
   const [apiKey, setApiKey] = useState('your-api-key-here');
   const [customParams, setCustomParams] = useState(parameters);
