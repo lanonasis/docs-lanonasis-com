@@ -7,22 +7,10 @@
       "description": "Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System",
       "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
-      "hash": "33565c32e72877e9840c4c2c3ab622a55cb996f5551c5879e01fd56fa4c7ba3f",
+      "hash": "52bcd8c92ee57b2bfd666a503b747e456cadf2e1be0bb60835145ce1814c267c",
       "paths": [
         "/memory-api.json",
         "/memory-api.yaml"
-      ]
-    },
-    {
-      "id": "unified",
-      "name": "Unified Services",
-      "icon": "🔗",
-      "description": "Wallets, Transfers, Payments, KYC",
-      "badge": "Unified Services API",
-      "version": "1.0.0",
-      "hash": "2cb7c466b3ee97206541ff68f69aef72ff29fc66844977e926682d42e8c0df73",
-      "paths": [
-        "/unified-services.yaml"
       ]
     },
     {

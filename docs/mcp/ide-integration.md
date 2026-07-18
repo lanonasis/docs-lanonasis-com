@@ -134,7 +134,7 @@ code --install-extension LanOnasis.lanonasis-memory
 
 ---
 
-### VSCode Web (vscode.dev & github.dev) ✨ NEW
+### VSCode Web (vscode.dev & github.dev) {#vscode-web}
 
 **Extension**: LanOnasis Memory Assistant v2.1.1+
 

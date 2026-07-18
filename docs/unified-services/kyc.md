@@ -1,4 +1,5 @@
 ---
+draft: true
 sidebar_position: 6
 title: KYC Verification
 description: Identity verification for customers

@@ -29,14 +29,6 @@ const API_SPECS = [
     badge: "MCP v2.0 - 31 Tools",
   },
   {
-    id: "unified",
-    name: "Unified Services",
-    icon: "🔗",
-    description: "Wallets, Transfers, Payments, KYC",
-    paths: ["/unified-services.yaml"],
-    badge: "Unified Services API",
-  },
-  {
     id: "docs",
     name: "Documentation Search",
     icon: "📚",
