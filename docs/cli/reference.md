@@ -5,7 +5,7 @@ sidebar_label: CLI Reference
 
 # LanOnasis CLI Reference
 
-Complete reference for the `@lanonasis/cli` v3.11.0 - Professional CLI for Memory as a Service (MaaS).
+Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.1<!-- /AUTO --> - Professional CLI for Memory as a Service (MaaS).
 
 ## Installation
 
