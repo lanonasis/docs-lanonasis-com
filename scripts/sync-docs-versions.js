@@ -51,6 +51,7 @@ const versions = Object.fromEntries(
 const docsTargets = [
   path.join(docsRoot, 'docs', 'memory', 'sdk.md'),
   path.join(docsRoot, 'docs', 'intro.md'),
+  path.join(docsRoot, 'docs', 'cli', 'reference.md'),
   path.join(docsRoot, 'docs', 'sdks', 'cli.md'),
   path.join(docsRoot, 'docs', 'sdks', 'typescript.md'),
 ];
@@ -101,10 +102,20 @@ const updateFile = (filePath) => {
 
 try {
   console.log('🔄 Syncing docs versions...');
-  if (Object.keys(versions).length !== Object.keys(versionSources).length) {
+  const availableSourceCount = Object.keys(versions).length;
+  const expectedSourceCount = Object.keys(versionSources).length;
+
+  if (availableSourceCount === 0) {
     console.log('ℹ️  Monorepo package metadata unavailable; preserving committed version markers.');
     process.exit(0);
   }
+
+  if (availableSourceCount !== expectedSourceCount) {
+    throw new Error(
+      `Partial package metadata: found ${availableSourceCount} of ${expectedSourceCount} version sources`
+    );
+  }
+
   docsTargets.forEach(updateFile);
   console.log('✅ Docs version sync complete.');
 } catch (error) {

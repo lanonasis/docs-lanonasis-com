@@ -1,5 +1,4 @@
 import type { ComponentType, ReactNode } from "react";
-import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import Layout from "@theme/Layout";
 import Heading from "@theme/Heading";
@@ -188,12 +187,7 @@ function ServicesSection() {
             <NavLink key={idx} to={service.link} className={styles.serviceCard}>
               <div className={styles.serviceHeader}>
                 <span className={styles.serviceIcon}>{service.icon}</span>
-                <span className={clsx(
-                  styles.serviceBadge,
-                  service.badge === "New" && styles.serviceBadgeNew,
-                  service.badge === "AI" && styles.serviceBadgeAI,
-                  service.badge === "Enterprise" && styles.serviceBadgeEnterprise,
-                )}>
+                <span className={styles.serviceBadge}>
                   {service.badge}
                 </span>
               </div>

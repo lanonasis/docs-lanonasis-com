@@ -1161,7 +1161,7 @@
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "403": {
-            "$ref": "#/components/responses/ValidationError"
+            "$ref": "#/components/responses/ForbiddenError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
@@ -1214,7 +1214,7 @@
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "403": {
-            "$ref": "#/components/responses/ValidationError"
+            "$ref": "#/components/responses/ForbiddenError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
@@ -1269,7 +1269,7 @@
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "403": {
-            "$ref": "#/components/responses/ValidationError"
+            "$ref": "#/components/responses/ForbiddenError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
@@ -2735,27 +2735,22 @@
           },
           "topic_id": {
             "type": "string",
+            "format": "uuid",
             "description": "Restrict analysis to memories for a specific topic"
           },
           "memory_type": {
-            "type": "string",
+            "$ref": "#/components/schemas/MemoryType",
             "description": "Legacy single memory type filter"
           },
           "memory_types": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/MemoryType"
             },
             "description": "Restrict analysis to the listed memory types"
           },
           "query_scope": {
-            "type": "string",
-            "enum": [
-              "personal",
-              "team",
-              "organization",
-              "hybrid"
-            ],
+            "$ref": "#/components/schemas/MemoryQueryScope",
             "description": "Scope hint for personal vs organization memory analysis"
           }
         }
@@ -4451,6 +4446,16 @@
     "responses": {
       "UnauthorizedError": {
         "description": "Authentication required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Authenticated caller is not authorized to access the resource",
         "content": {
           "application/json": {
             "schema": {
