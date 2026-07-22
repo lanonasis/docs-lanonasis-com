@@ -56,7 +56,10 @@ function extractToolRegistry(source) {
   const tools = [];
   // Match the tools array block: a `const tools: McpTool[] = [` (or similar) ... `];`
   // We grab everything between `const tools` and the matching `];`.
-  const arrayMatch = source.match(/const\s+tools[^\[]*\[([\s\S]*?)\];/);
+  // Anchor the closing `];` to the start of a line to prevent nested/inline
+  // `];` sequences (e.g. `const arr = [];` inside a handler) from prematurely
+  // terminating the match.
+  const arrayMatch = source.match(/const\s+tools[^\[]*\[([\s\S]*?)\n\];/);
   if (!arrayMatch) {
     throw new Error('Could not locate MCP tool registry array in ' + MCP_SRC);
   }
@@ -151,7 +154,7 @@ function groupTools(tools) {
     if (target) target.items.push(t);
   }
   // Drop empty groups except the catch-all "Platform Tools"
-  return groups.filter((g) => g.items.length > 0);
+  return groups.filter((g) => g.items.length > 0 || g.label === 'Platform Tools');
 }
 
 function escapePipe(s) {
@@ -253,7 +256,11 @@ function main() {
       process.exit(1);
     }
     const existing = readFileSync(TOOLS_DOC, 'utf8');
-    if (existing !== doc) {
+    // Strip the date-bearing generation footer before comparing — otherwise
+    // the check fails on any day after the file was last generated, even when
+    // the source registry hasn't changed.
+    const normalize = (s) => s.replace(/<!-- Generated \d{4}-\d{2}-\d{2} from \d+ registered tools\. -->\n/, '');
+    if (normalize(existing) !== normalize(doc)) {
       console.error(`❌ MCP tools doc is out of sync with source registry (${tools.length} tools).`);
       console.error(`   Run: node scripts/generate-mcp-tools-doc.mjs`);
       process.exit(1);

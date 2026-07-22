@@ -36,7 +36,7 @@ among the supported grant types.
 
 ## End-to-end sequence
 
-```
+```text
 +--------+                                +----------------+         +-----------+
 |  CLI   |                                |  auth.lanonasis|         |  Browser  |
 +--------+                                +----------------+         +-----------+
@@ -116,7 +116,7 @@ The code is good for **15 minutes** (`DEVICE_CODE_EXPIRY = 900` in
 Open `verification_uri_complete` in any browser. The page renders a
 Content-Security-Policy-locked form:
 
-```
+```text
 default-src 'self';
 script-src 'self' 'nonce-…';
 style-src 'self' 'unsafe-inline';
@@ -163,9 +163,13 @@ On success:
 
 The auth gateway issues an access token bound to the user's primary
 organization and, if the user has a context-bound API key, surfaces that
-`key_context` on the response. Use the access token in subsequent API calls:
+`key_context` on the response. The context is resolved from the API key
+the user authorized with during the device flow — the `/oauth/device`
+request itself carries only `client_id` and `scope`; the `key_context`
+value comes from the API key bound to the authenticated user session
+after the device authorization step. Use the access token in subsequent API calls:
 
-```
+```http
 Authorization: Bearer eyJhbGciOi…
 ```
 

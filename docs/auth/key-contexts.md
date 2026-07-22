@@ -2,7 +2,7 @@
 title: Key Contexts
 sidebar_label: Key Contexts
 sidebar_position: 2
-description: How LanOnasis API keys carry a key_context discriminator that scopes memory reads and writes to personal, team, enterprise, or legacy boundaries.
+description: How LanOnasis API keys carry a key_context discriminator that scopes memory reads to personal, team, enterprise, or legacy boundaries.
 ---
 
 # Key Contexts
@@ -23,8 +23,8 @@ boundary filter — backward-compatible with all pre-context integrations.
 
 | Context | Default scope | Boundary behavior |
 |---------|--------------|-------------------|
-| `personal` | `memories:personal:*` | Restricts reads and writes to the authenticated user's own memory records. |
-| `team` | `memories:team:*` | Restricts reads and writes to the authenticated user's organization; removes the personal user fence. |
+| `personal` | `memories:personal:*` | Restricts reads to the authenticated user's own memory records. |
+| `team` | `memories:team:*` | Restricts reads to the authenticated user's organization; removes the personal user fence. |
 | `enterprise` | `memories:*` | No additional personal or team boundary. Multi-tenant tenant fence only. |
 | *(unset)* → `legacy` | `memories:*` (or the explicit `permissions` you set) | No boundary enforcement. Backward-compatible. |
 
