@@ -52,18 +52,124 @@ const CHECK_MODE = process.argv.includes('--check');
  *   - name: '...' inside the `tools` array (we filter by indentation: 6 spaces)
  *   - description: '...' on the line directly after
  */
+/**
+ * Extract the body of the `tools` registry array between its opening `[` and
+ * the matching `];` token at the same indentation as the opening `const tools`.
+ *
+ * We track string-literal and template-literal boundaries so `];` inside a
+ * string body (e.g. `description: 'something'];`) does not terminate the
+ * match. We also skip bracket pairs inside comments and strings.
+ *
+ * Returns the substring strictly between the opening `[` and the line
+ * containing the matching `];` (so the body keeps its interior indentation),
+ * or `null` if no matching close is found.
+ */
+function extractRegistryBody(source, openIndex, openIndent) {
+  const bracketStart = source.indexOf('[', openIndex);
+  if (bracketStart === -1) return null;
+
+  let depth = 1;
+  let i = bracketStart + 1;
+  const len = source.length;
+  let lineStart = i;
+  let closeLineStart = -1;
+
+  while (i < len && depth > 0) {
+    const ch = source[i];
+    if (ch === '\n') {
+      lineStart = i + 1;
+      i++;
+      continue;
+    }
+    // Skip line comments.
+    if (ch === '/' && source[i + 1] === '/') {
+      const nl = source.indexOf('\n', i);
+      i = nl === -1 ? len : nl;
+      continue;
+    }
+    // Skip block comments.
+    if (ch === '/' && source[i + 1] === '*') {
+      const end = source.indexOf('*/', i + 2);
+      i = end === -1 ? len : end + 2;
+      continue;
+    }
+    // Skip single-quoted strings (with `\'` and `\\` escapes).
+    if (ch === "'") {
+      i++;
+      while (i < len && source[i] !== "'") {
+        if (source[i] === '\\') i += 2;
+        else if (source[i] === '\n') { lineStart = i + 1; i++; }
+        else i++;
+      }
+      i++;
+      continue;
+    }
+    // Skip double-quoted strings.
+    if (ch === '"') {
+      i++;
+      while (i < len && source[i] !== '"') {
+        if (source[i] === '\\') i += 2;
+        else if (source[i] === '\n') { lineStart = i + 1; i++; }
+        else i++;
+      }
+      i++;
+      continue;
+    }
+    // Skip template literals.
+    if (ch === '`') {
+      i++;
+      while (i < len && source[i] !== '`') {
+        if (source[i] === '\\') i += 2;
+        else if (source[i] === '\n') { lineStart = i + 1; i++; }
+        else i++;
+      }
+      i++;
+      continue;
+    }
+    if (ch === '[') {
+      depth++;
+      i++;
+      continue;
+    }
+    if (ch === ']') {
+      depth--;
+      if (depth === 0) {
+        // Only accept the registry close when `]` sits at the exact
+        // indentation of the opening `const tools` line and is followed by
+        // `;`. Nested array closes at different indents (e.g. inside a
+        // handler body) are ignored.
+        const prefix = source.slice(lineStart, i);
+        if (prefix === openIndent && source[i + 1] === ';') {
+          closeLineStart = lineStart;
+          break;
+        }
+      }
+      i++;
+      continue;
+    }
+    i++;
+  }
+
+  if (depth !== 0 || closeLineStart === -1) return null;
+  return source.slice(bracketStart + 1, closeLineStart);
+}
+
 function extractToolRegistry(source) {
   const tools = [];
-  // Match the tools array block: a `const tools: McpTool[] = [` (or similar) ... `];`
-  // We grab everything between `const tools` and the matching `];`.
-  // Anchor the closing `];` to the start of a line to prevent nested/inline
-  // `];` sequences (e.g. `const arr = [];` inside a handler) from prematurely
-  // terminating the match.
-  const arrayMatch = source.match(/const\s+tools[^\[]*\[([\s\S]*?)\n\];/);
-  if (!arrayMatch) {
+  // Locate the registry by balanced extraction: find the opening
+  // `const tools = [` (or `const tools: T[] = [`) at any indent, capture that
+  // indent, then scan forward until we find a `];` at the SAME indent. This
+  // tolerates nested `];` sequences in handler bodies (e.g. an inline array
+  // literal) and any reasonable indentation of the close marker.
+  const openMatch = source.match(/^(\s*)const\s+tools(?:\s*:\s*[A-Za-z_][\w<>,\s\[\]]*)?\s*=\s*\[/m);
+  if (!openMatch) {
     throw new Error('Could not locate MCP tool registry array in ' + MCP_SRC);
   }
-  const body = arrayMatch[1];
+  const openIndent = openMatch[1];
+  const body = extractRegistryBody(source, openMatch.index, openIndent);
+  if (body === null) {
+    throw new Error('Could not locate MCP tool registry array in ' + MCP_SRC);
+  }
 
   // Walk the body. Each tool object starts with `{` at column 4 and ends at the
   // matching `}`. We split on `}\n    ]` to capture the closing of each entry.
