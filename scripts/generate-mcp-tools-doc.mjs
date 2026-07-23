@@ -64,9 +64,22 @@ const CHECK_MODE = process.argv.includes('--check');
  * containing the matching `];` (so the body keeps its interior indentation),
  * or `null` if no matching close is found.
  */
-function extractRegistryBody(source, openIndex, openIndent) {
-  const bracketStart = source.indexOf('[', openIndex);
-  if (bracketStart === -1) return null;
+function extractRegistryBody(source, openMatch, openIndent) {
+  // Derive the assignment-array `[` directly from the opening regex match
+  // rather than re-scanning with `source.indexOf('[', openMatch.index)`.
+  //
+  // For an untyped declaration (`const tools = [`) the next `[` after the
+  // match start is the assignment bracket, so both approaches agree.
+  //
+  // For a typed declaration (`const tools: McpTool[] = [`) the regex still
+  // matches the whole prefix, but the FIRST `[` ahead of `openMatch.index`
+  // sits inside the type annotation (`McpTool[]`), not on the assigned array.
+  // Using `openMatch[0].lastIndexOf('[')` locates the assignment bracket
+  // unambiguously regardless of how many `[` appear in the type clause.
+  const bracketStart = openMatch.index + openMatch[0].lastIndexOf('[');
+  if (bracketStart < 0 || bracketStart >= source.length || source[bracketStart] !== '[') {
+    return null;
+  }
 
   let depth = 1;
   let i = bracketStart + 1;
@@ -166,7 +179,7 @@ function extractToolRegistry(source) {
     throw new Error('Could not locate MCP tool registry array in ' + MCP_SRC);
   }
   const openIndent = openMatch[1];
-  const body = extractRegistryBody(source, openMatch.index, openIndent);
+  const body = extractRegistryBody(source, openMatch, openIndent);
   if (body === null) {
     throw new Error('Could not locate MCP tool registry array in ' + MCP_SRC);
   }
@@ -379,4 +392,32 @@ function main() {
   console.log(`✅ Generated ${TOOLS_DOC} (${tools.length} tools).`);
 }
 
-main();
+// Only run as a CLI script when invoked directly. When the file is imported
+// (e.g. by the synthetic regression fixture in scripts/__tests__/), expose the
+// pure helpers without triggering a `main()` call that would otherwise fail
+// on missing MCP source files.
+const isDirectInvocation =
+  process.argv[1] && (
+    process.argv[1].endsWith('generate-mcp-tools-doc.mjs') ||
+    process.argv[1].endsWith('generate-mcp-tools-doc.cjs')
+  );
+
+if (isDirectInvocation && !process.env.MCP_TOOLS_DOC_NO_RUN) {
+  try {
+    main();
+  } catch (err) {
+    console.error(`❌ ${err.message}`);
+    process.exit(1);
+  }
+}
+
+export {
+  extractRegistryBody,
+  extractToolRegistry,
+  extractAnnotations,
+  extractInputProperties,
+  groupTools,
+  renderDoc,
+  MEMORY_VERBS,
+  GROUP_ORDER,
+};

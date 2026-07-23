@@ -31,7 +31,9 @@
     "validate:cli-docs": "node scripts/validate-cli-docs.mjs",
     "validate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs --check",
     "generate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs",
-    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints && bun run validate:cli-docs && bun run validate:mcp-tools"
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints && bun run validate:cli-docs && bun run validate:mcp-tools",
+    "test:extract-registry-body": "node --test scripts/__tests__/extract-registry-body.test.mjs",
+    "test:scripts": "bun run test:extract-registry-body"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
