@@ -97,7 +97,24 @@ try {
   ensureFile(memorySpecJson, memoryJson, 'Memory OpenAPI JSON');
   ensureFile(docsSearchSpecYaml, docsSearchSpec.content, 'Docs Search OpenAPI YAML');
 
+  const lastVerified = new Date().toISOString();
+  const memorySourceLabel = fs.existsSync(memorySpecSource)
+    ? 'monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml'
+    : 'committed:static/memory-api.yaml';
+  const docsSourceLabel = 'repo:apps/docs-lanonasis/openapi.yaml';
+
+  // Drift-visibility envelope: `last_verified` + `synced_from` make
+  // static==canonical drift visible without running check:docs-sync —
+  // a stale manifest is the one whose `last_verified` is older than the
+  // canonical source's mtime, or whose per-spec `hash` no longer matches
+  // the on-disk artifact.
   const manifest = {
+    last_verified: lastVerified,
+    synced_from: {
+      generator: 'scripts/sync-docs-specs.js',
+      memory: memorySourceLabel,
+      docs: docsSourceLabel
+    },
     specs: [
       {
         id: 'memory',
@@ -107,6 +124,8 @@ try {
         badge: 'MCP v2.0 - 31 Tools',
         version: memorySpec.data?.info?.version || 'unknown',
         hash: hashContent(memorySpec.content),
+        last_verified: lastVerified,
+        synced_from: memorySourceLabel,
         paths: ['/memory-api.json', '/memory-api.yaml']
       },
       {
@@ -117,6 +136,8 @@ try {
         badge: 'Docs Search API',
         version: docsSearchSpec.data?.info?.version || 'unknown',
         hash: hashContent(docsSearchSpec.content),
+        last_verified: lastVerified,
+        synced_from: docsSourceLabel,
         paths: ['/openapi.json', '/openapi.yaml']
       }
     ]

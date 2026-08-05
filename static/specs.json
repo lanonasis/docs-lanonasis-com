@@ -1,4 +1,10 @@
 {
+  "last_verified": "2026-08-03T20:35:00.000Z",
+  "synced_from": {
+    "generator": "scripts/sync-docs-specs.js",
+    "memory": "monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
+    "docs": "repo:apps/docs-lanonasis/openapi.yaml"
+  },
   "specs": [
     {
       "id": "memory",
@@ -8,6 +14,8 @@
       "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
       "hash": "70ac5154815aa805941c401a6aa144fb8b4a3f2fc4be55efeea9c98c53918e45",
+      "last_verified": "2026-08-03T20:35:00.000Z",
+      "synced_from": "monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
       "paths": [
         "/memory-api.json",
         "/memory-api.yaml"
@@ -21,6 +29,8 @@
       "badge": "Docs Search API",
       "version": "1.0.0",
       "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
+      "last_verified": "2026-08-03T20:35:00.000Z",
+      "synced_from": "repo:apps/docs-lanonasis/openapi.yaml",
       "paths": [
         "/openapi.json",
         "/openapi.yaml"
