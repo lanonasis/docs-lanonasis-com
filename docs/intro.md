@@ -27,7 +27,7 @@ npm install -g @lanonasis/cli
 onasis --version
 ```
 
-The current documented CLI is <!-- AUTO:CLI_VERSION -->3.11.1<!-- /AUTO -->.
+The current documented CLI is <!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO -->.
 
 ### 2. Authenticate
 
