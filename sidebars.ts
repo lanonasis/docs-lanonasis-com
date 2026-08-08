@@ -37,6 +37,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Integrations',
+      collapsed: false,
+      items: ['integrations'],
+    },
+    {
+      type: 'category',
       label: 'Memory Suite',
       items: ['memory/overview', 'memory/rest-api', 'memory/sdk', 'memory/cli'],
     },
