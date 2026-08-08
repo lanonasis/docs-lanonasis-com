@@ -3,847 +3,487 @@ title: MCP Tools Reference
 sidebar_label: Tools Reference
 ---
 
+<!-- DO NOT EDIT BY HAND. Generated from apps/mcp-core/src/index.ts by
+     scripts/generate-mcp-tools-doc.mjs. Run `node scripts/generate-mcp-tools-doc.mjs`
+     to regenerate. CI fails the build if the doc and the registry disagree
+     (`bun run validate:mcp-tools`). -->
+
 # MCP Tools Reference
 
-Complete reference for all available MCP tools in the LanOnasis MCP server.
+Complete reference for all 37 MCP tools registered in the
+LanOnasis MCP server. Tool names, descriptions, and parameter shapes are
+extracted directly from the source registry at build time.
+
+## Discovery
+
+- **HTTP transport**: `GET https://mcp.lanonasis.com/api/v1/tools` (auth required)
+- **JSON-RPC over HTTP**: `POST https://mcp.lanonasis.com/` with method `tools/list`
+- **SSE**: `GET https://mcp.lanonasis.com/sse` (then send `tools/list` over the open stream)
 
 ## Memory Tools
 
 ### create_memory
 
-Create a new memory with automatic vector embedding.
+Create a new memory with vector embedding.
 
-**Tool Name**: `create_memory`
+**Annotations**: `toolAnnotations.create_memory` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  title: string;              // Required: Memory title
-  content: string;           // Required: Memory content
-  memory_type?: MemoryType;  // Optional: Type (default: 'context')
-  tags?: string[];           // Optional: Tags array
-  topic_id?: string;         // Optional: Topic UUID
-  project_ref?: string;      // Optional: Project reference
-  metadata?: Record<string, unknown>; // Optional: Custom metadata
-  summary?: string;          // Optional: Summary text
-}
-```
+**Parameters**:
 
-**Memory Types:**
-- `context` - General contextual information
-- `project` - Project-specific knowledge
-- `knowledge` - Educational or reference material
-- `reference` - Quick reference information
-- `personal` - User-specific private memories
-- `workflow` - Process and procedure documentation
+| Name | Type |
+|------|------|
+| `title` | string |
+| `content` | string |
+| `type` | string |
+| `tags` | string |
+| `metadata` | object |
+| `topic_id` | string |
+| `continuity_key` | string |
+| `idempotency_key` | string |
+| `write_intent` | string |
 
-**Example:**
-```typescript
-const result = await client.callTool('create_memory', {
-  title: 'API Integration Guide',
-  content: 'Complete guide for integrating with our API...',
-  memory_type: 'knowledge',
-  tags: ['api', 'integration', 'documentation'],
-  metadata: {
-    author: 'John Doe',
-    version: '1.0'
-  }
-});
-```
+### create_memory_chunked
 
-**Response:**
-```typescript
-{
-  id: string;
-  title: string;
-  content: string;
-  memory_type: string;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-  // ... other fields
-}
-```
+Create chunked memories for very large content while preserving ownership and metadata.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `title` | string |
+| `content` | string |
+| `type` | string |
+| `tags` | string |
+| `metadata` | object |
+| `topic_id` | string |
+| `chunk_max_chars` | number |
+| `chunk_overlap_chars` | number |
+| `max_chunks` | number |
+
+### delete_memory
+
+Delete a memory by ID.
+
+**Annotations**: `toolAnnotations.delete_memory` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `id` | string |
 
 ### get_memory
 
-Retrieve a specific memory by ID.
+Get a specific memory by ID.
 
-**Tool Name**: `get_memory`
+**Annotations**: `toolAnnotations.get_memory` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  memory_id: string;  // Required: Memory UUID
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('get_memory', {
-  memory_id: 'mem_1234567890abcdef'
-});
-```
+| Name | Type |
+|------|------|
+| `id` | string |
+
+### list_memories
+
+List memories with pagination and filters.
+
+**Annotations**: `toolAnnotations.list_memories` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `limit` | number |
+| `offset` | number |
+| `type` | string |
+| `tags` | string |
+| `search` | string |
+
+### memory_ask_profile
+
+Ask a natural-language question about a subject and get an AI-synthesised answer derived from their living memory profile.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `subject_id` | string |
+| `question` | string |
+
+### memory_bulk_delete
+
+Delete multiple memories in a single operation.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `ids` | string |
+
+### memory_get_profile
+
+Retrieve the living memory profile for a subject — includes profile summary, structured fields (preferences, goals, constraints, tendencies, facts), and per-field confidence scores.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `subject_id` | string |
+
+### memory_get_profile_history
+
+Retrieve the version history of a subject's living memory profile (most recent first).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `subject_id` | string |
+| `limit` | number |
+
+### memory_stats
+
+Get memory statistics and activity summary.
+
+**Parameters**: none.
+
+### search_memories
+
+Search memories using semantic vector search.
+
+**Annotations**: `toolAnnotations.search_memories` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `query` | string |
+| `type` | string |
+| `threshold` | number |
+| `limit` | integer |
 
 ### update_memory
 
 Update an existing memory.
 
-**Tool Name**: `update_memory`
+**Annotations**: `toolAnnotations.update_memory` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  memory_id: string;         // Required: Memory UUID
-  title?: string;            // Optional: New title
-  content?: string;          // Optional: New content
-  memory_type?: MemoryType;  // Optional: New type
-  tags?: string[];           // Optional: New tags
-  topic_id?: string | null;  // Optional: Topic UUID or null
-  project_ref?: string | null; // Optional: Project reference or null
-  status?: MemoryStatus;     // Optional: Status
-  metadata?: Record<string, unknown>; // Optional: Updated metadata
-  summary?: string;          // Optional: Summary
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('update_memory', {
-  memory_id: 'mem_1234567890abcdef',
-  title: 'Updated Title',
-  tags: ['updated', 'tags']
-});
-```
+| Name | Type |
+|------|------|
+| `id` | string |
+| `title` | string |
+| `content` | string |
+| `type` | string |
+| `tags` | string |
+| `metadata` | object |
 
-### delete_memory
+## Intelligence Tools
 
-Delete a memory permanently.
+### intelligence_analyze_patterns
 
-**Tool Name**: `delete_memory`
+Analyze memory usage patterns and produce operational recommendations.
 
-**Parameters:**
-```typescript
-{
-  memory_id: string;  // Required: Memory UUID
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('delete_memory', {
-  memory_id: 'mem_1234567890abcdef'
-});
-```
+| Name | Type |
+|------|------|
+| `time_range_days` | number |
+| `include_insights` | boolean |
+| `response_format` | string |
 
-### list_memories
+### intelligence_detect_duplicates
 
-List memories with filtering and pagination.
+Detect potentially duplicate memories using embeddings/text similarity.
 
-**Tool Name**: `list_memories`
+**Parameters**:
 
-**Parameters:**
-```typescript
-{
-  page?: number;           // Optional: Page number (default: 1)
-  limit?: number;          // Optional: Items per page (default: 20)
-  memory_type?: MemoryType; // Optional: Filter by type
-  topic_id?: string;       // Optional: Filter by topic
-  project_ref?: string;    // Optional: Filter by project
-  status?: MemoryStatus;    // Optional: Filter by status
-  tags?: string[];         // Optional: Filter by tags
-  sort?: string;           // Optional: Sort field (default: 'created_at')
-  order?: 'asc' | 'desc'; // Optional: Sort order (default: 'desc')
-}
-```
+| Name | Type |
+|------|------|
+| `similarity_threshold` | number |
+| `limit` | number |
+| `max_scan` | number |
 
-**Example:**
-```typescript
-const result = await client.callTool('list_memories', {
-  page: 1,
-  limit: 20,
-  memory_type: 'knowledge',
-  tags: ['api', 'documentation']
-});
-```
+### intelligence_extract_insights
 
-**Response:**
-```typescript
-{
-  data: MemoryEntry[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
-  };
-}
-```
+Extract themes, gaps, actions, and summary insights from memories.
 
-### search_memories
+**Parameters**:
 
-Semantic search across memories using vector similarity.
+| Name | Type |
+|------|------|
+| `memory_ids` | string |
+| `topic` | string |
+| `time_range_days` | number |
+| `insight_types` | string |
+| `detail_level` | string |
 
-**Tool Name**: `search_memories`
+### intelligence_find_related
 
-**Parameters:**
-```typescript
-{
-  query: string;            // Required: Search query
-  memory_types?: MemoryType[]; // Optional: Filter by types
-  tags?: string[];         // Optional: Filter by tags
-  topic_id?: string;       // Optional: Filter by topic
-  project_ref?: string;    // Optional: Filter by project
-  status?: MemoryStatus;    // Optional: Filter by status (default: 'active')
-  limit?: number;          // Optional: Max results (default: 20, max: 100)
-  threshold?: number;      // Optional: Similarity threshold (default: 0.7, range: 0-1)
-}
-```
+Find semantically related memories by memory_id or free-text query.
 
-**Example:**
-```typescript
-const result = await client.callTool('search_memories', {
-  query: 'API integration best practices',
-  memory_types: ['knowledge', 'reference'],
-  limit: 10,
-  threshold: 0.8
-});
-```
+**Parameters**:
 
-**Response:**
-```typescript
-{
-  results: Array<{
-    ...MemoryEntry,
-    similarity_score: number;
-  }>;
-  total_results: number;
-  search_time_ms: number;
-}
-```
+| Name | Type |
+|------|------|
+| `memory_id` | string |
+| `query` | string |
+| `limit` | number |
+| `similarity_threshold` | number |
+| `exclude_ids` | string |
 
-### bulk_delete_memories
+### intelligence_flush_queue
 
-Delete multiple memories in a single operation.
+Force-immediate reasoning for a subject (bypass cron threshold).
 
-**Tool Name**: `bulk_delete_memories`
+**Parameters**:
 
-**Parameters:**
-```typescript
-{
-  memory_ids: string[];  // Required: Array of memory UUIDs
-}
-```
+| Name | Type |
+|------|------|
+| `subject_id` | string |
 
-**Example:**
-```typescript
-const result = await client.callTool('bulk_delete_memories', {
-  memory_ids: ['mem_1', 'mem_2', 'mem_3']
-});
-```
+### intelligence_get_job_status
 
-**Response:**
-```typescript
-{
-  deleted_count: number;
-  failed_ids: string[];
-}
-```
+Get the status of an async reasoning job by ID.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `job_id` | string |
+
+### intelligence_health_check
+
+Run a memory intelligence health check (content quality, tags, embeddings, usage).
+
+**Parameters**: none.
+
+### intelligence_list_conclusions
+
+List pre-reasoned inferred conclusions for a subject from the async inference queue.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `subject_id` | string |
+| `limit` | number |
+| `include_superseded` | boolean |
+
+### intelligence_suggest_tags
+
+Suggest tags using user vocabulary and content heuristics.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `memory_id` | string |
+| `content` | string |
+| `title` | string |
+| `existing_tags` | string |
+| `max_suggestions` | number |
+
+## Behavior Tools
+
+### behavior_recall
+
+Recall similar workflow patterns for the current task context.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `context` | string |
+| `limit` | number |
+| `similarity_threshold` | number |
+
+### behavior_record
+
+Record a successful behavior/workflow pattern for future recall.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `trigger` | string |
+| `context` | string |
+| `actions` | string |
+| `final_outcome` | string |
+| `confidence` | number |
+
+### behavior_suggest
+
+Suggest next actions based on recalled behavior patterns.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `current_state` | string |
+| `max_suggestions` | number |
 
 ## API Key Tools
 
 ### create_api_key
 
-Create a new API key for vendor services.
+Create a new API key.
 
-**Tool Name**: `create_api_key`
+**Annotations**: `toolAnnotations.create_api_key` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  name: string;              // Required: Key name/description
-  type: string;              // Required: Key type ('api_key', 'oauth_token', 'certificate', 'ssh_key')
-  value: string;             // Required: Key value (will be encrypted)
-  environment: string;       // Required: Environment ('development', 'staging', 'production')
-  project_id: string;        // Required: Project UUID
-  rotation_frequency?: number; // Optional: Days until rotation (default: 90)
-  metadata?: Record<string, unknown>; // Optional: Custom metadata
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('create_api_key', {
-  name: 'OpenAI API Key',
-  type: 'api_key',
-  value: 'sk-...',
-  environment: 'production',
-  project_id: 'project-uuid',
-  rotation_frequency: 90
-});
-```
+| Name | Type |
+|------|------|
+| `name` | string |
+| `description` | string |
+| `access_level` | string |
+| `expires_in_days` | number |
+| `project_id` | string |
+
+### delete_api_key
+
+Delete an API key.
+
+**Annotations**: `toolAnnotations.delete_api_key` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `key_id` | string |
 
 ### list_api_keys
 
-List API keys for an organization or project.
+List API keys.
 
-**Tool Name**: `list_api_keys`
+**Annotations**: `toolAnnotations.list_api_keys` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  project_id?: string;       // Optional: Filter by project
-  environment?: string;      // Optional: Filter by environment
-  type?: string;             // Optional: Filter by type
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('list_api_keys', {
-  project_id: 'project-uuid',
-  environment: 'production'
-});
-```
-
-**Response:**
-```typescript
-{
-  keys: Array<{
-    id: string;
-    name: string;
-    type: string;
-    environment: string;
-    project_id: string;
-    created_at: string;
-    last_rotated?: string;
-    expires_at?: string;
-    // Note: value is never returned for security
-  }>;
-}
-```
-
-### get_api_key
-
-Get details about a specific API key (value is never returned).
-
-**Tool Name**: `get_api_key`
-
-**Parameters:**
-```typescript
-{
-  key_id: string;  // Required: API key UUID
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('get_api_key', {
-  key_id: 'key_1234567890abcdef'
-});
-```
-
-### rotate_api_key
-
-Rotate an API key (generates new value, keeps same ID).
-
-**Tool Name**: `rotate_api_key`
-
-**Parameters:**
-```typescript
-{
-  key_id: string;  // Required: API key UUID
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('rotate_api_key', {
-  key_id: 'key_1234567890abcdef'
-});
-```
-
-**Response:**
-```typescript
-{
-  key_id: string;
-  rotated_at: string;
-  new_value?: string;  // Only returned once, store securely
-}
-```
+| Name | Type |
+|------|------|
+| `active_only` | boolean |
+| `project_id` | string |
 
 ### revoke_api_key
 
-Revoke (deactivate) an API key.
+Revoke (deactivate) an API key without deleting it.
 
-**Tool Name**: `revoke_api_key`
+**Annotations**: `toolAnnotations.revoke_api_key` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  key_id: string;  // Required: API key UUID
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('revoke_api_key', {
-  key_id: 'key_1234567890abcdef'
-});
-```
+| Name | Type |
+|------|------|
+| `key_id` | string |
 
-## System Tools
+### rotate_api_key
 
-### health_check
+Rotate an API key.
 
-Check MCP server health and status.
+**Annotations**: `toolAnnotations.rotate_api_key` (read/write/destructive hints from the source registry).
 
-**Tool Name**: `health_check`
+**Parameters**:
 
-**Parameters:** None
+| Name | Type |
+|------|------|
+| `key_id` | string |
 
-**Example:**
-```typescript
-const result = await client.callTool('health_check', {});
-```
-
-**Response:**
-```typescript
-{
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  timestamp: string;
-  version: string;
-  uptime: number;
-  services: {
-    database: 'healthy' | 'unhealthy';
-    cache: 'healthy' | 'unhealthy';
-    embeddings: 'healthy' | 'unhealthy';
-  };
-}
-```
-
-### get_stats
-
-Get memory statistics for a user or organization.
-
-**Tool Name**: `get_stats`
-
-**Parameters:**
-```typescript
-{
-  user_id?: string;  // Optional: User UUID (default: current user)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('get_stats', {});
-```
-
-**Response:**
-```typescript
-{
-  total_memories: number;
-  memories_by_type: {
-    context: number;
-    project: number;
-    knowledge: number;
-    reference: number;
-    personal: number;
-    workflow: number;
-  };
-  total_topics: number;
-  most_accessed_memory?: string;
-  recent_memories: string[];
-}
-```
-
-### list_topics
-
-List memory topics for a user or organization.
-
-**Tool Name**: `list_topics`
-
-**Parameters:**
-```typescript
-{
-  user_id?: string;  // Optional: User UUID (default: current user)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('list_topics', {});
-```
-
-**Response:**
-```typescript
-{
-  topics: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    color?: string;
-    icon?: string;
-    parent_topic_id?: string;
-    created_at: string;
-    updated_at: string;
-  }>;
-}
-```
-
-## Intelligence Tools
-
-AI-powered memory analysis tools for tag suggestions, finding related content, detecting duplicates, and extracting insights.
-
-### intelligence_health_check
-
-Check the health of AI intelligence services.
-
-**Tool Name**: `intelligence_health_check`
-
-**Parameters:** None
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_health_check', {});
-```
-
-**Response:**
-```typescript
-{
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  services: {
-    embedding: string;
-    analysis: string;
-  };
-  latency_ms: number;
-}
-```
-
-### intelligence_suggest_tags
-
-Get AI-powered tag suggestions for a memory based on content analysis.
-
-**Tool Name**: `intelligence_suggest_tags`
-
-**Parameters:**
-```typescript
-{
-  memory_id: string;              // Required: Memory UUID to analyze
-  user_id: string;                // Required: Owner's user UUID
-  max_suggestions?: number;       // Optional: Max tags to suggest (1-20, default: 5)
-  include_existing_tags?: boolean; // Optional: Consider existing tags (default: true)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_suggest_tags', {
-  memory_id: 'mem_1234567890abcdef',
-  user_id: 'user_abcdef1234567890',
-  max_suggestions: 5
-});
-```
-
-**Response:**
-```typescript
-{
-  memory_id: string;
-  suggestions: Array<{
-    tag: string;
-    confidence: number;  // 0-1
-    reason: string;
-  }>;
-  existing_tags: string[];
-}
-```
-
-### intelligence_find_related
-
-Find semantically related memories using vector similarity search.
-
-**Tool Name**: `intelligence_find_related`
-
-**Parameters:**
-```typescript
-{
-  memory_id: string;               // Required: Source memory UUID
-  user_id: string;                 // Required: Owner's user UUID
-  limit?: number;                  // Optional: Max results (1-50, default: 10)
-  similarity_threshold?: number;   // Optional: Min similarity (0-1, default: 0.7)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_find_related', {
-  memory_id: 'mem_1234567890abcdef',
-  user_id: 'user_abcdef1234567890',
-  limit: 10,
-  similarity_threshold: 0.7
-});
-```
-
-**Response:**
-```typescript
-{
-  source_memory_id: string;
-  related: Array<{
-    ...MemoryEntry,
-    similarity_score: number;
-  }>;
-}
-```
-
-### intelligence_detect_duplicates
-
-Detect potential duplicate memories using semantic similarity analysis.
-
-**Tool Name**: `intelligence_detect_duplicates`
-
-**Parameters:**
-```typescript
-{
-  user_id: string;                 // Required: User UUID to analyze
-  similarity_threshold?: number;   // Optional: Min similarity (0-1, default: 0.9)
-  max_pairs?: number;              // Optional: Max duplicate pairs (1-100, default: 20)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_detect_duplicates', {
-  user_id: 'user_abcdef1234567890',
-  similarity_threshold: 0.9,
-  max_pairs: 20
-});
-```
-
-**Response:**
-```typescript
-{
-  duplicate_pairs: Array<{
-    memory_1: MemoryEntry;
-    memory_2: MemoryEntry;
-    similarity_score: number;
-  }>;
-  total_pairs: number;
-  threshold_used: number;
-}
-```
-
-### intelligence_extract_insights
-
-Extract actionable insights from memories using AI analysis.
-
-**Tool Name**: `intelligence_extract_insights`
-
-**Parameters:**
-```typescript
-{
-  user_id: string;                 // Required: User UUID
-  topic?: string;                  // Optional: Focus topic for insights
-  memory_type?: MemoryType;        // Optional: Filter by memory type
-  max_memories?: number;           // Optional: Max memories to analyze (1-100, default: 50)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_extract_insights', {
-  user_id: 'user_abcdef1234567890',
-  topic: 'API design',
-  memory_type: 'knowledge',
-  max_memories: 50
-});
-```
-
-**Response:**
-```typescript
-{
-  insights: Array<{
-    category: string;
-    insight: string;
-    supporting_memories: string[];  // UUIDs
-    confidence: number;
-  }>;
-  summary: string;
-  topic: string;
-  memories_analyzed: number;
-}
-```
-
-### intelligence_analyze_patterns
-
-Analyze usage patterns and trends across memories over time.
-
-**Tool Name**: `intelligence_analyze_patterns`
-
-**Parameters:**
-```typescript
-{
-  user_id: string;                 // Required: User UUID
-  time_range_days?: number;        // Optional: Days to analyze (1-365, default: 30)
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('intelligence_analyze_patterns', {
-  user_id: 'user_abcdef1234567890',
-  time_range_days: 30
-});
-```
-
-**Response:**
-```typescript
-{
-  time_range_days: number;
-  patterns: {
-    top_topics: Array<{ topic: string; count: number }>;
-    activity_trend: 'increasing' | 'stable' | 'decreasing';
-    peak_usage_hours: number[];
-    type_distribution: Record<MemoryType, number>;
-  };
-}
-```
-
-## Configuration Tools
-
-### get_config
-
-Retrieve a configuration setting by key.
-
-**Tool Name**: `get_config`
-
-**Parameters:**
-```typescript
-{
-  key: string;  // Required: Configuration key (e.g., 'embedding_model')
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('get_config', {
-  key: 'embedding_model'
-});
-```
-
-### set_config
-
-Update a configuration setting (may require admin access).
-
-**Tool Name**: `set_config`
-
-**Parameters:**
-```typescript
-{
-  key: string;    // Required: Configuration key
-  value: string;  // Required: New value
-}
-```
-
-**Example:**
-```typescript
-const result = await client.callTool('set_config', {
-  key: 'max_memories',
-  value: '10000'
-});
-```
-
-## Project & Organization Tools
+## Platform Tools
 
 ### create_project
 
-Create a new project for organizing memories and API keys.
+Create a new project.
 
-**Tool Name**: `create_project`
+**Annotations**: `toolAnnotations.create_project` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  name: string;              // Required: Project name (1-255 chars)
-  description?: string;      // Optional: Project description
-  organization_id?: string;  // Optional: Organization UUID
-}
-```
+**Parameters**:
 
-### list_projects
+| Name | Type |
+|------|------|
+| `name` | string |
+| `description` | string |
+| `organization_id` | string |
 
-List projects accessible to the user.
+### get_auth_status
 
-**Tool Name**: `list_projects`
+Get authentication status.
 
-**Parameters:**
-```typescript
-{
-  organization_id?: string;  // Optional: Filter by organization
-}
-```
+**Annotations**: `toolAnnotations.get_auth_status` (read/write/destructive hints from the source registry).
+
+**Parameters**: none.
+
+### get_config
+
+Get configuration settings.
+
+**Annotations**: `toolAnnotations.get_config` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `key` | string |
+
+### get_health_status
+
+Get system health status.
+
+**Annotations**: `toolAnnotations.get_health_status` (read/write/destructive hints from the source registry).
+
+**Parameters**: none.
 
 ### get_organization_info
 
-Get detailed organization information including settings and limits.
+Get organization information.
 
-**Tool Name**: `get_organization_info`
+**Annotations**: `toolAnnotations.get_organization_info` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  organization_id: string;  // Required: Organization UUID
-}
-```
+**Parameters**: none.
 
-## Documentation Tools
+### list_projects
+
+List projects.
+
+**Annotations**: `toolAnnotations.list_projects` (read/write/destructive hints from the source registry).
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `organization_id` | string |
 
 ### search_lanonasis_docs
 
-Search the Lanonasis documentation for guides, API references, and SDK information.
+Search LanOnasis documentation for Memory as a Service (MaaS) platform.
 
-**Tool Name**: `search_lanonasis_docs`
+**Annotations**: `toolAnnotations.search_lanonasis_docs` (read/write/destructive hints from the source registry).
 
-**Parameters:**
-```typescript
-{
-  query: string;            // Required: Search query
-  section?: 'all' | 'api' | 'guides' | 'sdks';  // Optional: Section filter (default: 'all')
-  limit?: number;           // Optional: Max results (1-50, default: 10)
-}
-```
+**Parameters**:
 
-**Example:**
-```typescript
-const result = await client.callTool('search_lanonasis_docs', {
-  query: 'memory SDK authentication',
-  section: 'sdks',
-  limit: 10
-});
-```
+| Name | Type |
+|------|------|
+| `query` | string |
+| `section` | string |
+| `limit` | number |
 
----
+### set_config
 
-## Error Responses
+Set configuration setting.
 
-All tools return errors in JSON-RPC 2.0 format:
+**Annotations**: `toolAnnotations.set_config` (read/write/destructive hints from the source registry).
 
-```typescript
-{
-  jsonrpc: "2.0",
-  id: "request-id",
-  error: {
-    code: number,
-    message: string,
-    data?: {
-      details: string;
-      field?: string;
-    }
-  }
-}
-```
+**Parameters**:
 
-### Common Error Codes
+| Name | Type |
+|------|------|
+| `key` | string |
+| `value` | string |
+
+## Common Error Codes
 
 | Code | Description |
 |------|-------------|
@@ -874,3 +514,4 @@ All tools return errors in JSON-RPC 2.0 format:
 - [IDE Integration](./ide-integration.md) - Connect IDEs to MCP
 - [Production Server](./production-server.md) - Production deployment
 
+<!-- Generated 2026-07-18 from 37 registered tools. -->
