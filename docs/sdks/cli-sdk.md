@@ -9,7 +9,7 @@ tags:
   - automation
 ---
 
-# CLI SDK
+## CLI SDK
 
 The CLI SDK provides utilities and abstractions for building powerful, user-friendly command-line interfaces and automation scripts.
 

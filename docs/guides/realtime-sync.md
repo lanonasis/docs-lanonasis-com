@@ -1,8 +1,10 @@
 ---
 sidebar_position: 2
+title: Real-time Synchronization
+description: Implement real-time synchronization to keep memories in sync across platforms and devices.
 ---
 
-# Real-time Synchronization
+## Real-time Synchronization
 
 Learn how to implement real-time synchronization in LanOnasis.
 

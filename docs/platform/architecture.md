@@ -1,6 +1,7 @@
 ---
 title: LanOnasis Platform Architecture & Domains
 sidebar_label: Architecture & Domains
+description: "LanOnasis platform architecture: memory service, MCP core, auth gateway, and supporting services."
 ---
 
 The LanOnasis platform is intentionally split into independently deployable services with strict boundaries. REST and MCP are distinct entry points by design.

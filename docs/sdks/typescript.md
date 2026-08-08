@@ -1,8 +1,10 @@
 ---
 sidebar_position: 2
+title: TypeScript SDK
+description: Official TypeScript SDKs for LanOnasis Memory-as-a-Service.
 ---
 
-# TypeScript SDK
+## TypeScript SDK
 
 Official TypeScript SDKs for LanOnasis Memory-as-a-Service.
 

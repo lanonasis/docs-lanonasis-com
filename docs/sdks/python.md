@@ -1,8 +1,10 @@
 ---
 sidebar_position: 3
+title: Python SDK
+description: Official Python SDK for LanOnasis Memory-as-a-Service.
 ---
 
-# Python SDK
+## Python SDK
 
 Official Python SDK for LanOnasis Memory-as-a-Service.
 

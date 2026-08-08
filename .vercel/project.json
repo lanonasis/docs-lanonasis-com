@@ -4,13 +4,13 @@
   "projectName": "docs",
   "settings": {
     "createdAt": 1754026809711,
-    "framework": "docusaurus-2",
+    "framework": "docusaurus",
     "devCommand": "bun run start",
     "installCommand": "bun install",
     "buildCommand": "bun run build",
     "outputDirectory": "build",
     "rootDirectory": ".",
     "directoryListing": false,
-    "nodeVersion": "24.x"
+    "nodeVersion": "20.x"
   }
 }

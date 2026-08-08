@@ -9,7 +9,7 @@ tags:
   - security
 ---
 
-# OAuth Client SDK
+## OAuth Client SDK
 
 The OAuth Client SDK provides a complete OAuth 2.0 and OpenID Connect implementation for secure authentication, authorization, and user management.
 

@@ -1,9 +1,10 @@
 ---
 title: Memory API
 sidebar_label: Memory Management
+description: Create, read, update, delete, and search memories through the LanOnasis Memory API.
 ---
 
-# Memory Management API
+## Memory Management API
 
 ## POST /api/v1/memories
 

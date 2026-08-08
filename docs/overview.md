@@ -1,9 +1,10 @@
 ---
 title: Platform Overview
 sidebar_position: 1
+description: "LanOnasis platform overview: Memory as a Service for applications and AI agents."
 ---
 
-# Docs.lanonasis.com - Documentation Hub
+## Docs.lanonasis.com - Documentation Hub
 
 **Comprehensive documentation site for the Lan Onasis platform APIs, SDKs, and integrations.**
 

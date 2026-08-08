@@ -5,7 +5,7 @@ title: Webhooks
 description: Receive real-time event notifications
 ---
 
-# Webhooks
+## Webhooks
 
 Webhooks allow you to receive real-time notifications when events occur in your account. Instead of polling the API, you receive HTTP POST requests at your specified endpoint.
 

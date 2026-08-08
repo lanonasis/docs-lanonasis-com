@@ -4,7 +4,7 @@ title: Compliance Overview
 description: v-secure compliance and certifications
 ---
 
-# Compliance Overview
+## Compliance Overview
 
 v-secure is built to meet enterprise compliance requirements for security, privacy, and data protection.
 

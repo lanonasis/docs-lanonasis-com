@@ -1,8 +1,10 @@
 ---
 sidebar_position: 4
+title: CLI Tool
+description: Official LanOnasis command-line interface for Memory-as-a-Service management and automation.
 ---
 
-# CLI Tool
+## CLI Tool
 
 Official command-line interface for LanOnasis Memory-as-a-Service.
 

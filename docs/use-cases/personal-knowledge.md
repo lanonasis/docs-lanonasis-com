@@ -1,9 +1,10 @@
 ---
 title: Personal Knowledge Management
 sidebar_label: Personal Knowledge
+description: Use LanOnasis for personal knowledge management and durable AI context.
 ---
 
-# Personal Knowledge Management with LanOnasis
+## Personal Knowledge Management with LanOnasis
 
 Build a powerful personal knowledge base that learns from your notes, documents, and thoughts.
 

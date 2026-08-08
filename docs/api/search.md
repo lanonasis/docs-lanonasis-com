@@ -1,9 +1,10 @@
 ---
 title: Search & Discovery
 sidebar_position: 4
+description: Semantic search and discovery API powered by vector embeddings and machine learning.
 ---
 
-# Search & Discovery API
+## Search & Discovery API
 
 LanOnasis provides powerful semantic search capabilities powered by advanced vector embeddings and machine learning algorithms.
 

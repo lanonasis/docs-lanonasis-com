@@ -2,9 +2,10 @@
 title: What's New in 2026 Q1
 sidebar_label: What's New 2026 Q1
 sidebar_position: 0
+description: "What's new in LanOnasis for 2026 Q1: platform, API, and documentation updates."
 ---
 
-# What's New in 2026 Q1
+## What's New in 2026 Q1
 
 Discover the latest enhancements to the LanOnasis platform, including revolutionary CLI features, web IDE support, advanced memory intelligence, and enhanced security.
 

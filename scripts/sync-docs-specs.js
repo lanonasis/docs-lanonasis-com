@@ -45,14 +45,16 @@ const manifestPath = path.join(staticDir, 'specs.json');
 const hashContent = (content) =>
   crypto.createHash('sha256').update(content, 'utf8').digest('hex');
 
-const ensureFile = (targetPath, expectedContent, label) => {
+const ensureFile = (targetPath, expectedContent, label, compareFn) => {
   if (checkOnly) {
     if (!fs.existsSync(targetPath)) {
       console.error(`❌ Missing ${label}: ${targetPath}`);
       process.exit(1);
     }
     const currentContent = fs.readFileSync(targetPath, 'utf8');
-    if (currentContent !== expectedContent) {
+    const a = compareFn ? compareFn(currentContent) : currentContent;
+    const b = compareFn ? compareFn(expectedContent) : expectedContent;
+    if (a !== b) {
       console.error(`❌ ${label} is out of sync: ${targetPath}`);
       process.exit(1);
     }
@@ -144,7 +146,27 @@ try {
   };
 
   const manifestJson = JSON.stringify(manifest, null, 2);
-  ensureFile(manifestPath, manifestJson, 'Specs manifest');
+
+  // `last_verified` is a drift-visibility timestamp that changes on every run;
+  // compare the manifest with timestamps normalized so `--check` is
+  // deterministic (the hash + synced_from fields still catch real drift).
+  const normalizeManifest = (s) =>
+    s.replace(/"last_verified": "[^"]*"/g, '"last_verified": "<ts>"');
+
+  if (checkOnly) {
+    const currentManifest = fs.existsSync(manifestPath)
+      ? fs.readFileSync(manifestPath, 'utf8')
+      : null;
+    if (
+      !currentManifest ||
+      normalizeManifest(currentManifest) !== normalizeManifest(manifestJson)
+    ) {
+      console.error(`❌ Specs manifest is out of sync: ${manifestPath}`);
+      process.exit(1);
+    }
+  } else {
+    ensureFile(manifestPath, manifestJson, 'Specs manifest');
+  }
 
   console.log('✅ Specs sync complete.');
 } catch (error) {

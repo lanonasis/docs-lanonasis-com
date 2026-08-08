@@ -1,6 +1,7 @@
 ---
 title: Production MCP Server
 sidebar_label: Production Server
+description: Run or connect to the LanOnasis production MCP server for agent and IDE integrations.
 ---
 
 LanOnasis operates a production MCP server for agent and IDE integrations.

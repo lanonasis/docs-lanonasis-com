@@ -7,10 +7,10 @@
 :root {
   --playground-accent: #6366f1;
   --playground-accent-hover: #4f46e5;
-  --playground-success: #10b981;
-  --playground-error: #ef4444;
-  --playground-warning: #f59e0b;
-  --playground-info: #3b82f6;
+  --playground-success: #047857;
+  --playground-error: #b91c1c;
+  --playground-warning: #b45309;
+  --playground-info: #1d4ed8;
   --playground-surface: var(--ifm-background-surface-color);
   --playground-border: var(--ifm-color-emphasis-200);
   --playground-text: var(--ifm-font-color-base);

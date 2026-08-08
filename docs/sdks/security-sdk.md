@@ -1,9 +1,10 @@
 ---
 title: Security SDK
 sidebar_label: Security SDK
+description: Security SDK reference for the LanOnasis security service.
 ---
 
-# @lanonasis/security-sdk
+## @lanonasis/security-sdk
 
 Official Security and Encryption SDK for the Lanonasis Ecosystem.
 

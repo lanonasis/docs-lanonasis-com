@@ -1,6 +1,7 @@
 ---
 title: MCP Tools Reference
 sidebar_label: Tools Reference
+description: Complete reference for all MCP tools registered in the LanOnasis MCP server, with descriptions and parameter shapes extracted from the source registry.
 ---
 
 <!-- DO NOT EDIT BY HAND. Generated from apps/mcp-core/src/index.ts by
@@ -8,7 +9,7 @@ sidebar_label: Tools Reference
      to regenerate. CI fails the build if the doc and the registry disagree
      (`bun run validate:mcp-tools`). -->
 
-# MCP Tools Reference
+## MCP Tools Reference
 
 Complete reference for all 37 MCP tools registered in the
 LanOnasis MCP server. Tool names, descriptions, and parameter shapes are
@@ -99,6 +100,7 @@ List memories with pagination and filters.
 | `type` | string |
 | `tags` | string |
 | `search` | string |
+| `include_deleted` | boolean |
 
 ### memory_ask_profile
 
@@ -514,4 +516,4 @@ Set configuration setting.
 - [IDE Integration](./ide-integration.md) - Connect IDEs to MCP
 - [Production Server](./production-server.md) - Production deployment
 
-<!-- Generated 2026-07-18 from 37 registered tools. -->
+<!-- Generated 2026-08-08 from 37 registered tools. -->

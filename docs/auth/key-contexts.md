@@ -5,7 +5,7 @@ sidebar_position: 2
 description: How LanOnasis API keys carry a key_context discriminator that scopes memory reads to personal, team, enterprise, or legacy boundaries.
 ---
 
-# Key Contexts
+## Key Contexts
 
 > **Source of truth:** `apps/onasis-core/services/auth-gateway/src/services/api-key.service.ts`
 > (function `getContextDefaultScope`, lines 550–559; type `ApiKeyContext`, line 20;

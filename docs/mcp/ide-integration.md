@@ -1,9 +1,10 @@
 ---
 title: MCP IDE Integration
 sidebar_label: IDE Integration
+description: Connect the LanOnasis MCP server to your IDE for AI-assisted development.
 ---
 
-# MCP IDE Integration
+## MCP IDE Integration
 
 This guide shows how to connect IDEs and agents to the LanOnasis MCP server.
 

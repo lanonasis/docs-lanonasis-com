@@ -4,7 +4,7 @@ title: Audit Logs API
 description: Security audit trail endpoints
 ---
 
-# Audit Logs API
+## Audit Logs API
 
 Immutable, HMAC-signed audit logs for compliance and security monitoring.
 

@@ -1,9 +1,10 @@
 ---
 title: Support
 sidebar_position: 101
+description: LanOnasis support channels, status resources, and how to get help.
 ---
 
-# Getting Help
+## Getting Help
 
 ## 🎯 Quick Links
 

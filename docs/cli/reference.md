@@ -1,9 +1,10 @@
 ---
 title: CLI Reference
 sidebar_label: CLI Reference
+description: "Complete reference for the LanOnasis CLI: commands, options, and examples."
 ---
 
-# LanOnasis CLI Reference
+## LanOnasis CLI Reference
 
 Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO --> - Professional CLI for Memory as a Service (MaaS).
 

@@ -1,9 +1,10 @@
 ---
 title: Auth Gateway (Enterprise Identity)
 sidebar_position: 2
+description: How the LanOnasis auth gateway handles authentication, authorization, and API key contexts.
 ---
 
-# Auth Gateway Product Documentation
+## Auth Gateway Product Documentation
 
 The LanOnasis **Auth Gateway** is a standalone, event-sourced identity and access management (IAM) platform. It provides a unified security layer for the entire ecosystem, supporting over 11 distinct authentication and authorization methods.
 

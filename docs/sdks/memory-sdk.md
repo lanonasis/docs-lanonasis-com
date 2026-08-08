@@ -9,7 +9,7 @@ tags:
   - typescript
 ---
 
-# @lanonasis/memory-sdk
+## @lanonasis/memory-sdk
 
 Official TypeScript SDK for Lanonasis Memory as a Service (MaaS). Provides typed access to memory CRUD, search, topics, and multi-modal content processing.
 

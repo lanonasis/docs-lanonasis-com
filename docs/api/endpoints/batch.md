@@ -1,4 +1,8 @@
-# Batch Operations API
+---
+title: Batch Operations API
+description: Perform multiple memory operations in a single request for improved efficiency and reduced latency.
+---
+## Batch Operations API
 
 Perform multiple memory operations in a single request for improved efficiency and reduced latency.
 

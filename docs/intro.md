@@ -4,7 +4,7 @@ sidebar_position: 1
 description: LanOnasis memory API, MCP, CLI, TypeScript client, and authentication documentation.
 ---
 
-# LanOnasis Memory Service
+## LanOnasis Memory Service
 
 LanOnasis gives applications and AI agents durable, searchable context. The supported developer surface combines a REST memory API, Model Context Protocol tools, the Onasis CLI, and a TypeScript memory client.
 

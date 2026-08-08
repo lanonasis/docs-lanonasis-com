@@ -10,7 +10,7 @@ tags:
   - http-client
 ---
 
-# API Client SDK
+## API Client SDK
 
 The API Client SDK provides a universal, production-ready HTTP client for REST and GraphQL APIs with built-in features like retries, caching, middleware, and error handling.
 

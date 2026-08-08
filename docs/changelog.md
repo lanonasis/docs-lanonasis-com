@@ -1,9 +1,10 @@
 ---
 title: Changelog
 sidebar_position: 100
+description: "LanOnasis platform changelog: recent feature, API, and documentation updates."
 ---
 
-# Changelog
+## Changelog
 
 All notable changes to the LanOnasis platform will be documented here.
 

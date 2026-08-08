@@ -1,8 +1,10 @@
 ---
 sidebar_position: 1
+title: Guides
+description: Comprehensive LanOnasis tutorials and best practices for real-time sync, performance, and migration.
 ---
 
-# Guides
+## Guides
 
 Welcome to the LanOnasis guides section. Here you'll find comprehensive tutorials and best practices.
 

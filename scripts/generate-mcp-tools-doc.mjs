@@ -287,12 +287,15 @@ function renderDoc(tools) {
   out += '---\n';
   out += 'title: MCP Tools Reference\n';
   out += 'sidebar_label: Tools Reference\n';
+  out += 'description: Complete reference for all MCP tools registered in the LanOnasis MCP server, with descriptions and parameter shapes extracted from the source registry.\n';
   out += '---\n\n';
   out += '<!-- DO NOT EDIT BY HAND. Generated from apps/mcp-core/src/index.ts by\n';
   out += '     scripts/generate-mcp-tools-doc.mjs. Run `node scripts/generate-mcp-tools-doc.mjs`\n';
   out += '     to regenerate. CI fails the build if the doc and the registry disagree\n';
   out += '     (`bun run validate:mcp-tools`). -->\n\n';
-  out += '# MCP Tools Reference\n\n';
+  // Frontmatter `title:` renders as the page h1, so the body heading is h2
+  // (WCAG 1.3.1 — one h1 per page).
+  out += '## MCP Tools Reference\n\n';
   out += `Complete reference for all ${tools.length} MCP tools registered in the\n`;
   out += 'LanOnasis MCP server. Tool names, descriptions, and parameter shapes are\n';
   out += 'extracted directly from the source registry at build time.\n\n';

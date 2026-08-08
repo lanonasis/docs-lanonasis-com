@@ -1,9 +1,10 @@
 ---
 title: SDKs & Libraries
 sidebar_position: 1
+description: "Overview of LanOnasis SDKs: TypeScript, Python, CLI, and REST API clients."
 ---
 
-# Official SDKs
+## Official SDKs
 
 LanOnasis provides official SDKs for multiple programming languages:
 

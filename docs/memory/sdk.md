@@ -1,6 +1,7 @@
 ---
 title: Memory SDK
 sidebar_label: SDK
+description: Use the LanOnasis SDKs to build memory-powered applications.
 ---
 
 The official TypeScript SDK `@lanonasis/memory-sdk` offers a typed interface to the Memory as a Service (MaaS) REST API.
