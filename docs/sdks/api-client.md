@@ -12,6 +12,14 @@ tags:
 
 # API Client SDK
 
+:::warning Not published
+`@lanonasis/api-client` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/api-client` for production work today.
+
+For REST/HTTP access, use the platform REST API directly (see [REST API docs](../memory/rest-api.md)) or [`@lanonasis/memory-client`](./typescript.md).
+
+See the [SDK Capability Matrix](./matrix.md) for source-verified status.
+:::
+
 The API Client SDK provides a universal, production-ready HTTP client for REST and GraphQL APIs with built-in features like retries, caching, middleware, and error handling.
 
 ## Installation

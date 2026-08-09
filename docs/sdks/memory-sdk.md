@@ -11,6 +11,15 @@ tags:
 
 # @lanonasis/memory-sdk
 
+:::warning Not published
+`@lanonasis/memory-sdk` has a source manifest at `1.0.0` but is **not published to npm** yet. Do not run `npm install @lanonasis/memory-sdk` for production work today. Use one of these instead:
+
+- [`@lanonasis/memory-client`](./typescript.md) — recommended universal client (published `2.2.x`).
+- [`@lanonasis/memory-sdk-standalone`](./typescript.md) — drop-in Node SDK (published `1.1.0`).
+
+See the [SDK Capability Matrix](./matrix.md) for source-verified status.
+:::
+
 Official TypeScript SDK for Lanonasis Memory as a Service (MaaS). Provides typed access to memory CRUD, search, topics, and multi-modal content processing.
 
 ## Installation
@@ -24,7 +33,7 @@ yarn add @lanonasis/memory-sdk
 ```
 
 **Package**: `@lanonasis/memory-sdk`
-**Version**: 1.0.0
+**Version**: 1.0.0 (manifest only, not on npm)
 
 ## Quick Start
 

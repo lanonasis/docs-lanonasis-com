@@ -99,6 +99,7 @@ List memories with pagination and filters.
 | `type` | string |
 | `tags` | string |
 | `search` | string |
+| `include_deleted` | boolean |
 
 ### memory_ask_profile
 
@@ -514,4 +515,4 @@ Set configuration setting.
 - [IDE Integration](./ide-integration.md) - Connect IDEs to MCP
 - [Production Server](./production-server.md) - Production deployment
 
-<!-- Generated 2026-07-18 from 37 registered tools. -->
+<!-- Generated 2026-08-08 from 37 registered tools. -->

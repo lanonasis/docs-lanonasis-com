@@ -52,7 +52,11 @@ const ensureFile = (targetPath, expectedContent, label) => {
       process.exit(1);
     }
     const currentContent = fs.readFileSync(targetPath, 'utf8');
-    if (currentContent !== expectedContent) {
+    // The specs manifest embeds a run-time `last_verified` timestamp; strip it
+    // from both sides before comparing so parity checks are deterministic
+    // across runs (same pattern as generate-mcp-tools-doc.mjs footer handling).
+    const stripTimestamps = (s) => s.replace(/"last_verified": "[^"]+"/g, '"last_verified": ""');
+    if (stripTimestamps(currentContent) !== stripTimestamps(expectedContent)) {
       console.error(`❌ ${label} is out of sync: ${targetPath}`);
       process.exit(1);
     }

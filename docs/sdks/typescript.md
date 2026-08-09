@@ -48,7 +48,7 @@ if (created.data) {
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.1<!-- /AUTO -->
+- ✅ Version: 2.2.0 npm / 2.2.1 manifest
 - ✅ Size: ~150 KB
 - ✅ TypeScript support
 
@@ -96,7 +96,7 @@ const results = await sdk.searchMemories({
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: 1.0.0
+- ✅ Version: 1.1.0
 - ✅ Size: ~140 KB
 - ✅ CJS + ESM builds
 - ✅ Perfect for orchestration

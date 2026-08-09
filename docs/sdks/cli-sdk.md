@@ -11,6 +11,14 @@ tags:
 
 # CLI SDK
 
+:::warning Not published
+`@lanonasis/cli-sdk` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/cli-sdk` for production work today.
+
+For command-line automation, use the published [`@lanonasis/cli`](./cli.md) (global install `npm i -g @lanonasis/cli`).
+
+See the [SDK Capability Matrix](./matrix.md) for source-verified status.
+:::
+
 The CLI SDK provides utilities and abstractions for building powerful, user-friendly command-line interfaces and automation scripts.
 
 ## Installation
