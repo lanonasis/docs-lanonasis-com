@@ -21,7 +21,7 @@ yarn add @lanonasis/memory-sdk
 **Package**: `@lanonasis/memory-sdk`  
 **Version**: <!-- AUTO:MEMORY_SDK_VERSION -->1.0.0<!-- /AUTO -->
 
-> This page covers the REST-focused memory client. For intelligence and behavior workflows used by the current CLI and `mcp-core`, use `@lanonasis/mem-intel-sdk` (current monorepo source version `2.0.6`).
+> This page covers the REST-focused memory client. For intelligence and behavior workflows used by the current CLI and `mcp-core`, use `@lanonasis/mem-intel-sdk` (current monorepo source version `2.1.0`).
 
 ## Basic usage
 

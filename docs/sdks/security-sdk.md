@@ -441,7 +441,7 @@ const decrypted = security.decrypt(encrypted, 'user_456'); // Wrong context!
 ## 📦 Package Details
 
 - **Package**: `@lanonasis/security-sdk`
-- **Version**: 1.0.0
+- **Version**: 1.0.5
 - **License**: MIT
 - **Repository**: [GitHub](https://github.com/lanonasis/security-sdk)
 - **NPM**: [npmjs.com](https://www.npmjs.com/package/@lanonasis/security-sdk)

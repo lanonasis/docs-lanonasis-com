@@ -104,10 +104,10 @@ const result = await client.callTool('create_memory', {
 | Tool | Description | Parameters |
 |------|-------------|------------|
 | `create_memory` | Create a new memory with vector embedding | `title`, `content`, `type`, `tags`, `metadata` |
-| `get_memory` | Retrieve a memory by ID | `memory_id` |
-| `update_memory` | Update an existing memory | `memory_id`, `title?`, `content?`, `tags?` |
-| `delete_memory` | Delete a memory | `memory_id` |
-| `list_memories` | List memories with filters | `limit?`, `offset?`, `type?`, `tags?` |
+| `get_memory` | Retrieve a memory by ID | `id` |
+| `update_memory` | Update an existing memory | `id`, `title?`, `content?`, `type?`, `tags?` |
+| `delete_memory` | Delete a memory | `id` |
+| `list_memories` | List memories with filters | `limit?`, `offset?`, `type?`, `tags?`, `search?`, `include_deleted?` (MCP-only) |
 | `search_memories` | Semantic search across memories | `query`, `limit?`, `threshold?`, `type?` |
 | `bulk_delete_memories` | Delete multiple memories | `memory_ids[]` |
 
