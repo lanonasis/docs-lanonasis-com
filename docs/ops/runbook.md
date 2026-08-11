@@ -52,11 +52,22 @@ onasis api-keys get <key-id>
 
 1. **Create a new key** before revoking the old one (never leave the service without a valid credential):
    ```bash
-   EXISTING_SCOPES=$(onasis api-keys get <old-key-id> | jq -r '.data.scopes | join(",")')
+   set -euo pipefail
+   KEY_JSON=$(onasis api-keys get <old-key-id> --json)
+   EXISTING_SCOPES=$(jq -er '
+     if (.data.scopes? | type) == "array" then .data.scopes
+     elif (.data.permissions? | type) == "array" then .data.permissions
+     elif (.scopes? | type) == "array" then .scopes
+     elif (.permissions? | type) == "array" then .permissions
+     else empty
+     end
+     | select(length > 0)
+     | join(",")
+   ' <<<"$KEY_JSON")
    onasis api-keys create --name "rotation-<timestamp>" --scopes "$EXISTING_SCOPES"
    ```
-   If the current scopes are not discoverable automatically, stop and require the operator to provide the intended replacement scope set explicitly before creating the new key.
-2. **Migrate consumers** to the new key. Clients should reference the key by handle/alias (see [Vendor Key Management](../keys/vendor-key-management.md)) so consumers pick up the new version automatically.
+   If `onasis api-keys get --json` does not return a non-empty `scopes` or `permissions` array for the current CLI/API contract, stop and require the operator to provide the intended replacement scope set explicitly before creating the new key.
+2. **Migrate consumers** to the new key by replacing the actual API key value they send in the `X-API-Key` header or in the bearer token carried by the `Authorization` header, plus any environment variables or secret-manager entries that populate those headers. Keep handle/alias migration for upstream vendor credentials only (see [Vendor Key Management](../keys/vendor-key-management.md)).
 3. **Retire the old key** based on incident type:
    - **Scheduled rotation:** keep the old key only for the agreed verification window, confirm consumers have switched, then revoke it.
    - **Suspected compromise:** once containment is ready and consumers have an emergency replacement path, disable or revoke the old key immediately — do not wait out a routine verification window.
