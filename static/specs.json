@@ -1,5 +1,5 @@
 {
-  "last_verified": "2026-08-03T20:35:00.000Z",
+  "last_verified": "2026-08-11T02:53:18.673Z",
   "synced_from": {
     "generator": "scripts/sync-docs-specs.js",
     "memory": "monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
@@ -13,8 +13,8 @@
       "description": "Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System",
       "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
-      "hash": "70ac5154815aa805941c401a6aa144fb8b4a3f2fc4be55efeea9c98c53918e45",
-      "last_verified": "2026-08-03T20:35:00.000Z",
+      "hash": "556e97016b996967c02f0fbd20fc54854a22f58c95465baa5bee6251d4efc2c4",
+      "last_verified": "2026-08-11T02:53:18.673Z",
       "synced_from": "monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
       "paths": [
         "/memory-api.json",
@@ -29,7 +29,7 @@
       "badge": "Docs Search API",
       "version": "1.0.0",
       "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
-      "last_verified": "2026-08-03T20:35:00.000Z",
+      "last_verified": "2026-08-11T02:53:18.673Z",
       "synced_from": "repo:apps/docs-lanonasis/openapi.yaml",
       "paths": [
         "/openapi.json",
