@@ -1,9 +1,10 @@
 ---
 title: CLI Examples
 sidebar_label: Examples
+description: Practical LanOnasis CLI examples for common memory operations.
 ---
 
-# CLI Examples
+## CLI Examples
 
 Use these companion docs while the full example catalog is being expanded.
 

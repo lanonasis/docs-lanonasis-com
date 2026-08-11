@@ -1,4 +1,8 @@
-# CLI Installation
+---
+title: CLI Installation
+description: Install and configure the LanOnasis CLI tool for command-line memory management.
+---
+## CLI Installation
 
 Install and configure the LanOnasis CLI tool for command-line memory management and automation.
 

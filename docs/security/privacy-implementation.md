@@ -1,6 +1,7 @@
 ---
 title: Security & Privacy Implementation
 sidebar_label: Security & Privacy
+description: "How LanOnasis implements data privacy: encryption, retention, and tenant isolation."
 ---
 
 This page maps public guarantees to the high‑level mechanisms used in the platform. Details are intentionally abstracted to avoid over‑exposure.

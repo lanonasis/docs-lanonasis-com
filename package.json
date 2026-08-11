@@ -8,12 +8,15 @@
   "scripts": {
     "docusaurus": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus",
     "start": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus start",
-    "prebuild": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js && bun run check:endpoints || true",
+    "prebuild": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js && node scripts/build-search-index.mjs && bun run check:endpoints || true",
     "build": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus build",
     "postbuild": "bash scripts/sentry-sourcemaps.sh || true",
     "generate:openapi-json": "node scripts/generate-openapi-json.js",
     "sync:docs": "node scripts/sync-docs-specs.js && node scripts/sync-docs-versions.js && node scripts/generate-openapi-json.js",
     "check:docs-sync": "node scripts/sync-docs-specs.js --check && node scripts/sync-docs-versions.js --check && node scripts/generate-openapi-json.js --check",
+    "build:search-index": "node scripts/build-search-index.mjs",
+    "check:search-index": "node scripts/build-search-index.mjs --check",
+    "validate:seo": "node scripts/validate-seo.mjs",
     "swizzle": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus swizzle",
     "deploy": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus deploy",
     "clear": "NODE_OPTIONS=\"--require ./scripts/patch-js-yaml.cjs\" docusaurus clear",
@@ -24,11 +27,18 @@
     "index:maas": "ts-node scripts/index-docs-to-maas.ts",
     "index:single": "ts-node scripts/index-docs-to-maas.ts --file",
     "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
+    "generate:cli-reference": "node scripts/generate-cli-reference.mjs",
     "generate:complete-docs": "ts-node scripts/generate-complete-docs.ts",
     "mcp": "node mcp-bridge.js",
     "check:links": "node scripts/check-links.js",
     "check:endpoints": "node scripts/smoke-endpoints.js",
-    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints"
+    "validate:cli-docs": "node scripts/validate-cli-docs.mjs",
+    "validate:cli-reference": "node scripts/generate-cli-reference.mjs --check",
+    "validate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs --check",
+    "generate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs",
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:search-index && bun run validate:seo && bun run check:endpoints && bun run validate:cli-docs && bun run validate:cli-reference && bun run validate:mcp-tools",
+    "test:extract-registry-body": "node --test scripts/__tests__/extract-registry-body.test.mjs",
+    "test:scripts": "bun run test:extract-registry-body"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
@@ -39,7 +49,6 @@
     "buffer": "^6.0.3",
     "clsx": "^2.0.0",
     "js-yaml": "^3.14.2",
-    "meilisearch": "^0.53.0",
     "path-to-regexp": "6.3.0",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
@@ -67,6 +76,7 @@
     ]
   },
   "engines": {
-    "node": ">=18.0"
-  }
+    "node": "24.x"
+  },
+  "packageManager": "bun@1.3.14"
 }

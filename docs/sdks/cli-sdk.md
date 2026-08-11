@@ -9,40 +9,28 @@ tags:
   - automation
 ---
 
-# CLI SDK
+## CLI SDK
+
+:::warning Not published
+`@lanonasis/cli-sdk` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/cli-sdk` for production work today.
+
+For command-line automation, use the published [`@lanonasis/cli`](./cli.md) (global install `npm i -g @lanonasis/cli`).
+
+See the [SDK Capability Matrix](./matrix.md) for source-verified status.
+:::
 
 The CLI SDK provides utilities and abstractions for building powerful, user-friendly command-line interfaces and automation scripts.
 
-## Installation
+## Published alternative
+
+This package is not installable today. For command-line automation, use the published CLI directly:
 
 ```bash
-npm install @lanonasis/cli-sdk
-# or
-yarn add @lanonasis/cli-sdk
+npm install -g @lanonasis/cli
+lanonasis --help
 ```
 
-## Quick Start
-
-```typescript
-import { CLI } from "@lanonasis/cli-sdk";
-
-const cli = new CLI({
-  name: "myapp",
-  version: "1.0.0",
-  description: "My awesome CLI application",
-});
-
-// Add a command
-cli
-  .command("greet <name>", "Greet someone")
-  .option("-l, --loud", "Greet loudly")
-  .action((name, options) => {
-    const greeting = `Hello, ${name}!`;
-    console.log(options.loud ? greeting.toUpperCase() : greeting);
-  });
-
-cli.run(process.argv);
-```
+If you need to script memory operations from Node.js today, prefer `@lanonasis/memory-client` or shell out to the published `lanonasis` binary.
 
 ## Core Concepts
 

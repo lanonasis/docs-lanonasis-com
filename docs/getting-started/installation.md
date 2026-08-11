@@ -1,8 +1,10 @@
 ---
 sidebar_position: 1
+title: Installation
+description: Install and configure LanOnasis SDKs and CLI, and get your API key.
 ---
 
-# Installation
+## Installation
 
 Get started with LanOnasis in minutes.
 

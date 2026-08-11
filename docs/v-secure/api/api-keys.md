@@ -4,7 +4,7 @@ title: API Keys API
 description: API key lifecycle management endpoints
 ---
 
-# API Keys API
+## API Keys API
 
 Manage API key lifecycle including creation, rotation, and revocation with fine-grained permissions.
 

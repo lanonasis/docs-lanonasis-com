@@ -1,11 +1,17 @@
 ---
 title: CLI Reference
 sidebar_label: CLI Reference
+description: "Complete reference for the LanOnasis CLI: commands, options, and examples."
 ---
 
-# LanOnasis CLI Reference
+<!-- DO NOT EDIT BY HAND. Generated from the built LanOnasis CLI by
+     scripts/generate-cli-reference.mjs. Run `node scripts/generate-cli-reference.mjs`
+     to regenerate. CI fails the build if the doc and the CLI disagree
+     (`bun run validate:cli-reference`). -->
 
-Complete reference for the `@lanonasis/cli` v3.9.8+ - Professional CLI for Memory as a Service (MaaS).
+## LanOnasis CLI Reference
+
+Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO --> — Professional CLI for Memory as a Service (MaaS).
 
 ## Installation
 
@@ -15,912 +21,1008 @@ npm install -g @lanonasis/cli
 
 # Verify installation
 onasis --version
-# or
-lanonasis --version
 ```
 
 ## Command Aliases
 
-The CLI supports multiple command aliases:
+The primary command is `onasis`. The same binary is also exposed as:
 
-| Command | Purpose |
-|---------|---------|
-| `onasis` | Primary command (recommended) |
-| `lanonasis` | Standard LanOnasis interface |
-| `memory` | Memory-focused operations |
-| `maas` | Memory as a Service operations |
+- `lanonasis`
+- `memory` (memory-focused operations)
+- `maas` (Memory as a Service operations)
 
-```bash
-# All are equivalent:
-onasis memory list
-lanonasis memory list
-memory list
-maas memory list
-```
+All examples below use `onasis`, but any alias works.
 
 ## Global Options
 
-```bash
--v, --version           # Display version number
---verbose               # Enable verbose logging
---api-url <url>         # Override API URL
---output <format>       # Output format (json, table, yaml)
---no-mcp                # Disable MCP, use direct API
---help                  # Show help
-```
-
----
-
-## Authentication Commands
-
-### `onasis auth login`
-
-Authenticate with the LanOnasis platform.
-
-```bash
-# Interactive OAuth (recommended)
-onasis auth login
-
-# OAuth with specific method
-onasis auth login --oauth
-
-# Vendor key authentication (for CI/CD)
-onasis auth login --vendor-key <key>
-onasis auth login -k <key>
-
-# Username/password credentials
-onasis auth login --credentials
-
-# Device flow (headless)
-onasis auth login --device
-
-# Force re-authentication
-onasis auth login --force
-```
-
-**Options:**
-- `-k, --vendor-key <key>`: Vendor API key for non-interactive auth
-- `--oauth`: Use OAuth PKCE flow
-- `--credentials`: Use username/password
-- `--device`: Use device flow
-- `--force`: Force re-authentication
-
----
-
-### `onasis auth status`
-
-Check authentication status with **live API verification**.
-
-```bash
-onasis auth status
-```
-
-**Shows:**
-- Authentication method (OAuth/Vendor Key/Credentials)
-- Live user profile from `GET /v1/auth/me`
-- Real memory API access probe
-- Token expiry information
-- Manual endpoint override warnings
-
-**Example Output:**
-```
-✓ Authenticated: Yes
-✓ User: john.doe@example.com
-✓ Role: Developer
-✓ Plan: Pro
-✓ Memory API: accessible
-✓ Token expires: 2026-03-15T10:30:00Z
-```
-
----
-
-### `onasis whoami` ✨ NEW
-
-Display full authenticated user profile.
-
-```bash
-onasis whoami
-```
-
-**Shows:**
-- Email address
-- Full name
-- Role
-- OAuth provider
-- Project scope
-- Last login time
-- Plan/subscription
-
-**Example Output:**
-```
-User Profile:
-  Email: john.doe@example.com
-  Name: John Doe
-  Role: Developer
-  OAuth Provider: GitHub
-  Project: my-project
-  Last Login: 2026-02-25T09:15:00Z
-  Plan: Pro
-```
-
----
-
-### `onasis auth logout`
-
-Clear authentication credentials.
-
-```bash
-onasis auth logout
-```
-
----
-
-## Memory Commands
-
-### `onasis memory create`
-
-Create a new memory.
-
-```bash
-# Interactive creation
-onasis memory create
-
-# Inline editor (recommended)
-onasis memory create --inline
-
-# With JSON payload
-onasis memory create --json '{"title":"My Memory","content":"...","type":"knowledge"}'
-
-# From file
-onasis memory create --content-file ./memory.md
-
-# With options
-onasis memory create \
-  --title "My Memory" \
-  --content "Memory content" \
-  --type "knowledge" \
-  --tags "tag1,tag2" \
-  --topic "my-topic"
-```
-
-**Options:**
-- `--inline`: Use inline text editor
-- `--json <json>`: JSON payload
-- `--content-file <path>`: Read content from file
-- `-t, --title <title>`: Memory title
-- `-c, --content <content>`: Memory content
-- `--type <type>`: Memory type (context, project, knowledge, reference, personal, workflow)
-- `--tags <tags>`: Comma-separated tags
-- `--topic <topic>`: Topic/namespace
-
----
-
-### `onasis memory list`
-
-List memories with filters.
-
-```bash
-# List all memories
-onasis memory list
-
-# With pagination
-onasis memory list --limit 20 --offset 0
-
-# Filter by type
-onasis memory list --type knowledge
-
-# Filter by tags
-onasis memory list --tags "tag1,tag2"
-
-# JSON output
-onasis memory list --output json
-```
-
-**Options:**
-- `-l, --limit <number>`: Number of results (default: 20)
-- `-o, --offset <number>`: Offset for pagination
-- `-t, --type <type>`: Filter by type
-- `--tags <tags>`: Filter by tags
-- `--topic <topic>`: Filter by topic
-
----
-
-### `onasis memory get`
-
-Retrieve a specific memory.
-
-```bash
-onasis memory get <memory-id>
-```
-
----
-
-### `onasis memory update`
-
-Update an existing memory.
-
-```bash
-# Interactive update
-onasis memory update <memory-id>
-
-# Inline editor
-onasis memory update <memory-id> --inline
-
-# With options
-onasis memory update <memory-id> \
-  --title "Updated Title" \
-  --content "Updated content" \
-  --tags "new,tag1"
-```
-
-**Options:**
-- `--inline`: Use inline text editor
-- `-t, --title <title>`: New title
-- `-c, --content <content>`: New content
-- `--tags <tags>`: New tags
-
----
-
-### `onasis memory delete`
-
-Delete a memory.
-
-```bash
-# Delete single memory
-onasis memory delete <memory-id>
-
-# Delete multiple memories
-onasis memory delete <id1> <id2> <id3>
-
-# Bulk delete with confirmation
-onasis memory delete --bulk
-```
-
----
-
-### `onasis memory search`
-
-Semantic search across memories.
-
-```bash
-# Basic search
-onasis memory search "your query"
-
-# With filters
-onasis memory search "meeting notes" \
-  --type "context" \
-  --limit 10 \
-  --threshold 0.55
-
-# JSON output
-onasis memory search "your query" --output json
-```
-
-**Options:**
-- `-t, --type <type>`: Filter by type
-- `-l, --limit <number>`: Number of results
-- `--threshold <number>`: Similarity threshold (0.0-1.0)
-- `--tags <tags>`: Filter by tags
-- `--topic <topic>`: Filter by topic
-
----
-
-### `onasis memory save-session` ✨ NEW
-
-Save current session context as memory.
-
-```bash
-# Save current git branch, status, and changed files
-onasis memory save-session
-
-# With custom title
-onasis memory save-session --title "Development Session"
-
-# Include specific metadata
-onasis memory save-session --metadata '{"project":"my-app"}'
-```
-
-**Saves:**
-- Current git branch
-- Git status
-- Changed files
-- Timestamp
-- Working directory
-
----
-
-## Memory Intelligence Commands ✨ NEW
-
-### `onasis memory intelligence health`
-
-Check memory bank health and statistics.
-
-```bash
-onasis memory intelligence health
-```
-
----
-
-### `onasis memory intelligence suggest-tags`
-
-Suggest relevant tags for content.
-
-```bash
-# From file
-onasis memory intelligence suggest-tags --file ./content.md
-
-# From stdin
-echo "My content" | onasis memory intelligence suggest-tags
-
-# From memory ID
-onasis memory intelligence suggest-tags --memory-id <id>
-```
-
----
-
-### `onasis memory intelligence find-related`
-
-Find memories related to given content.
-
-```bash
-# From query
-onasis memory intelligence find-related "your query"
-
-# From memory ID
-onasis memory intelligence find-related --memory-id <id>
-
-# With limit
-onasis memory intelligence find-related "your query" --limit 5
-```
-
----
-
-### `onasis memory intelligence detect-duplicates`
-
-Detect potential duplicate memories.
-
-```bash
-# Check all memories
-onasis memory intelligence detect-duplicates
-
-# Check specific memory
-onasis memory intelligence detect-duplicates --memory-id <id>
-
-# Custom threshold
-onasis memory intelligence detect-duplicates --threshold 0.8
-```
-
----
-
-### `onasis memory intelligence extract-insights`
-
-Extract key insights from memories.
-
-```bash
-# From memory IDs
-onasis memory intelligence extract-insights --memory-ids <id1>,<id2>
-
-# With topic
-onasis memory intelligence extract-insights \
-  --memory-ids <id1>,<id2> \
-  --topic "key decisions"
-```
-
----
-
-### `onasis memory intelligence analyze-patterns`
-
-Analyze usage patterns and trends.
-
-```bash
-# Analyze all patterns
-onasis memory intelligence analyze-patterns
-
-# Time range
-onasis memory intelligence analyze-patterns \
-  --time-range "last-30-days"
-
-# By type
-onasis memory intelligence analyze-patterns --type "knowledge"
-```
-
----
-
-## Memory Behavior Commands ✨ NEW
-
-### `onasis memory behavior record`
-
-Record behavior/workflow context.
-
-```bash
-onasis memory behavior record \
-  --action "code-review" \
-  --context '{"pr":"#123","files":["src/index.ts"]}' \
-  --metadata '{"duration":"30m"}'
-```
-
----
-
-### `onasis memory behavior recall`
-
-Recall relevant behavior patterns.
-
-```bash
-onasis memory behavior recall "code review process"
-
-# With context
-onasis memory behavior recall "code review" \
-  --context '{"file":"src/index.ts"}' \
-  --limit 5
-```
-
----
-
-### `onasis memory behavior suggest`
-
-Suggest next actions based on patterns.
-
-```bash
-onasis memory behavior suggest \
-  --current-context '{"file":"src/index.ts","action":"testing"}'
-
-# With goal
-onasis memory behavior suggest \
-  --current-context '{"file":"src/index.ts"}' \
-  --goal "complete implementation"
-```
-
----
-
-## MCP Commands
-
-### `onasis mcp connect`
-
-Connect to MCP server.
-
-```bash
-# Auto-connect (best available mode)
-onasis mcp connect
-
-# Force remote mode
-onasis mcp connect --remote
-
-# Force WebSocket mode
-onasis mcp connect --websocket
-
-# Local development
-onasis mcp connect --local
-
-# Check status
-onasis mcp status
-```
-
----
-
-### `onasis mcp status`
-
-Check MCP connection status.
-
-```bash
-onasis mcp status
-```
-
-**Shows:**
-- Connection status
-- Server mode (local/remote)
-- Transport type
-- Authentication method
-- Available tools count
-
----
-
-### `onasis mcp list-tools`
-
-List available MCP tools.
-
-```bash
-onasis mcp list-tools
-
-# Filter by category
-onasis mcp list-tools --category memory
-
-# JSON output
-onasis mcp list-tools --output json
-```
-
----
-
-### `onasis mcp call`
-
-Call an MCP tool.
-
-```bash
-onasis mcp call create_memory \
-  --args '{"title":"My Memory","content":"...","type":"knowledge"}'
-
-# JSON output
-onasis mcp call search_memories \
-  --args '{"query":"meeting notes","limit":5}' \
-  --output json
-```
-
----
-
-## MCP Server Commands
-
-### `onasis mcp-server start`
-
-Start local MCP server.
-
-```bash
-# Stdio mode (default)
-onasis mcp-server start
-
-# HTTP mode
-onasis mcp-server start --http
-
-# Custom port
-onasis mcp-server start --http --port 3001
-
-# Verbose logging
-onasis mcp-server start --verbose
-```
-
-**Options:**
-- `--http`: Use HTTP transport
-- `--stdio`: Use stdio transport (default)
-- `--port <number>`: HTTP port (default: 3001)
-- `--verbose`: Enable verbose logging
-
----
-
-### `onasis mcp-server status`
-
-Check MCP server status.
-
-```bash
-onasis mcp-server status
-```
-
-**Shows:**
-- Server running status
-- Process ID
-- Port (if HTTP mode)
-- Authentication method
-- Configuration path
-
----
-
-### `onasis mcp-server stop`
-
-Stop local MCP server.
-
-```bash
-onasis mcp-server stop
-```
-
----
-
-## API Key Commands
-
-### `onasis api-keys list`
-
-List API keys.
-
-```bash
-onasis api-keys list
-
-# Filter by project
-onasis api-keys list --project <project-id>
-
-# Filter by environment
-onasis api-keys list --environment production
-```
-
----
-
-### `onasis api-keys create`
-
-Create a new API key.
-
-```bash
-onasis api-keys create \
-  --name "Production Key" \
-  --type "vendor" \
-  --environment "production" \
-  --project <project-id>
-```
-
----
-
-### `onasis api-keys rotate`
-
-Rotate an API key.
-
-```bash
-onasis api-keys rotate <key-id>
-```
-
----
-
-### `onasis api-keys revoke`
-
-Revoke an API key.
-
-```bash
-onasis api-keys revoke <key-id>
-```
-
----
-
-## Topic Commands
-
-### `onasis topics list`
-
-List memory topics.
-
-```bash
-onasis topics list
-
-# With pagination
-onasis topics list --limit 20
-```
-
----
-
-### `onasis topics create`
-
-Create a new topic.
-
-```bash
-onasis topics create --name "My Topic"
-```
-
----
-
-### `onasis topics delete`
-
-Delete a topic.
-
-```bash
-onasis topics delete <topic-id>
-```
-
----
-
-## Configuration Commands
-
-### `onasis config get`
-
-Get configuration value.
-
-```bash
-onasis config get apiUrl
-onasis config get useGateway
-```
-
----
-
-### `onasis config set`
-
-Set configuration value.
-
-```bash
-onasis config set apiUrl https://api.lanonasis.com
-onasis config set useGateway true
-```
-
----
-
-### `onasis config list`
-
-List all configuration.
-
-```bash
-onasis config list
-
-# JSON output
-onasis config list --output json
-```
-
----
-
-## Organization Commands
-
-### `onasis org info`
-
-Get organization information.
-
-```bash
-onasis org info
-```
-
----
-
-### `onasis org members list`
-
-List organization members.
-
-```bash
-onasis org members list
-```
-
----
-
-## Utility Commands
-
-### `onasis health`
-
-Check system health.
-
-```bash
-onasis health
-```
-
-**Checks:**
-- API connectivity
-- Authentication status
-- MCP server status
-- Service registry
-
----
-
-### `onasis guide`
-
-Run interactive guided setup.
-
-```bash
-onasis guide
-```
-
-**Covers:**
-- API configuration
-- Authentication setup
-- Connectivity testing
-- Input mode preferences
-- Troubleshooting
-
----
+| Option | Description |
+|--------|-------------|
+| `-v, --version` | display version number |
+| `-V, --verbose` | enable verbose logging |
+| `--api-url <url>` | override API URL |
+| `--output <format>` | output format (json, table, yaml) |
+| `--no-mcp` | disable MCP and use direct API |
+| `-h, --help` | display help for command |
+
+## Command Index
+
+| Command | Aliases | Description |
+|---------|---------|-------------|
+| `onasis init` | — | Initialize CLI configuration |
+| `onasis auth` | — | Authentication commands |
+| `onasis mcp` | — | MCP (Model Context Protocol) server operations |
+| `onasis mcp-server` | — | MCP server initialization and management |
+| `onasis memory` | — | Memory management commands |
+| `onasis repl` | — | Start lightweight REPL session for memory operations |
+| `onasis topic` | — | Topic management commands |
+| `onasis config` | — | Configuration management |
+| `onasis org` | — | Organization management |
+| `onasis api-keys` | — | 🔐 Manage API keys securely with enterprise-grade encryption |
+| `onasis prescan` | — | 🔍 Local filesystem prescan for secrets/PII before MIRA extraction. Reports are value-stripped — never exposes raw secrets. |
+| `onasis completion` | — | Generate shell completion scripts |
+| `onasis dashboard` | — | 🎛️  Manage React dashboard deployment and configuration |
+| `onasis documentation` | — | 📚 Manage VitePress documentation deployment |
+| `onasis sdk` | — | 🔧 Manage SDK packages and distribution |
+| `onasis api` | — | 🌐 Manage REST API endpoints and services |
+| `onasis deploy` | — | 🚀 Manage deployments and infrastructure |
+| `onasis service` | — | ⚙️  Manage individual services and components |
+| `onasis status` | — | Show overall system status |
+| `onasis whoami` | — | Show the currently authenticated user profile |
+| `onasis health` | — | Comprehensive system health check |
+| `onasis docs` | — | Open documentation in browser |
+
+## Setup Commands
 
 ### `onasis init`
 
-Initialize configuration.
+Initialize CLI configuration
 
-```bash
-onasis init
-```
+**Options:**
 
----
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | overwrite existing configuration |
+| `-h, --help` | display help for command |
+
+## Authentication Commands
+
+### `onasis auth`
+
+Authentication commands
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis auth login` | — | Login to your MaaS account |
+| `onasis auth logout` | — | Logout from your account |
+| `onasis auth status` | — | Show authentication status |
+| `onasis auth diagnose` | — | Diagnose authentication issues |
+
+#### `onasis auth login`
+
+| Option | Description |
+|--------|-------------|
+| `-e, --email <email>` | email address |
+| `-p, --password <password>` | password |
+| `-k, --vendor-key <key>` | vendor key for API access |
+| `-h, --help` | display help for command |
+
+#### `onasis auth logout`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis auth status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis auth diagnose`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Memory Commands
+
+### `onasis memory`
+
+Memory management commands
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis memory create` | `add` | Create a new memory entry |
+| `onasis memory save-session` | — | Save current session context (git branch/status + optional test summary) as a memory |
+| `onasis memory list-sessions` | — | List saved CLI sessions (memories tagged session,cli by default) |
+| `onasis memory load-session` | — | Load a saved session by memory ID (prints the saved session context) |
+| `onasis memory delete-session` | — | Delete a saved session by memory ID |
+| `onasis memory list` | `ls` | List memory entries |
+| `onasis memory search` | — | Search memories using semantic search |
+| `onasis memory get` | `show` | Get detailed information about a memory |
+| `onasis memory update` | — | Update a memory entry |
+| `onasis memory delete` | `rm` | Delete a memory entry |
+| `onasis memory stats` | — | Show memory statistics (admin only) |
+| `onasis memory intelligence` | — | Memory intelligence operations |
+| `onasis memory behavior` | — | Behavior pattern intelligence operations |
+
+#### `onasis memory create`
+
+| Option | Description |
+|--------|-------------|
+| `-t, --title <title>` | memory title |
+| `-c, --content <content>` | memory content |
+| `--type <type>` | memory type (context, project, knowledge, reference, personal, workflow) |
+| `--tags <tags>` | comma-separated tags |
+| `--topic-id <id>` | topic ID |
+| `-i, --interactive` | interactive mode |
+| `--json <json>` | JSON payload (title, content, type/memory_type, tags[], topic_id) |
+| `--content-file <path>` | Read memory content from a file (overrides --content) |
+| `-h, --help` | display help for command |
+
+#### `onasis memory save-session`
+
+| Option | Description |
+|--------|-------------|
+| `-t, --title <title>` | memory title (default: "Session summary") |
+| `--type <type>` | memory type (context, project, knowledge, reference, personal, workflow) (default: "project") |
+| `--tags <tags>` | comma-separated tags (default: "session,cli") |
+| `--test-summary <text>` | Optional test summary to include |
+| `-h, --help` | display help for command |
+
+#### `onasis memory list-sessions`
+
+| Option | Description |
+|--------|-------------|
+| `-p, --page <page>` | page number (default: "1") |
+| `-l, --limit <limit>` | number of entries per page (default: "20") |
+| `--type <type>` | filter by memory type (default: "project") |
+| `--tags <tags>` | filter by tags (comma-separated) (default: "session,cli") |
+| `--sort <field>` | sort by field (created_at, updated_at, title, last_accessed) (default: "created_at") |
+| `--order <order>` | sort order (asc, desc) (default: "desc") |
+| `-h, --help` | display help for command |
+
+#### `onasis memory load-session`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis memory delete-session`
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | skip confirmation |
+| `-h, --help` | display help for command |
+
+#### `onasis memory list`
+
+| Option | Description |
+|--------|-------------|
+| `-p, --page <page>` | page number (default: "1") |
+| `-l, --limit <limit>` | number of entries per page (default: "20") |
+| `--type <type>` | filter by memory type |
+| `--tags <tags>` | filter by tags (comma-separated) |
+| `--user-id <id>` | filter by user ID (admin only) |
+| `--sort <field>` | sort by field (created_at, updated_at, title, last_accessed) (default: "created_at") |
+| `--order <order>` | sort order (asc, desc) (default: "desc") |
+| `-h, --help` | display help for command |
+
+#### `onasis memory search`
+
+| Option | Description |
+|--------|-------------|
+| `-l, --limit <limit>` | number of results (default: "20") |
+| `--threshold <threshold>` | similarity threshold (0-1) (default: "0.55") |
+| `--type <types>` | filter by memory types (comma-separated) |
+| `--tags <tags>` | filter by tags (comma-separated) |
+| `--fallback-mode <mode>` | fallback mode when semantic search returns no results or fails (auto, lexical, never) (default: "auto") |
+| `--no-fallback` | disable CLI lexical fallback when semantic search fails or returns no results |
+| `--fail-on-fallback` | exit non-zero if CLI lexical fallback is used |
+| `--ci` | CI mode: disable fallback, emit JSON, and fail on backend search errors |
+| `--json` | emit machine-readable JSON output |
+| `-h, --help` | display help for command |
+
+#### `onasis memory get`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis memory update`
+
+| Option | Description |
+|--------|-------------|
+| `-t, --title <title>` | new title |
+| `-c, --content <content>` | new content |
+| `--type <type>` | new memory type (context, project, knowledge, reference, personal, workflow) |
+| `--tags <tags>` | new tags (comma-separated) |
+| `-i, --interactive` | interactive mode |
+| `-h, --help` | display help for command |
+
+#### `onasis memory delete`
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | skip confirmation |
+| `-h, --help` | display help for command |
+
+#### `onasis memory stats`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis memory intelligence`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis memory behavior`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Topics Commands
+
+### `onasis topic`
+
+Topic management commands
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis topic create` | `add` | Create a new topic |
+| `onasis topic list` | `ls` | List topics |
+| `onasis topic get` | `show` | Get detailed information about a topic |
+| `onasis topic update` | — | Update a topic |
+| `onasis topic delete` | `rm` | Delete a topic |
+
+#### `onasis topic create`
+
+| Option | Description |
+|--------|-------------|
+| `-n, --name <name>` | topic name |
+| `-d, --description <description>` | topic description |
+| `-c, --color <color>` | topic color (hex format) |
+| `--icon <icon>` | topic icon |
+| `--parent <parentId>` | parent topic ID |
+| `-i, --interactive` | interactive mode |
+| `-h, --help` | display help for command |
+
+#### `onasis topic list`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis topic get`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis topic update`
+
+| Option | Description |
+|--------|-------------|
+| `-n, --name <name>` | new name |
+| `-d, --description <description>` | new description |
+| `-c, --color <color>` | new color (hex format) |
+| `--icon <icon>` | new icon |
+| `-i, --interactive` | interactive mode |
+| `-h, --help` | display help for command |
+
+#### `onasis topic delete`
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | skip confirmation |
+| `-h, --help` | display help for command |
+
+## Configuration Commands
+
+### `onasis config`
+
+Configuration management
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis config set` | — | Set configuration value |
+| `onasis config get` | — | Get configuration value |
+| `onasis config show` | — | Show current configuration |
+| `onasis config list` | — | List all configuration options |
+| `onasis config set-url` | — | Set API URL |
+| `onasis config test` | — | Test connection to API |
+| `onasis config discover` | — | Discover service endpoints |
+| `onasis config endpoints` | — | Show current service endpoints |
+| `onasis config set-endpoint` | — | Set manual endpoint override (auth\|memory\|mcp-http\|mcp-ws\|mcp-sse) |
+| `onasis config clear-overrides` | — | Clear manual endpoint overrides and rediscover services |
+| `onasis config validate` | — | Validate configuration and check for issues |
+| `onasis config backup` | — | Create a backup of current configuration |
+| `onasis config restore` | — | Restore configuration from backup |
+| `onasis config reset` | — | Reset all configuration |
+
+#### `onasis config set`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config get`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config show`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config list`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config set-url`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config test`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config discover`
+
+| Option | Description |
+|--------|-------------|
+| `-v, --verbose` | show detailed discovery information |
+| `-h, --help` | display help for command |
+
+#### `onasis config endpoints`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config set-endpoint`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config clear-overrides`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config validate`
+
+| Option | Description |
+|--------|-------------|
+| `-v, --verbose` | show detailed validation information |
+| `--repair` | automatically repair common issues |
+| `-h, --help` | display help for command |
+
+#### `onasis config backup`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config restore`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis config reset`
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | skip confirmation |
+| `-h, --help` | display help for command |
+
+## Organization Commands
+
+### `onasis org`
+
+Organization management
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis org info` | — | Show organization information |
+| `onasis org members` | — | List organization members (admin only) |
+| `onasis org usage` | — | Show organization usage statistics |
+
+#### `onasis org info`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis org members`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis org usage`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## API Keys Commands
+
+### `onasis api-keys`
+
+🔐 Manage API keys securely with enterprise-grade encryption
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis api-keys create` | — | Create a new API key |
+| `onasis api-keys list` | `ls` | List API keys |
+| `onasis api-keys get` | — | Get details of a specific API key |
+| `onasis api-keys update` | — | Update an API key |
+| `onasis api-keys delete` | `rm` | Delete an API key |
+| `onasis api-keys projects` | — | 📁 Manage API key projects and organization |
+| `onasis api-keys mcp` | — | 🤖 Model Context Protocol (MCP) - Secure AI agent access |
+| `onasis api-keys analytics` | — | View API key usage analytics and security events |
+
+#### `onasis api-keys create`
+
+| Option | Description |
+|--------|-------------|
+| `-n, --name <name>` | API key name |
+| `-d, --description <description>` | API key description (optional) |
+| `--access-level <level>` | Access level (public, authenticated, team, admin, enterprise) (default: "team") |
+| `--key-context <context>` | Optional memory context (personal, team, enterprise) |
+| `--expires-in-days <days>` | Expiration in days (default: 365) (default: "365") |
+| `--scopes <scopes>` | Comma-separated scopes (optional) |
+| `--interactive` | Interactive mode |
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys list`
+
+| Option | Description |
+|--------|-------------|
+| `--all` | Include inactive keys |
+| `--json` | Output as JSON |
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys get`
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output as JSON |
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys update`
+
+| Option | Description |
+|--------|-------------|
+| `-n, --name <name>` | New name |
+| `-d, --description <description>` | New description |
+| `--access-level <level>` | New access level |
+| `--expires-in-days <days>` | Set a new expiry in days |
+| `--clear-expiry` | Remove the current expiry |
+| `--scopes <scopes>` | Replace scopes with a comma-separated list |
+| `--interactive` | Interactive mode |
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys delete`
+
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | Skip confirmation |
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys projects`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys mcp`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis api-keys analytics`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Prescan Commands
+
+### `onasis prescan`
+
+🔍 Local filesystem prescan for secrets/PII before MIRA extraction. Reports are value-stripped — never exposes raw secrets.
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis prescan run` | — | Run prescan on a directory |
+| `onasis prescan status` | — | Show last prescan state and statistics |
+
+#### `onasis prescan run`
+
+| Option | Description |
+|--------|-------------|
+| `--exclude <patterns...>` | Glob patterns to exclude (e.g. --exclude node_modules --exclude .git) |
+| `--json` | Output machine-parseable JSON summary |
+| `--save` | Write report to ~/.lanonasis/security/prescan/ |
+| `--fail-on <threshold>` | Exit non-zero if classification meets threshold: none, quarantined, or flagged |
+| `--ci` | CI mode: equivalent to --fail-on quarantined --json |
+| `-h, --help` | display help for command |
+
+#### `onasis prescan status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## MCP Commands
+
+### `onasis mcp`
+
+MCP (Model Context Protocol) server operations
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis mcp connect` | — | Connect to MCP server (local, remote, or WebSocket) |
+| `onasis mcp disconnect` | — | Disconnect from MCP server |
+| `onasis mcp status` | — | Show MCP connection status |
+| `onasis mcp tools` | — | List available MCP tools |
+| `onasis mcp call` | — | Call an MCP tool directly |
+| `onasis mcp memory` | — | Memory operations via MCP |
+| `onasis mcp config` | — | Configure MCP preferences |
+| `onasis mcp start` | — | Start MCP server for external clients (Claude Desktop, Cursor, etc.) |
+| `onasis mcp diagnose` | — | Diagnose MCP connection issues |
+
+#### `onasis mcp connect`
+
+| Option | Description |
+|--------|-------------|
+| `-l, --local` | Connect to local MCP server |
+| `-r, --remote` | Connect to remote MCP server (mcp.lanonasis.com) |
+| `-w, --websocket` | Connect using WebSocket mode for enterprise users |
+| `-s, --server <path>` | Local MCP server path |
+| `-u, --url <url>` | Remote/WebSocket server URL |
+| `--local-args <args>` | Extra args for local server (e.g., "--stdio --port 3001") |
+| `-h, --help` | display help for command |
+
+#### `onasis mcp disconnect`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis mcp status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis mcp tools`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis mcp call`
+
+| Option | Description |
+|--------|-------------|
+| `-a, --args <json>` | Tool arguments as JSON |
+| `-h, --help` | display help for command |
+
+#### `onasis mcp memory`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis mcp config`
+
+| Option | Description |
+|--------|-------------|
+| `--prefer-websocket` | Prefer WebSocket MCP connection (recommended for production) |
+| `--prefer-remote` | Prefer remote MCP server (REST/SSE mode) |
+| `--prefer-local` | Prefer local MCP server (development only) |
+| `--auto` | Auto-detect best connection mode |
+| `-h, --help` | display help for command |
+
+#### `onasis mcp start`
+
+| Option | Description |
+|--------|-------------|
+| `--transport <type>` | Transport: stdio (default), ws, http, sse (default: "stdio") |
+| `--port <number>` | Port for ws/http/sse (default: "3009") |
+| `--host <address>` | Host address (default: "127.0.0.1") |
+| `-h, --help` | display help for command |
+
+#### `onasis mcp diagnose`
+
+| Option | Description |
+|--------|-------------|
+| `-v, --verbose` | show detailed diagnostic information |
+| `-h, --help` | display help for command |
+
+### `onasis mcp-server`
+
+MCP server initialization and management
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis mcp-server init` | — | Initialize MCP server configuration |
+
+#### `onasis mcp-server init`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Completion Commands
 
 ### `onasis completion`
 
-Generate shell completion scripts.
+Generate shell completion scripts
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## System Commands
+
+### `onasis repl`
+
+Start lightweight REPL session for memory operations
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `--mcp` | Use MCP mode |
+| `--api <url>` | Override API URL |
+| `--ai-router <url>` | Override AI router URL |
+| `--token <token>` | Authentication token |
+| `--model <model>` | Model label/override for concierge responses |
+| `--config <path>` | Path to a custom repl-config.json |
+| `-h, --help` | display help for command |
+
+### `onasis status`
+
+Show overall system status
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis whoami`
+
+Show the currently authenticated user profile
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis health`
+
+Comprehensive system health check
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `--verbose` | show detailed health information |
+| `-h, --help` | display help for command |
+
+### `onasis docs`
+
+Open documentation in browser
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Platform Management Commands
+
+### `onasis dashboard`
+
+🎛️  Manage React dashboard deployment and configuration
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis dashboard status` | — | Check dashboard deployment status |
+| `onasis dashboard logs` | — | View dashboard deployment logs |
+
+#### `onasis dashboard status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis dashboard logs`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis documentation`
+
+📚 Manage VitePress documentation deployment
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis documentation status` | — | Check documentation deployment status |
+| `onasis documentation build` | — | Trigger documentation rebuild |
+
+#### `onasis documentation status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis documentation build`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis sdk`
+
+🔧 Manage SDK packages and distribution
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis sdk status` | — | Check SDK deployment status |
+| `onasis sdk versions` | — | List all available SDK versions |
+
+#### `onasis sdk status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis sdk versions`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis api`
+
+🌐 Manage REST API endpoints and services
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis api status` | — | Check REST API health and endpoints |
+| `onasis api endpoints` | — | List all available API endpoints |
+
+#### `onasis api status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis api endpoints`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis deploy`
+
+🚀 Manage deployments and infrastructure
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis deploy status` | — | Check overall deployment status |
+| `onasis deploy health` | — | Comprehensive health check of all services |
+
+#### `onasis deploy status`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis deploy health`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+### `onasis service`
+
+⚙️  Manage individual services and components
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+**Subcommands:**
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `onasis service list` | — | List all available services |
+| `onasis service restart` | — | Restart a specific service |
+
+#### `onasis service list`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+#### `onasis service restart`
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | display help for command |
+
+## Common Examples
 
 ```bash
-# Bash
-onasis completion bash > ~/.bash_completion
+# Initialize the CLI
+onasis init
 
-# Zsh
-onasis completion zsh > ~/.zshrc
-
-# Fish
-onasis completion fish > ~/.config/fish/completions/onasis.fish
-```
-
----
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MEMORY_API_URL` | Override API URL | `https://api.lanonasis.com` |
-| `LANONASIS_VENDOR_KEY` | Vendor API key | - |
-| `LANONASIS_TOKEN` | JWT/OAuth token | - |
-| `CLI_VERBOSE` | Enable verbose logging | `false` |
-| `CLI_OUTPUT_FORMAT` | Output format (json/table/yaml) | `table` |
-| `LANONASIS_FORCE_API` | Force direct API (no MCP) | `false` |
-
----
-
-## Configuration Files
-
-### `~/.maas/config.json`
-
-Main configuration file:
-
-```json
-{
-  "apiUrl": "https://api.lanonasis.com",
-  "gatewayUrl": "https://api.lanonasis.com",
-  "useGateway": true,
-  "authUrl": "https://auth.lanonasis.com",
-  "mcpServerUrl": "http://localhost:3001",
-  "authMethod": "oauth",
-  "transportPreference": "auto",
-  "enableMCP": true,
-  "manualEndpointOverrides": {}
-}
-```
-
-### `~/.maas/onboarding.json`
-
-Onboarding state:
-
-```json
-{
-  "completed": false,
-  "completedSteps": [],
-  "preferences": {
-    "inputMode": "inline",
-    "editor": "vscode"
-  }
-}
-```
-
----
-
-## Exit Codes
-
-| Code | Description |
-|------|-------------|
-| 0 | Success |
-| 1 | General error |
-| 2 | Configuration error |
-| 3 | Authentication error |
-| 4 | Network error |
-| 5 | API error |
-
----
-
-## Troubleshooting
-
-### Authentication Issues
-
-```bash
-# Check status with live API probe
-onasis auth status
-
-# Force re-authentication
-onasis auth login --force
-
-# Clear credentials and start fresh
-onasis auth logout
+# Authenticate
 onasis auth login
+
+# Check system health
+onasis health
+
+# Create a memory
+onasis memory create --title "Note" --content "..." --type knowledge
+
+# Search memories
+onasis memory search "query text" --limit 10
+
+# List API keys
+onasis api-keys list
+
+# List MCP tools
+onasis mcp tools
 ```
-
-### MCP Connection Issues
-
-```bash
-# Check MCP status
-onasis mcp status
-
-# Restart MCP server
-onasis mcp-server stop
-onasis mcp-server start
-
-# Use direct API (bypass MCP)
-onasis memory list --no-mcp
-```
-
-### Configuration Issues
-
-```bash
-# View current config
-onasis config list
-
-# Reset to defaults
-onasis config reset
-
-# Use environment override
-MEMORY_API_URL=https://api.lanonasis.com onasis memory list
-```
-
----
 
 ## Related Documentation
 
-- [MCP Overview](../mcp/overview.md)
-- [Authentication Guide](../auth/central-auth-gateway.md)
-- [Memory Management](../memory/overview.md)
-- [API Keys](../keys/vendor-key-management.md)
-- [IDE Integration](../mcp/ide-integration.md)
+- [SDKs & Libraries](../sdks/overview.md) — language clients and packages
+- [MCP Tools Reference](../mcp/tools.md) — MCP server tools
+- [Auth Overview](../auth/central-auth-gateway.md) — authentication flows
+- [REST API Reference](../memory/rest-api.md) — API endpoints
+
+<!-- Generated 2026-08-11 from @lanonasis/cli v3.11.2. -->

@@ -86,30 +86,15 @@ const config: Config = {
     },
   },
 
-  // Internationalization - Full multilingual support
+  // Add locales only when translated documentation exists for the full site.
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'de', 'es', 'fr'],
+    locales: ['en'],
     localeConfigs: {
       en: {
         label: 'English',
         direction: 'ltr',
         htmlLang: 'en-US',
-      },
-      de: {
-        label: 'Deutsch',
-        direction: 'ltr',
-        htmlLang: 'de-DE',
-      },
-      es: {
-        label: 'Español',
-        direction: 'ltr',
-        htmlLang: 'es-ES',
-      },
-      fr: {
-        label: 'Français',
-        direction: 'ltr',
-        htmlLang: 'fr-FR',
       },
     },
   },
@@ -182,7 +167,7 @@ const config: Config = {
           label: 'API Playground',
         },
         {
-          type: 'localeDropdown',
+          type: 'custom-search',
           position: 'right',
         },
         {
@@ -244,17 +229,33 @@ const config: Config = {
               label: 'Support',
               to: '/support',
             },
-            {
-              label: 'Status',
-              href: 'https://status.lanonasis.com',
-            },
           ],
         },
       ],
       copyright: `Copyright ${new Date().getFullYear()} LanOnasis. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
+      // Light theme tokens darkened for WCAG 2.1 AA (4.5:1) on the code-block
+      // background (#f6f8fa). Built from prismThemes.github but with compliant
+      // colors: comment #6a737d, string #c2185b, entity/number #1a6f6d,
+      // function #b5323f, atrule/keyword #0086b3.
+      theme: {
+        plain: { color: '#393A34', backgroundColor: '#f6f8fa' },
+        styles: [
+          { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: '#6a737d' } },
+          { types: ['namespace'], style: { opacity: 0.7 } },
+          { types: ['string', 'attr-value'], style: { color: '#c2185b' } },
+          { types: ['punctuation', 'operator'], style: { color: '#393A34' } },
+          {
+            types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable', 'constant', 'property', 'regex', 'inserted'],
+            style: { color: '#1a6f6d' },
+          },
+          { types: ['atrule', 'keyword', 'attr-name', 'selector'], style: { color: '#0086b3' } },
+          { types: ['function', 'deleted', 'tag'], style: { color: '#b5323f' } },
+          { types: ['function-variable'], style: { color: '#6f42c1' } },
+          { types: ['tag', 'selector', 'keyword'], style: { color: '#00009f' } },
+        ],
+      },
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,

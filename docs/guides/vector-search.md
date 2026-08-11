@@ -1,9 +1,10 @@
 ---
 title: Vector Search Guide
 sidebar_label: Vector Search
+description: "Understand vector search in LanOnasis: embeddings, similarity thresholds, and query options."
 ---
 
-# Understanding Vector Search in LanOnasis
+## Understanding Vector Search in LanOnasis
 
 ## What is Vector Search?
 

@@ -1,6 +1,7 @@
 ---
 title: Analytics API
 slug: /api/analytics
+description: Retrieve analytics and insights about memory usage, performance metrics, and system health.
 ---
 
 Retrieve comprehensive analytics and insights about your memory usage, performance metrics, and system health.

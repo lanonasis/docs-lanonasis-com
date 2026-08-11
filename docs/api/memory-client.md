@@ -1,9 +1,10 @@
 ---
 title: Memory Client SDK
 sidebar_label: Memory Client
+description: Reference for the LanOnasis memory client SDK and its programmatic API.
 ---
 
-# Memory Client SDK
+## Memory Client SDK
 
 Official TypeScript/JavaScript SDK for Lanonasis Memory as a Service (MaaS).
 

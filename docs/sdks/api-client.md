@@ -10,51 +10,32 @@ tags:
   - http-client
 ---
 
-# API Client SDK
+## API Client SDK
+
+:::warning Not published
+`@lanonasis/api-client` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/api-client` for production work today.
+
+For REST/HTTP access, use the platform REST API directly (see [REST API docs](../memory/rest-api.md)) or [`@lanonasis/memory-client`](./typescript.md).
+
+See the [SDK Capability Matrix](./matrix.md) for source-verified status.
+:::
 
 The API Client SDK provides a universal, production-ready HTTP client for REST and GraphQL APIs with built-in features like retries, caching, middleware, and error handling.
 
-## Installation
+## Published alternatives
+
+This page describes a planned surface, not an installable package. For working integrations today, use one of these published options instead:
 
 ```bash
-npm install @lanonasis/api-client
-# or
-yarn add @lanonasis/api-client
+# Universal TypeScript client
+npm install @lanonasis/memory-client
+
+# Or call the REST API directly
+curl https://api.lanonasis.com/api/v1/memories \
+  -H "X-API-Key: $LANONASIS_API_KEY"
 ```
 
-## Quick Start
-
-```typescript
-import { APIClient } from "@lanonasis/api-client";
-
-// Create a client
-const client = new APIClient({
-  baseURL: "https://api.lanonasis.com/v1",
-  apiKey: process.env.API_KEY,
-  timeout: 30000,
-});
-
-// Make requests
-const response = await client.get("/users");
-console.log(response.data);
-
-// POST request
-const user = await client.post("/users", {
-  name: "John Doe",
-  email: "john@example.com",
-});
-
-// GraphQL
-const result = await client.graphql(`
-  query GetUsers {
-    users {
-      id
-      name
-      email
-    }
-  }
-`);
-```
+If `@lanonasis/api-client` is published later, this page will regain package-specific installation and quick-start instructions.
 
 ## HTTP Methods
 

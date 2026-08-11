@@ -17,11 +17,11 @@
   "servers": [
     {
       "url": "https://api.lanonasis.com/api/v1",
-      "description": "Production server"
+      "description": "Production server (MXT Edge Functions / Netlify)"
     },
     {
-      "url": "https://staging-api.lanonasis.com/api/v1",
-      "description": "Staging server"
+      "url": "https://auth.lanonasis.com/api/v1",
+      "description": "Auth gateway (VPS nginx → auth-gateway :4000, PTNR-backed)"
     },
     {
       "url": "http://localhost:54321/functions/v1",
@@ -80,11 +80,12 @@
           {
             "name": "limit",
             "in": "query",
+            "description": "Values above 50 are silently clamped to 50 by the runtime (`memory-list/params.ts`, MAX_MEMORY_LIST_LIMIT).",
             "schema": {
               "type": "integer",
               "default": 20,
               "minimum": 1,
-              "maximum": 100
+              "maximum": 50
             }
           },
           {
@@ -1127,13 +1128,169 @@
         }
       }
     },
+    "/profiles/{subject_id}": {
+      "get": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Get Living Memory Profile",
+        "description": "Return the current living memory profile for the requested subject.\nThis is the public production surface for `intelligence-profiles`.\n\nAccess is authenticated and scoped: the direct EF only allows the\nsubject themselves unless the caller is using service-role auth.\n",
+        "operationId": "getIntelligenceProfile",
+        "parameters": [
+          {
+            "name": "subject_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current profile snapshot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      }
+    },
+    "/profiles/{subject_id}/versions": {
+      "get": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Get Living Memory Profile Versions",
+        "description": "Return append-only profile versions for the requested subject.\nThis maps to `GET /functions/v1/intelligence-profiles/:subject_id/versions`.\n",
+        "operationId": "getIntelligenceProfileVersions",
+        "parameters": [
+          {
+            "name": "subject_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile version history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceProfileVersionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      }
+    },
+    "/profiles/{subject_id}/ask": {
+      "post": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Ask a Question from a Living Memory Profile",
+        "description": "Synthesize an answer from the subject's current living memory profile.\nThis is the canonical public replacement for the older\n`intelligence-ask-profile` compatibility EF.\n",
+        "operationId": "askIntelligenceProfile",
+        "parameters": [
+          {
+            "name": "subject_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntelligenceProfileAskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile-backed answer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceProfileAskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      }
+    },
     "/auth/api-keys": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "get": {
         "tags": [
           "API Keys"
         ],
         "summary": "List API Keys",
-        "description": "List API keys for the authenticated user (MCP tool `list_api_keys`)",
+        "description": "List API keys for the authenticated user (MCP tool `list_api_keys`). Served by the VPS auth-gateway and reads **PTNR** `public.api_keys`, which is **service_role-only** since migrations 020/021 (`security_invoker=true`; SELECT denied to `anon`/`authenticated`). `last_used_at` is written on every request (unthrottled, pending #64).",
         "operationId": "listApiKeys",
         "parameters": [
           {
@@ -1174,7 +1331,7 @@
           "API Keys"
         ],
         "summary": "Create API Key",
-        "description": "Create a new API key (MCP tool `create_api_key`)",
+        "description": "Create a new API key (MCP tool `create_api_key`). Served by the VPS auth-gateway; writes **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "createApiKey",
         "requestBody": {
           "required": true,
@@ -1207,12 +1364,18 @@
       }
     },
     "/auth/api-keys/{keyId}": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "delete": {
         "tags": [
           "API Keys"
         ],
         "summary": "Delete API Key",
-        "description": "Delete an API key permanently (MCP tool `delete_api_key`)",
+        "description": "Delete an API key permanently (MCP tool `delete_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "deleteApiKey",
         "parameters": [
           {
@@ -1246,12 +1409,18 @@
       }
     },
     "/auth/api-keys/{keyId}/rotate": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "post": {
         "tags": [
           "API Keys"
         ],
         "summary": "Rotate API Key",
-        "description": "Rotate an API key (MCP tool `rotate_api_key`)",
+        "description": "Rotate an API key (MCP tool `rotate_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "rotateApiKey",
         "parameters": [
           {
@@ -1285,12 +1454,18 @@
       }
     },
     "/auth/api-keys/{keyId}/revoke": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "post": {
         "tags": [
           "API Keys"
         ],
         "summary": "Revoke API Key",
-        "description": "Revoke (deactivate) an API key (MCP tool `revoke_api_key`)",
+        "description": "Revoke (deactivate) an API key (MCP tool `revoke_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "revokeApiKey",
         "parameters": [
           {
@@ -2060,7 +2235,8 @@
                 },
                 "last_used_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "description": "Timestamp of the most recent request that used this key. Written on every authenticated request (unthrottled — pending throttle, tracked in #64)."
                 },
                 "created_at": {
                   "type": "string",
@@ -2577,6 +2753,31 @@
             ],
             "default": "json",
             "description": "Response format"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Restrict analysis to a specific organization scope when allowed by auth context"
+          },
+          "topic_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Restrict analysis to memories for a specific topic"
+          },
+          "memory_type": {
+            "$ref": "#/components/schemas/MemoryType",
+            "description": "Legacy single memory type filter"
+          },
+          "memory_types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemoryType"
+            },
+            "description": "Restrict analysis to the listed memory types"
+          },
+          "query_scope": {
+            "$ref": "#/components/schemas/MemoryQueryScope",
+            "description": "Scope hint for personal vs organization memory analysis"
           }
         }
       },
@@ -2655,6 +2856,22 @@
                   "type": "string"
                 },
                 "description": "AI-generated insights"
+              },
+              "creation_velocity": {
+                "type": "object",
+                "properties": {
+                  "daily_average": {
+                    "type": "number"
+                  },
+                  "trend": {
+                    "type": "string",
+                    "enum": [
+                      "increasing",
+                      "stable",
+                      "decreasing"
+                    ]
+                  }
+                }
               },
               "generated_at": {
                 "type": "string",
@@ -2746,9 +2963,11 @@
                 "format": "uuid"
               },
               "topic_id": {
-                "type": "string",
-                "format": "uuid",
-                "nullable": true
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               },
               "memory_types": {
                 "type": "array",
@@ -3332,10 +3551,7 @@
       },
       "PredictiveRecallRequest": {
         "type": "object",
-        "required": [
-          "userId",
-          "context"
-        ],
+        "description": "Predictive recall accepts an empty object. `userId` is optional and defaults\nto the authenticated caller; cross-user access is rejected if provided.\nThe source also accepts snake_case aliases for most fields.\n",
         "properties": {
           "userId": {
             "type": "string",
@@ -3559,9 +3775,9 @@
       },
       "PredictionFeedbackRequest": {
         "type": "object",
+        "description": "`userId` defaults to the authenticated caller and is only accepted when it\nmatches that caller. The source also accepts snake_case aliases.\n",
         "required": [
           "memoryId",
-          "userId",
           "useful",
           "action"
         ],
@@ -3594,6 +3810,12 @@
               "not_now",
               "other"
             ]
+          },
+          "predictionConfidence": {
+            "type": "number"
+          },
+          "predictionReason": {
+            "type": "string"
           }
         }
       },
@@ -3626,13 +3848,525 @@
                 "type": "boolean"
               },
               "stored_suggestion_id": {
-                "type": "string",
-                "format": "uuid",
-                "nullable": true
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
               },
               "feedback_at": {
                 "type": "string",
                 "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "BehaviorAction": {
+        "type": "object",
+        "required": [
+          "tool",
+          "parameters",
+          "outcome",
+          "timestamp"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "failed"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration_ms": {
+            "type": "integer"
+          }
+        }
+      },
+      "BehaviorPattern": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BehaviorAction"
+            }
+          },
+          "final_outcome": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "failed"
+            ]
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "use_count": {
+            "type": "integer"
+          },
+          "similarity": {
+            "type": "number"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BehaviorRecordRequest": {
+        "type": "object",
+        "required": [
+          "trigger",
+          "context",
+          "actions",
+          "final_outcome"
+        ],
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 500
+          },
+          "context": {
+            "type": "object",
+            "required": [
+              "directory"
+            ],
+            "properties": {
+              "directory": {
+                "type": "string"
+              },
+              "project_type": {
+                "type": "string"
+              },
+              "branch": {
+                "type": "string"
+              },
+              "files_touched": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "actions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/BehaviorAction"
+            }
+          },
+          "final_outcome": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "failed"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "BehaviorRecordResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "pattern_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "trigger": {
+                "type": "string"
+              },
+              "final_outcome": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "partial",
+                  "failed"
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "actions_count": {
+                "type": "integer"
+              },
+              "embedding_generated": {
+                "type": "boolean"
+              },
+              "embedding_provider": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/IntelligenceMeta"
+          },
+          "tier_info": {
+            "$ref": "#/components/schemas/TierInfo"
+          }
+        }
+      },
+      "BehaviorRecallRequest": {
+        "type": "object",
+        "required": [
+          "context"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "context": {
+            "type": "object",
+            "required": [
+              "current_directory",
+              "current_task"
+            ],
+            "properties": {
+              "current_directory": {
+                "type": "string"
+              },
+              "current_task": {
+                "type": "string"
+              },
+              "project_type": {
+                "type": "string"
+              }
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          },
+          "similarity_threshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.7
+          }
+        }
+      },
+      "BehaviorRecallResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "patterns": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BehaviorPattern"
+                }
+              },
+              "total_patterns": {
+                "type": "integer"
+              },
+              "matched_patterns": {
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              },
+              "query_context": {
+                "type": "object",
+                "properties": {
+                  "task": {
+                    "type": "string"
+                  },
+                  "directory": {
+                    "type": "string"
+                  },
+                  "project_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/IntelligenceMeta"
+          },
+          "tier_info": {
+            "$ref": "#/components/schemas/TierInfo"
+          }
+        }
+      },
+      "BehaviorSuggestRequest": {
+        "type": "object",
+        "required": [
+          "current_state"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "current_state": {
+            "type": "object",
+            "required": [
+              "task_description",
+              "completed_steps"
+            ],
+            "properties": {
+              "task_description": {
+                "type": "string"
+              },
+              "completed_steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "current_files": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "max_suggestions": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3
+          }
+        }
+      },
+      "BehaviorSuggestResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "suggestions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    },
+                    "confidence": {
+                      "type": "number"
+                    },
+                    "based_on_pattern": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              },
+              "patterns_used": {
+                "type": "integer"
+              }
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/IntelligenceMeta"
+          },
+          "tier_info": {
+            "$ref": "#/components/schemas/TierInfo"
+          }
+        }
+      },
+      "MemoryProfile": {
+        "type": "object",
+        "description": "Raw `memory_profiles` row returned by `intelligence-profiles`.\nThe EF selects `*`, so fields may expand over time.\n",
+        "additionalProperties": true,
+        "properties": {
+          "subject_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "profile_summary": {
+            "type": "string"
+          },
+          "structured_fields": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "confidence_by_field": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "head_version_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MemoryProfileVersion": {
+        "type": "object",
+        "description": "Raw `memory_profile_versions` row returned by `intelligence-profiles`.\nThe EF selects `*`, so fields may expand over time.\n",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "profile_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "IntelligenceProfileResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "profile": {
+                "$ref": "#/components/schemas/MemoryProfile"
+              }
+            }
+          }
+        }
+      },
+      "IntelligenceProfileVersionsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MemoryProfileVersion"
+                }
+              }
+            }
+          }
+        }
+      },
+      "IntelligenceProfileAskRequest": {
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "IntelligenceProfileAskResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "confidence": {
+                "type": "number"
               }
             }
           }
@@ -3738,6 +4472,16 @@
     "responses": {
       "UnauthorizedError": {
         "description": "Authentication required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Authenticated caller is not authorized to access the resource",
         "content": {
           "application/json": {
             "schema": {

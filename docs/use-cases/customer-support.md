@@ -1,8 +1,10 @@
 ---
 sidebar_position: 3
+title: Customer Support
+description: Leverage LanOnasis for customer support operations with knowledge base and ticket context.
 ---
 
-# Customer Support
+## Customer Support
 
 Leverage LanOnasis for efficient customer support operations.
 

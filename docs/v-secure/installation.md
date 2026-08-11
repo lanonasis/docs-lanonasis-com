@@ -4,7 +4,7 @@ title: Installation
 description: Detailed installation guide for v-secure CLI and SDKs
 ---
 
-# Installation Guide
+## Installation Guide
 
 This guide covers detailed installation instructions for v-secure CLI, SDKs, and various integration options.
 

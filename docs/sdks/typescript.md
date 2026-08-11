@@ -1,8 +1,10 @@
 ---
 sidebar_position: 2
+title: TypeScript SDK
+description: Official TypeScript SDKs for LanOnasis Memory-as-a-Service.
 ---
 
-# TypeScript SDK
+## TypeScript SDK
 
 Official TypeScript SDKs for LanOnasis Memory-as-a-Service.
 
@@ -48,11 +50,11 @@ if (created.data) {
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: <!-- AUTO:MEMORY_CLIENT_VERSION -->2.2.1<!-- /AUTO -->
+- ✅ Version: 2.2.0 npm / 2.2.1 manifest
 - ✅ Size: ~150 KB
 - ✅ TypeScript support
 
-For intelligence and behavior APIs, the current source package in this monorepo is `@lanonasis/mem-intel-sdk` (`2.0.6`).
+For intelligence and behavior APIs, the current source package in this monorepo is `@lanonasis/mem-intel-sdk` (`2.1.0`). See the [Memory Intelligence SDK page](./mem-intel-sdk.md).
 
 ---
 
@@ -96,7 +98,7 @@ const results = await sdk.searchMemories({
 
 **Package Details:**
 - ✅ Published to npm
-- ✅ Version: 1.0.0
+- ✅ Version: 1.1.0
 - ✅ Size: ~140 KB
 - ✅ CJS + ESM builds
 - ✅ Perfect for orchestration

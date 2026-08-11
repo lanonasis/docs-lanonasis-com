@@ -3,7 +3,8 @@
 /**
  * Sync canonical OpenAPI specs into docs static assets.
  *
- * - Copies MCP Memory spec from apps/onasis-core into docs static
+ * - Copies MCP Memory spec from apps/onasis-core when running in the monorepo
+ * - Uses the committed static spec when the standalone docs repository builds
  * - Generates memory-api.json for playground compatibility
  * - Syncs docs search openapi.yaml into static
  * - Generates specs.json manifest for the playground UI
@@ -39,20 +40,21 @@ const memorySpecJson = path.join(staticDir, 'memory-api.json');
 const docsSearchSpecSource = path.join(docsRoot, 'openapi.yaml');
 const docsSearchSpecYaml = path.join(staticDir, 'openapi.yaml');
 
-const unifiedSpecYaml = path.join(staticDir, 'unified-services.yaml');
 const manifestPath = path.join(staticDir, 'specs.json');
 
 const hashContent = (content) =>
   crypto.createHash('sha256').update(content, 'utf8').digest('hex');
 
-const ensureFile = (targetPath, expectedContent, label) => {
+const ensureFile = (targetPath, expectedContent, label, compareFn) => {
   if (checkOnly) {
     if (!fs.existsSync(targetPath)) {
       console.error(`❌ Missing ${label}: ${targetPath}`);
       process.exit(1);
     }
     const currentContent = fs.readFileSync(targetPath, 'utf8');
-    if (currentContent !== expectedContent) {
+    const a = compareFn ? compareFn(currentContent) : currentContent;
+    const b = compareFn ? compareFn(expectedContent) : expectedContent;
+    if (a !== b) {
       console.error(`❌ ${label} is out of sync: ${targetPath}`);
       process.exit(1);
     }
@@ -79,27 +81,42 @@ const readYaml = (sourcePath) => {
 try {
   console.log('📦 Syncing OpenAPI specs into docs static assets...');
 
-  if (!fs.existsSync(memorySpecSource)) {
-    throw new Error(`Memory spec not found at ${memorySpecSource}`);
-  }
-
   if (!fs.existsSync(docsSearchSpecSource)) {
     throw new Error(`Docs search spec not found at ${docsSearchSpecSource}`);
   }
 
-  const memorySpec = readYaml(memorySpecSource);
-  const docsSearchSpec = readYaml(docsSearchSpecSource);
-  const unifiedSpec = fs.existsSync(unifiedSpecYaml)
-    ? readYaml(unifiedSpecYaml)
-    : { content: '', data: {} };
+  const memorySpec = fs.existsSync(memorySpecSource)
+    ? readYaml(memorySpecSource)
+    : readYaml(memorySpecYaml);
 
+  if (!fs.existsSync(memorySpecSource)) {
+    console.log('ℹ️  Monorepo memory spec unavailable; using committed static/memory-api.yaml.');
+  }
+  const docsSearchSpec = readYaml(docsSearchSpecSource);
   const memoryJson = JSON.stringify(memorySpec.data, null, 2);
 
   ensureFile(memorySpecYaml, memorySpec.content, 'Memory OpenAPI YAML');
   ensureFile(memorySpecJson, memoryJson, 'Memory OpenAPI JSON');
   ensureFile(docsSearchSpecYaml, docsSearchSpec.content, 'Docs Search OpenAPI YAML');
 
+  const lastVerified = new Date().toISOString();
+  const memorySourceLabel = fs.existsSync(memorySpecSource)
+    ? 'monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml'
+    : 'committed:static/memory-api.yaml';
+  const docsSourceLabel = 'repo:apps/docs-lanonasis/openapi.yaml';
+
+  // Drift-visibility envelope: `last_verified` + `synced_from` make
+  // static==canonical drift visible without running check:docs-sync —
+  // a stale manifest is the one whose `last_verified` is older than the
+  // canonical source's mtime, or whose per-spec `hash` no longer matches
+  // the on-disk artifact.
   const manifest = {
+    last_verified: lastVerified,
+    synced_from: {
+      generator: 'scripts/sync-docs-specs.js',
+      memory: memorySourceLabel,
+      docs: docsSourceLabel
+    },
     specs: [
       {
         id: 'memory',
@@ -109,17 +126,9 @@ try {
         badge: 'MCP v2.0 - 31 Tools',
         version: memorySpec.data?.info?.version || 'unknown',
         hash: hashContent(memorySpec.content),
+        last_verified: lastVerified,
+        synced_from: memorySourceLabel,
         paths: ['/memory-api.json', '/memory-api.yaml']
-      },
-      {
-        id: 'unified',
-        name: 'Unified Services',
-        icon: '🔗',
-        description: 'Wallets, Transfers, Payments, KYC',
-        badge: 'Unified Services API',
-        version: unifiedSpec.data?.info?.version || 'unknown',
-        hash: unifiedSpec.content ? hashContent(unifiedSpec.content) : null,
-        paths: ['/unified-services.yaml']
       },
       {
         id: 'docs',
@@ -129,13 +138,35 @@ try {
         badge: 'Docs Search API',
         version: docsSearchSpec.data?.info?.version || 'unknown',
         hash: hashContent(docsSearchSpec.content),
+        last_verified: lastVerified,
+        synced_from: docsSourceLabel,
         paths: ['/openapi.json', '/openapi.yaml']
       }
     ]
   };
 
   const manifestJson = JSON.stringify(manifest, null, 2);
-  ensureFile(manifestPath, manifestJson, 'Specs manifest');
+
+  // `last_verified` is a drift-visibility timestamp that changes on every run;
+  // compare the manifest with timestamps normalized so `--check` is
+  // deterministic (the hash + synced_from fields still catch real drift).
+  const normalizeManifest = (s) =>
+    s.replace(/"last_verified": "[^"]*"/g, '"last_verified": "<ts>"');
+
+  if (checkOnly) {
+    const currentManifest = fs.existsSync(manifestPath)
+      ? fs.readFileSync(manifestPath, 'utf8')
+      : null;
+    if (
+      !currentManifest ||
+      normalizeManifest(currentManifest) !== normalizeManifest(manifestJson)
+    ) {
+      console.error(`❌ Specs manifest is out of sync: ${manifestPath}`);
+      process.exit(1);
+    }
+  } else {
+    ensureFile(manifestPath, manifestJson, 'Specs manifest');
+  }
 
   console.log('✅ Specs sync complete.');
 } catch (error) {

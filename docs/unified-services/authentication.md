@@ -1,10 +1,11 @@
 ---
+draft: true
 sidebar_position: 2
 title: Authentication
 description: API authentication and security
 ---
 
-# Authentication
+## Authentication
 
 All API requests require authentication using an API key. Your API key identifies your project and determines what capabilities are available.
 

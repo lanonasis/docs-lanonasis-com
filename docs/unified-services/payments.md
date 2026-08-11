@@ -1,10 +1,11 @@
 ---
+draft: true
 sidebar_position: 5
 title: Payments
 description: Accept payments from customers
 ---
 
-# Payments
+## Payments
 
 Accept payments from your customers via multiple channels: cards, bank transfers, USSD, and more.
 

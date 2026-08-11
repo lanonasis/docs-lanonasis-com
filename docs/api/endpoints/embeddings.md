@@ -1,4 +1,8 @@
-# Embeddings API
+---
+title: Embeddings API
+description: Generate OpenAI-compatible vector embeddings for your content with the LanOnasis embeddings endpoint.
+---
+## Embeddings API
 
 Generate OpenAI-compatible vector embeddings for your content using the
 LanOnasis embeddings endpoint backed by Voyage AI.

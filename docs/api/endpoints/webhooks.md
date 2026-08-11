@@ -1,4 +1,8 @@
-# Webhooks API
+---
+title: Webhooks API
+description: Configure and manage webhooks to receive real-time notifications about memory operations and system events.
+---
+## Webhooks API
 
 Configure and manage webhooks to receive real-time notifications about memory operations and system events.
 

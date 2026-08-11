@@ -1,6 +1,7 @@
 ---
 title: Vendor API Key Management
 sidebar_label: Vendor Key Management
+description: Manage upstream vendor API credentials centrally with the LanOnasis Foreign API Key Manager.
 ---
 
 LanOnasis provides a centralized Foreign API Key Manager to securely manage upstream vendor credentials across the platform.

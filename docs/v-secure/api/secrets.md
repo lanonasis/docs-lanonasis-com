@@ -4,7 +4,7 @@ title: Secrets API
 description: Secret management API endpoints
 ---
 
-# Secrets API
+## Secrets API
 
 Manage encrypted secrets with version control, expiration, and tag-based organization.
 

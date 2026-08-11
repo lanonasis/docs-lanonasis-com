@@ -4,7 +4,7 @@ title: Configuration
 description: Configure v-secure for your environment
 ---
 
-# Configuration
+## Configuration
 
 Configure v-secure to work optimally in your environment. This guide covers CLI configuration, SDK options, environment variables, and advanced settings.
 

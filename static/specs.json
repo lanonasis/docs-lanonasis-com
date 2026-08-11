@@ -1,4 +1,10 @@
 {
+  "last_verified": "2026-08-11T19:38:33.324Z",
+  "synced_from": {
+    "generator": "scripts/sync-docs-specs.js",
+    "memory": "committed:static/memory-api.yaml",
+    "docs": "repo:apps/docs-lanonasis/openapi.yaml"
+  },
   "specs": [
     {
       "id": "memory",
@@ -7,22 +13,12 @@
       "description": "Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System",
       "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
-      "hash": "33565c32e72877e9840c4c2c3ab622a55cb996f5551c5879e01fd56fa4c7ba3f",
+      "hash": "556e97016b996967c02f0fbd20fc54854a22f58c95465baa5bee6251d4efc2c4",
+      "last_verified": "2026-08-11T19:38:33.324Z",
+      "synced_from": "committed:static/memory-api.yaml",
       "paths": [
         "/memory-api.json",
         "/memory-api.yaml"
-      ]
-    },
-    {
-      "id": "unified",
-      "name": "Unified Services",
-      "icon": "🔗",
-      "description": "Wallets, Transfers, Payments, KYC",
-      "badge": "Unified Services API",
-      "version": "1.0.0",
-      "hash": "2cb7c466b3ee97206541ff68f69aef72ff29fc66844977e926682d42e8c0df73",
-      "paths": [
-        "/unified-services.yaml"
       ]
     },
     {
@@ -33,6 +29,8 @@
       "badge": "Docs Search API",
       "version": "1.0.0",
       "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
+      "last_verified": "2026-08-11T19:38:33.324Z",
+      "synced_from": "repo:apps/docs-lanonasis/openapi.yaml",
       "paths": [
         "/openapi.json",
         "/openapi.yaml"

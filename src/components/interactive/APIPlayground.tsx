@@ -17,7 +17,7 @@ export default function APIPlayground({
   method,
   description,
   examples = []
-}: APIPlaygroundProps): JSX.Element {
+}: APIPlaygroundProps): React.ReactElement {
   const [selectedExample, setSelectedExample] = useState(0);
   const [requestBody, setRequestBody] = useState('');
   const [response, setResponse] = useState<any>(null);

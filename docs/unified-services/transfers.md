@@ -1,10 +1,11 @@
 ---
+draft: true
 sidebar_position: 4
 title: Transfers
 description: Send money to wallets and bank accounts
 ---
 
-# Transfers
+## Transfers
 
 Transfer funds from a wallet to another wallet or directly to a bank account via NIP (NIBSS Instant Payment).
 

@@ -1,10 +1,11 @@
 ---
+draft: true
 sidebar_position: 3
 title: Wallets
 description: Create and manage digital wallets
 ---
 
-# Wallets
+## Wallets
 
 Wallets are the foundation of the Unified Services API. Each wallet holds a balance in a specific currency and can send/receive funds.
 

@@ -18,24 +18,47 @@ const args = new Set(process.argv.slice(2));
 const checkOnly = args.has('--check');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
+// Allow operators to override the monorepo root (e.g. when running this
+// script from a docs-only worktree against an isolated validation harness).
+// `LANONASIS_MONOREPO_ROOT` takes precedence; otherwise fall back to the
+// repo-root layout (<docs>/../..).
+const monorepoRoot = process.env.LANONASIS_MONOREPO_ROOT
+  ? path.resolve(process.env.LANONASIS_MONOREPO_ROOT)
+  : repoRoot;
 const docsRoot = path.resolve(__dirname, '..');
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-const versions = {
-  MEMORY_CLIENT_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'packages', 'memory-client', 'package.json')
-  ).version,
-  CLI_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json')
-  ).version,
-  LANONASIS_SDK_VERSION: readJson(
-    path.join(repoRoot, 'apps', 'lanonasis-maas', 'packages', 'lanonasis-sdk', 'package.json')
-  ).version,
+const versionSources = {
+  MEMORY_CLIENT_VERSION: path.join(
+    monorepoRoot,
+    'apps',
+    'lanonasis-maas',
+    'packages',
+    'memory-client',
+    'package.json'
+  ),
+  CLI_VERSION: path.join(monorepoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json'),
+  LANONASIS_SDK_VERSION: path.join(
+    monorepoRoot,
+    'apps',
+    'lanonasis-maas',
+    'packages',
+    'lanonasis-sdk',
+    'package.json'
+  ),
 };
+
+const versions = Object.fromEntries(
+  Object.entries(versionSources)
+    .filter(([, sourcePath]) => fs.existsSync(sourcePath))
+    .map(([markerId, sourcePath]) => [markerId, readJson(sourcePath).version])
+);
 
 const docsTargets = [
   path.join(docsRoot, 'docs', 'memory', 'sdk.md'),
+  path.join(docsRoot, 'docs', 'intro.md'),
+  path.join(docsRoot, 'docs', 'cli', 'reference.md'),
   path.join(docsRoot, 'docs', 'sdks', 'cli.md'),
   path.join(docsRoot, 'docs', 'sdks', 'typescript.md'),
 ];
@@ -86,6 +109,20 @@ const updateFile = (filePath) => {
 
 try {
   console.log('🔄 Syncing docs versions...');
+  const availableSourceCount = Object.keys(versions).length;
+  const expectedSourceCount = Object.keys(versionSources).length;
+
+  if (availableSourceCount === 0) {
+    console.log('ℹ️  Monorepo package metadata unavailable; preserving committed version markers.');
+    process.exit(0);
+  }
+
+  if (availableSourceCount !== expectedSourceCount) {
+    throw new Error(
+      `Partial package metadata: found ${availableSourceCount} of ${expectedSourceCount} version sources`
+    );
+  }
+
   docsTargets.forEach(updateFile);
   console.log('✅ Docs version sync complete.');
 } catch (error) {

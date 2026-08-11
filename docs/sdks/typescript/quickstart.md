@@ -1,9 +1,10 @@
 ---
 title: TypeScript SDK Quick Start
 sidebar_position: 2
+description: "Quickstart for the LanOnasis TypeScript SDK: install, authenticate, and create memories."
 ---
 
-# TypeScript SDK Quick Start
+## TypeScript SDK Quick Start
 
 ## Installation
 

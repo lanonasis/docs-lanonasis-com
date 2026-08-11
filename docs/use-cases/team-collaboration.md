@@ -1,8 +1,10 @@
 ---
 sidebar_position: 2
+title: Team Collaboration
+description: Use LanOnasis to enhance team collaboration and knowledge sharing.
 ---
 
-# Team Collaboration
+## Team Collaboration
 
 Use LanOnasis to enhance team collaboration and knowledge sharing.
 

@@ -1,9 +1,10 @@
 ---
 title: Memory Management
 sidebar_position: 2
+description: "Memory management API reference: create, retrieve, update, delete, and search memories."
 ---
 
-# Memory Management API
+## Memory Management API
 
 The Memory Management API allows you to create, retrieve, update, and delete memories in your LanOnasis workspace.
 

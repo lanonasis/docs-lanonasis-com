@@ -1,7 +1,13 @@
-import React from 'react';
-import { Redirect } from '@docusaurus/router';
+import { useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 
 /** Preserves bookmarks and external links to the previous doc URL. */
-export default function LegacyAnalyticsDocRedirect(): JSX.Element {
-  return <Redirect to="/api/analytics" />;
+export default function LegacyAnalyticsDocRedirect(): null {
+  const history = useHistory();
+
+  useEffect(() => {
+    history.replace('/api/analytics');
+  }, [history]);
+
+  return null;
 }
