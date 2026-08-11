@@ -4,7 +4,7 @@ title: MCP API
 description: Model Context Protocol integration endpoints
 ---
 
-# MCP API
+## MCP API
 
 Secure AI tool access through the Model Context Protocol (MCP) with approval workflows and fine-grained permissions.
 

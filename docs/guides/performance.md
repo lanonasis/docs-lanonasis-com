@@ -1,8 +1,10 @@
 ---
 sidebar_position: 3
+title: Performance Optimization
+description: Optimize your LanOnasis implementation for maximum performance with indexing and query strategies.
 ---
 
-# Performance Optimization
+## Performance Optimization
 
 Optimize your LanOnasis implementation for maximum performance.
 

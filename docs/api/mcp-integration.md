@@ -1,9 +1,10 @@
 ---
 title: MCP Remote Connection
 sidebar_position: 2
+description: Connect remote MCP clients to LanOnasis for agent and IDE tool integration.
 ---
 
-# 🔗 MCP Remote Connection Guide
+## 🔗 MCP Remote Connection Guide
 
 Connect external MCP clients (like Claude Desktop) to your LanOnasis Memory Service via `mcp.lanonasis.com/sse`.
 

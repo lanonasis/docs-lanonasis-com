@@ -1,9 +1,10 @@
 ---
 title: Search API
 sidebar_label: Vector Search
+description: Semantic vector search across memories with query, limit, threshold, and type filters.
 ---
 
-# Vector Search API
+## Vector Search API
 
 ## POST /api/v1/memories/search
 

@@ -17,11 +17,11 @@
   "servers": [
     {
       "url": "https://api.lanonasis.com/api/v1",
-      "description": "Production server"
+      "description": "Production server (MXT Edge Functions / Netlify)"
     },
     {
-      "url": "https://staging-api.lanonasis.com/api/v1",
-      "description": "Staging server"
+      "url": "https://auth.lanonasis.com/api/v1",
+      "description": "Auth gateway (VPS nginx → auth-gateway :4000, PTNR-backed)"
     },
     {
       "url": "http://localhost:54321/functions/v1",
@@ -80,11 +80,12 @@
           {
             "name": "limit",
             "in": "query",
+            "description": "Values above 50 are silently clamped to 50 by the runtime (`memory-list/params.ts`, MAX_MEMORY_LIST_LIMIT).",
             "schema": {
               "type": "integer",
               "default": 20,
               "minimum": 1,
-              "maximum": 100
+              "maximum": 50
             }
           },
           {
@@ -1278,12 +1279,18 @@
       }
     },
     "/auth/api-keys": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "get": {
         "tags": [
           "API Keys"
         ],
         "summary": "List API Keys",
-        "description": "List API keys for the authenticated user (MCP tool `list_api_keys`)",
+        "description": "List API keys for the authenticated user (MCP tool `list_api_keys`). Served by the VPS auth-gateway and reads **PTNR** `public.api_keys`, which is **service_role-only** since migrations 020/021 (`security_invoker=true`; SELECT denied to `anon`/`authenticated`). `last_used_at` is written on every request (unthrottled, pending #64).",
         "operationId": "listApiKeys",
         "parameters": [
           {
@@ -1324,7 +1331,7 @@
           "API Keys"
         ],
         "summary": "Create API Key",
-        "description": "Create a new API key (MCP tool `create_api_key`)",
+        "description": "Create a new API key (MCP tool `create_api_key`). Served by the VPS auth-gateway; writes **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "createApiKey",
         "requestBody": {
           "required": true,
@@ -1357,12 +1364,18 @@
       }
     },
     "/auth/api-keys/{keyId}": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "delete": {
         "tags": [
           "API Keys"
         ],
         "summary": "Delete API Key",
-        "description": "Delete an API key permanently (MCP tool `delete_api_key`)",
+        "description": "Delete an API key permanently (MCP tool `delete_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "deleteApiKey",
         "parameters": [
           {
@@ -1396,12 +1409,18 @@
       }
     },
     "/auth/api-keys/{keyId}/rotate": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "post": {
         "tags": [
           "API Keys"
         ],
         "summary": "Rotate API Key",
-        "description": "Rotate an API key (MCP tool `rotate_api_key`)",
+        "description": "Rotate an API key (MCP tool `rotate_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "rotateApiKey",
         "parameters": [
           {
@@ -1435,12 +1454,18 @@
       }
     },
     "/auth/api-keys/{keyId}/revoke": {
+      "servers": [
+        {
+          "url": "https://auth.lanonasis.com/api/v1",
+          "description": "Auth gateway (VPS auth-gateway :4000, PTNR-backed)"
+        }
+      ],
       "post": {
         "tags": [
           "API Keys"
         ],
         "summary": "Revoke API Key",
-        "description": "Revoke (deactivate) an API key (MCP tool `revoke_api_key`)",
+        "description": "Revoke (deactivate) an API key (MCP tool `revoke_api_key`). Served by the VPS auth-gateway; operates on **PTNR** `public.api_keys` (**service_role-only** since migrations 020/021).",
         "operationId": "revokeApiKey",
         "parameters": [
           {
@@ -2210,7 +2235,8 @@
                 },
                 "last_used_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "description": "Timestamp of the most recent request that used this key. Written on every authenticated request (unthrottled — pending throttle, tracked in #64)."
                 },
                 "created_at": {
                   "type": "string",

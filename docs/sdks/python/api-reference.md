@@ -1,4 +1,8 @@
-# Python SDK API Reference
+---
+title: Python SDK API Reference
+description: "Complete reference for the LanOnasis Python SDK: methods, parameters, and return types."
+---
+## Python SDK API Reference
 
 Complete reference for the LanOnasis Python SDK. This document covers all available methods, parameters, and return types.
 

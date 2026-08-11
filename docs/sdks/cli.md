@@ -1,8 +1,10 @@
 ---
 sidebar_position: 4
+title: CLI Tool
+description: Official LanOnasis command-line interface for Memory-as-a-Service management and automation.
 ---
 
-# CLI Tool
+## CLI Tool
 
 Official command-line interface for LanOnasis Memory-as-a-Service.
 
@@ -12,7 +14,7 @@ Official command-line interface for LanOnasis Memory-as-a-Service.
 npm install -g @lanonasis/cli
 ```
 
-**Current Version:** <!-- AUTO:CLI_VERSION -->3.11.1<!-- /AUTO -->
+**Current Version:** <!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO -->
 
 :::info Auth and memory routing
 `lanonasis auth login` currently supports OAuth PKCE, device flow, and API key login. Memory commands target the REST API first and can fall back to direct `/functions/v1/memory-*` routes for compatible bearer-token sessions.

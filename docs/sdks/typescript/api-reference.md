@@ -1,8 +1,10 @@
 ---
 sidebar_position: 1
+title: TypeScript API Reference
+description: Complete API reference for the LanOnasis TypeScript SDK.
 ---
 
-# TypeScript API Reference
+## TypeScript API Reference
 
 Complete API reference for the LanOnasis TypeScript SDK.
 

@@ -1,9 +1,10 @@
 ---
 title: Python Troubleshooting
 sidebar_label: Troubleshooting
+description: "Troubleshoot common LanOnasis Python SDK issues: auth, connectivity, and errors."
 ---
 
-# Python Troubleshooting
+## Python Troubleshooting
 
 If a Python SDK workflow fails, start by checking authentication, endpoint reachability, and payload shape.
 

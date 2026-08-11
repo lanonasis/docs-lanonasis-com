@@ -1,9 +1,10 @@
 ---
 title: Python Best Practices
 sidebar_label: Best Practices
+description: Best practices for building reliable, performant LanOnasis Python SDK applications.
 ---
 
-# Python Best Practices
+## Python Best Practices
 
 Use the Python SDK with short-lived credentials, structured retries, and explicit error handling in production flows.
 

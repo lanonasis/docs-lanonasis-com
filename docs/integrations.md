@@ -4,7 +4,7 @@ sidebar_position: 5
 description: Available MCP integrations, connection guides, and supported developer surfaces for LanOnasis.
 ---
 
-# Integrations
+## Integrations
 
 LanOnasis exposes a Model Context Protocol (MCP) server plus REST, CLI, and SDK surfaces so AI agents, IDEs, and applications can connect to the memory and context platform.
 

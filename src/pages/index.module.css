@@ -7,12 +7,12 @@
    CSS Variables
    ============================================================================= */
 :root {
-  --lo-primary: #6366f1;
-  --lo-primary-dark: #4f46e5;
-  --lo-secondary: #8b5cf6;
+  --lo-primary: #4f46e5;
+  --lo-primary-dark: #4338ca;
+  --lo-secondary: #7c3aed;
   --lo-accent: #a855f7;
-  --lo-success: #10b981;
-  --lo-warning: #f59e0b;
+  --lo-success: #047857;
+  --lo-warning: #b45309;
   --lo-surface: var(--ifm-background-surface-color);
   --lo-border: var(--ifm-color-emphasis-200);
   --lo-text: var(--ifm-font-color-base);
@@ -249,7 +249,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  background: linear-gradient(135deg, #b45309, #b91c1c);
   color: white;
   border: none;
   border-radius: var(--lo-radius-sm);
@@ -599,7 +599,9 @@
 .codeTitle {
   margin-left: auto;
   font-size: 0.75rem;
-  color: #888;
+  /* WCAG 2.1 AA: #888 fails (3.84:1) on the #2d2d2d code header;
+     #b4b4b4 passes 5.5:1. */
+  color: #b4b4b4;
   font-family: var(--ifm-font-family-monospace);
 }
 

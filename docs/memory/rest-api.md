@@ -1,6 +1,7 @@
 ---
 title: Memory REST API
 sidebar_label: REST API
+description: "REST API reference for memory operations: endpoints, authentication, and request examples."
 ---
 
 Use the REST API to integrate Memory Suite with any HTTP-capable client.

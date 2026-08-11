@@ -4,7 +4,7 @@ title: Secret Management
 description: Best practices for managing secrets with v-secure
 ---
 
-# Secret Management Guide
+## Secret Management Guide
 
 Learn how to effectively manage secrets using v-secure's enterprise-grade features.
 

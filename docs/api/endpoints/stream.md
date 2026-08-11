@@ -1,4 +1,8 @@
-# Real-time Stream API
+---
+title: Real-time Stream API
+description: Subscribe to real-time memory operations and system notifications over Server-Sent Events (SSE).
+---
+## Real-time Stream API
 
 Subscribe to real-time updates and events using Server-Sent Events (SSE) for live memory operations and system notifications.
 

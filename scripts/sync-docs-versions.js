@@ -18,22 +18,29 @@ const args = new Set(process.argv.slice(2));
 const checkOnly = args.has('--check');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
+// Allow operators to override the monorepo root (e.g. when running this
+// script from a docs-only worktree against an isolated validation harness).
+// `LANONASIS_MONOREPO_ROOT` takes precedence; otherwise fall back to the
+// repo-root layout (<docs>/../..).
+const monorepoRoot = process.env.LANONASIS_MONOREPO_ROOT
+  ? path.resolve(process.env.LANONASIS_MONOREPO_ROOT)
+  : repoRoot;
 const docsRoot = path.resolve(__dirname, '..');
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
 const versionSources = {
   MEMORY_CLIENT_VERSION: path.join(
-    repoRoot,
+    monorepoRoot,
     'apps',
     'lanonasis-maas',
     'packages',
     'memory-client',
     'package.json'
   ),
-  CLI_VERSION: path.join(repoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json'),
+  CLI_VERSION: path.join(monorepoRoot, 'apps', 'lanonasis-maas', 'cli', 'package.json'),
   LANONASIS_SDK_VERSION: path.join(
-    repoRoot,
+    monorepoRoot,
     'apps',
     'lanonasis-maas',
     'packages',

@@ -1,8 +1,10 @@
 ---
 sidebar_position: 3
+title: Error Codes
+description: Complete reference for LanOnasis API error codes, common errors, and how to resolve them.
 ---
 
-# Error Codes
+## Error Codes
 
 Complete reference for LanOnasis API error codes.
 

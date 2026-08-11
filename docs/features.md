@@ -1,6 +1,7 @@
 ---
 title: Core Features
 sidebar_position: 1
+description: Overview of the core LanOnasis platform features for memory, MCP, authentication, and SDKs.
 ---
 
 ---

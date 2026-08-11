@@ -1,34 +1,13 @@
 version: '3.8'
 
 services:
-  # MeiliSearch - Self-hosted search engine
-  meilisearch:
-    image: getmeili/meilisearch:latest
-    container_name: docs-search
-    ports:
-      - "7700:7700"
-    environment:
-      - MEILI_MASTER_KEY=your_master_key_here_change_this
-      - MEILI_ENV=production
-      - MEILI_NO_ANALYTICS=true
-      - MEILI_DB_PATH=/meili_data
-    volumes:
-      - ./meili_data:/meili_data
-    restart: unless-stopped
-    networks:
-      - docs-network
-
-  # Documentation site
+  # Documentation site (search is a build-time static index — no search service needed)
   docs:
     build: .
     container_name: docs-site
     ports:
       - "3000:80"
-    depends_on:
-      - meilisearch
     environment:
-      - MEILISEARCH_HOST=http://meilisearch:7700
-      - MEILISEARCH_API_KEY=your_master_key_here_change_this
       - NODE_ENV=production
     restart: unless-stopped
     networks:

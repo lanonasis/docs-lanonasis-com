@@ -5,7 +5,7 @@ title: KYC Verification
 description: Identity verification for customers
 ---
 
-# KYC Verification
+## KYC Verification
 
 Verify your customers' identities using various verification methods including BVN, NIN, phone, and document verification.
 
