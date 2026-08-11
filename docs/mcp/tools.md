@@ -101,6 +101,8 @@ List memories with pagination and filters.
 | `search` | string |
 | `include_deleted` | boolean |
 
+`include_deleted` is MCP-only — the REST `GET /memories` endpoint (`listMemories`) has no equivalent query parameter.
+
 ### memory_ask_profile
 
 Ask a natural-language question about a subject and get an AI-synthesised answer derived from their living memory profile.
