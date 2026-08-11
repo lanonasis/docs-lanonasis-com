@@ -22,65 +22,22 @@ See the [SDK Capability Matrix](./matrix.md) for source-verified status.
 
 Official TypeScript SDK for Lanonasis Memory as a Service (MaaS). Provides typed access to memory CRUD, search, topics, and multi-modal content processing.
 
-## Installation
+## Published alternatives
+
+`@lanonasis/memory-sdk` is still a manifest-only planned surface. Use one of these published packages instead:
 
 ```bash
-bun add @lanonasis/memory-sdk
-# or
-npm install @lanonasis/memory-sdk
-# or
-yarn add @lanonasis/memory-sdk
+# Recommended universal client
+npm install @lanonasis/memory-client
+
+# Standalone Node SDK
+npm install @lanonasis/memory-sdk-standalone
 ```
 
-**Package**: `@lanonasis/memory-sdk`
-**Version**: 1.0.0 (manifest only, not on npm)
+For memory intelligence and behavior APIs, use [`@lanonasis/mem-intel-sdk`](./mem-intel-sdk.md).
 
-## Quick Start
-
-```typescript
-import { MemoryClient, createMaaSClient } from "@lanonasis/memory-sdk";
-
-// Initialize the client
-const memory = new MemoryClient({
-  apiUrl: "https://api.lanonasis.com",
-  apiKey: process.env.LANONASIS_API_KEY,
-  timeout: 30000
-});
-
-// Or use the factory function
-const memory = createMaaSClient({
-  apiUrl: "https://api.lanonasis.com",
-  apiKey: process.env.LANONASIS_API_KEY
-});
-
-// Create a memory
-const result = await memory.createMemory({
-  title: "My Memory",
-  content: "Memory content here",
-  memory_type: "knowledge",
-  tags: ["example"]
-});
-
-if (result.data) {
-  console.log("Memory created:", result.data.id);
-} else {
-  console.error("Error:", result.error);
-}
-
-// Search memories
-const searchResult = await memory.searchMemories({
-  query: "search query",
-  limit: 10,
-  threshold: 0.7
-});
-
-// List memories
-const listResult = await memory.listMemories({
-  page: 1,
-  limit: 20,
-  memory_type: "knowledge"
-});
-```
+**Planned package**: `@lanonasis/memory-sdk`
+**Manifest version**: `1.0.0` (not published to npm)
 
 ## Environment Variables
 

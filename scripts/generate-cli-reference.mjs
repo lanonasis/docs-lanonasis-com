@@ -23,7 +23,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, '..', '..', '..');
+const REPO_ROOT = join(__dirname, '..');
 const CLI_DIST_DEFAULT = join(REPO_ROOT, 'apps/lanonasis-maas/cli/dist/index.js');
 const CLI_DIST = process.env.LANONASIS_CLI_DIST || CLI_DIST_DEFAULT;
 const REFERENCE_DOC = join(__dirname, '..', 'docs/cli/reference.md');
@@ -108,7 +108,7 @@ function parseHelp(text) {
 
   const cmdLineRegex = /^\s+([a-zA-Z0-9_-]+(?:\|[a-zA-Z0-9_-]+)*)((?:\s+(?:<[^>]+>|\[[^\]]+\]|\.\.\.))*)(?:\s+\[options\])?\s{2,}(.+)$/;
   const optLineRegex = /^\s+((?:-[a-zA-Z-],?\s+)?--[a-zA-Z0-9-]+(?:\s+<[^>]+>)?(?:\s+\[[^\]]+\])?)\s+(.+)$/;
-  const isContinuation = (line) => /^\s{8,}/.test(line) && !cmdLineRegex.test(line) && !optLineRegex.test(line);
+  const isContinuation = (line) => /^\s{8,}/.test(line) && !cmdLineRegex.test(line);
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -121,12 +121,14 @@ function parseHelp(text) {
       continue;
     }
     if (section === 'options') {
+      if (isContinuation(line)) {
+        const last = options[options.length - 1];
+        if (last) last.description += ' ' + trimmed;
+        continue;
+      }
       const m = line.match(optLineRegex);
       if (m) {
         options.push({ flags: m[1].trim(), description: m[2].trim() });
-      } else if (isContinuation(line)) {
-        const last = options[options.length - 1];
-        if (last) last.description += ' ' + trimmed;
       }
     } else if (section === 'commands') {
       const m = line.match(cmdLineRegex);
@@ -212,7 +214,7 @@ function renderDoc({ globalOptions, topLevel }) {
   out += '<!-- DO NOT EDIT BY HAND. Generated from the built LanOnasis CLI by\n';
   out += '     scripts/generate-cli-reference.mjs. Run `node scripts/generate-cli-reference.mjs`\n';
   out += '     to regenerate. CI fails the build if the doc and the CLI disagree\n';
-  out += '     (`bun run validate:cli-docs`). -->\n\n';
+  out += '     (`bun run validate:cli-reference`). -->\n\n';
   out += '# LanOnasis CLI Reference\n\n';
   out += `Complete reference for the \`@lanonasis/cli\` v<!-- AUTO:CLI_VERSION -->${version}<!-- /AUTO --> — Professional CLI for Memory as a Service (MaaS).\n\n`;
 
@@ -340,7 +342,7 @@ function main() {
     }
     const existing = readFileSync(REFERENCE_DOC, 'utf8');
     // Strip the date-bearing generation footer before comparing.
-    const normalize = (s) => s.replace(/<!-- Generated \d{4}-\d{2}-\d{2} from @lanonasis\/cli v[^.]+\. -->\n/, '');
+    const normalize = (s) => s.replace(/<!-- Generated \d{4}-\d{2}-\d{2} from @lanonasis\/cli v\d+(?:\.\d+)*\. -->\n/, '');
     if (normalize(existing) !== normalize(doc)) {
       console.error(`❌ CLI reference doc is out of sync with the built CLI.`);
       console.error(`   Run: node scripts/generate-cli-reference.mjs`);

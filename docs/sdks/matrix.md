@@ -48,7 +48,7 @@ This matrix is derived from the current publishable package manifests and source
 
 - **Web / React / Vue app:** use [`@lanonasis/memory-client`](./typescript.md) with the `/core`, `/react`, or `/vue` entry points.
 - **Node.js script or service:** use [`@lanonasis/memory-sdk-standalone`](./typescript.md) or [`@lanonasis/memory-client`](./typescript.md)`/node`.
-- **AI agent or LLM integration:** use [`@lanonasis/ai-sdk`](./ai-sdk.md) for generation/embeddings and [`@lanonasis/mem-intel-sdk`](./memory-sdk.md) for memory intelligence.
+- **AI agent or LLM integration:** use [`@lanonasis/ai-sdk`](./ai-sdk.md) for generation/embeddings and [`@lanonasis/mem-intel-sdk`](./mem-intel-sdk.md) for memory intelligence.
 - **Authentication flows:** use [`@lanonasis/oauth-client`](./oauth-client.md).
 - **Encryption / key management:** use [`@lanonasis/security-sdk`](./security-sdk.md).
 - **Terminal automation:** use [`@lanonasis/cli`](./cli.md) (global install `npm i -g @lanonasis/cli`).

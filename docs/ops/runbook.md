@@ -52,10 +52,14 @@ onasis api-keys get <key-id>
 
 1. **Create a new key** before revoking the old one (never leave the service without a valid credential):
    ```bash
-   onasis api-keys create --name "rotation-<timestamp>" --scopes "memory:read,memory:write"
+   EXISTING_SCOPES=$(onasis api-keys get <old-key-id> | jq -r '.data.scopes | join(",")')
+   onasis api-keys create --name "rotation-<timestamp>" --scopes "$EXISTING_SCOPES"
    ```
+   If the current scopes are not discoverable automatically, stop and require the operator to provide the intended replacement scope set explicitly before creating the new key.
 2. **Migrate consumers** to the new key. Clients should reference the key by handle/alias (see [Vendor Key Management](../keys/vendor-key-management.md)) so consumers pick up the new version automatically.
-3. **Revoke the old key** after a verification window:
+3. **Retire the old key** based on incident type:
+   - **Scheduled rotation:** keep the old key only for the agreed verification window, confirm consumers have switched, then revoke it.
+   - **Suspected compromise:** once containment is ready and consumers have an emergency replacement path, disable or revoke the old key immediately — do not wait out a routine verification window.
    ```bash
    onasis api-keys delete <old-key-id>
    ```
@@ -77,8 +81,8 @@ onasis api-keys get <key-id>
 
 ```bash
 # The health endpoint is NOT rate-limited by design — use it as the ground truth
-curl -sS https://mcp.lanonasis.com/health
-curl -sS https://mcp.lanonasis.com/api/v1/health
+curl -sS --connect-timeout 5 --max-time 15 https://mcp.lanonasis.com/health
+curl -sS --connect-timeout 5 --max-time 15 https://mcp.lanonasis.com/api/v1/health
 ```
 
 The health handler returns `200` with status `healthy`, or `503` with status `degraded`/`unhealthy`, and a `services` block:
@@ -87,8 +91,8 @@ The health handler returns `200` with status `healthy`, or `503` with status `de
 {
   "status": "degraded",
   "services": {
-    "database": "connected" | "error" | "disconnected",
-    "cache": "connected" | "error" | "disconnected",
+    "database": "connected",
+    "cache": "error",
     "mcp": "running"
   },
   "uptime": 12345,
@@ -98,6 +102,8 @@ The health handler returns `200` with status `healthy`, or `503` with status `de
   "memory_usage": { "used": 123, "total": 256, "percentage": 48 }
 }
 ```
+
+`services.database` and `services.cache` may each report `connected`, `error`, or `disconnected` depending on the failing dependency.
 
 Read the `services` block to localize the failure:
 
@@ -154,7 +160,7 @@ Default budget (from `apps/lanonasis-maas/src/config/environment.ts` unless over
 2. **Distinguish quota vs rate limit**:
    - Rate limit (429, short `retryAfter`) → burst traffic. Retry after `retryAfter` with backoff, or batch requests.
    - Quota (4xx quota error, or `usage` reporting) → monthly/plan budget exhausted. Check `onasis api-keys usage` and the plan tier.
-3. **Legitimate bursts**: raise `RATE_LIMIT_MAX_REQUESTS` (and verify `RATE_LIMIT_WINDOW_MS`) via the environment config, redeploy the service, and confirm the new headers.
+3. **Legitimate bursts**: obtain platform-owner approval before changing shared `RATE_LIMIT_MAX_REQUESTS` or `RATE_LIMIT_WINDOW_MS` defaults. Prefer a tenant-scoped override when available, then redeploy the service and confirm the new headers.
 4. **Abuse / runaway client**: keep the limit, block the offending key, and contact the client. Auto-suspend at 50 violations should have engaged — verify the suspension state.
 5. **Checklist before closing**: new limit is deployed, client confirms a 200 on a real request, and the `RateLimit-*` headers show headroom.
 

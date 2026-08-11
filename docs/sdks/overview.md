@@ -44,6 +44,18 @@ npm install @lanonasis/ai-sdk
 - [AI SDK docs](./ai-sdk.md)
 - [Capability matrix](./matrix.md)
 
+### Memory Intelligence SDK
+
+Behavior analytics, related-memory discovery, and intelligence workflows.
+
+```bash
+npm install @lanonasis/mem-intel-sdk
+```
+
+- ✅ Published: [`@lanonasis/mem-intel-sdk`](https://www.npmjs.com/package/@lanonasis/mem-intel-sdk)
+- [Memory Intelligence SDK docs](./mem-intel-sdk.md)
+- [Capability matrix](./matrix.md)
+
 ### Security SDK
 
 Encryption, hashing, and key management.

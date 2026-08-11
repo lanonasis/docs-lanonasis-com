@@ -6,7 +6,7 @@ sidebar_label: CLI Reference
 <!-- DO NOT EDIT BY HAND. Generated from the built LanOnasis CLI by
      scripts/generate-cli-reference.mjs. Run `node scripts/generate-cli-reference.mjs`
      to regenerate. CI fails the build if the doc and the CLI disagree
-     (`bun run validate:cli-docs`). -->
+     (`bun run validate:cli-reference`). -->
 
 # LanOnasis CLI Reference
 
@@ -615,8 +615,7 @@ Organization management
 
 | Option | Description |
 |--------|-------------|
-| `--exclude <patterns...>` | Glob patterns to exclude (e.g. --exclude node_modules |
-| `--exclude` | .git) |
+| `--exclude <patterns...>` | Glob patterns to exclude (e.g. --exclude node_modules --exclude .git) |
 | `--json` | Output machine-parseable JSON summary |
 | `--save` | Write report to ~/.lanonasis/security/prescan/ |
 | `--fail-on <threshold>` | Exit non-zero if classification meets threshold: none, quarantined, or flagged |
@@ -1025,4 +1024,4 @@ onasis mcp tools
 - [Auth Overview](../auth/central-auth-gateway.md) — authentication flows
 - [REST API Reference](../memory/rest-api.md) — API endpoints
 
-<!-- Generated 2026-08-09 from @lanonasis/cli v3.11.2. -->
+<!-- Generated 2026-08-11 from @lanonasis/cli v3.11.2. -->

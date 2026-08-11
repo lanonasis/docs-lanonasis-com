@@ -33,7 +33,7 @@
     "validate:cli-reference": "node scripts/generate-cli-reference.mjs --check",
     "validate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs --check",
     "generate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs",
-    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints && bun run validate:cli-docs && bun run validate:mcp-tools",
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:endpoints && bun run validate:cli-docs && bun run validate:cli-reference && bun run validate:mcp-tools",
     "test:extract-registry-body": "node --test scripts/__tests__/extract-registry-body.test.mjs",
     "test:scripts": "bun run test:extract-registry-body"
   },

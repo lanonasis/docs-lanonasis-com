@@ -52,7 +52,7 @@ if (created.data) {
 - ✅ Size: ~150 KB
 - ✅ TypeScript support
 
-For intelligence and behavior APIs, the current source package in this monorepo is `@lanonasis/mem-intel-sdk` (`2.0.6`).
+For intelligence and behavior APIs, the current source package in this monorepo is `@lanonasis/mem-intel-sdk` (`2.1.0`). See the [Memory Intelligence SDK page](./mem-intel-sdk.md).
 
 ---
 

@@ -12,7 +12,7 @@ This walkthrough covers the full memory lifecycle — **create, search, update, 
 3. **MCP** — Model Context Protocol tools
 4. **CLI** — [`@lanonasis/cli`](../sdks/cli.md)
 
-All examples were run against a local mock API server so they are safe to copy and adapt. No real API keys, secrets, or production data are shown.
+All examples were run against a local mock/sandbox API so they are safe to copy and adapt. No real API keys, secrets, or production data are shown.
 
 ## Prerequisites
 
@@ -23,22 +23,40 @@ All examples were run against a local mock API server so they are safe to copy a
 | MCP | An MCP client (Claude Desktop, Cursor, or the LanOnasis CLI `mcp` command). |
 | CLI | `npm install -g @lanonasis/cli` |
 
-Use the same base URL and a placeholder API key in every example:
+Start a local sandbox before running the examples. If you are working from the LanOnasis monorepo, `bun run dev` starts the local API used below.
+
+Use a local base URL and placeholder credentials in every example by default. Only switch to production explicitly when you are ready to point at a live environment:
 
 ```env
-LANONASIS_API_URL=https://api.lanonasis.com
+LANONASIS_API_URL=http://localhost:3000/api/v1
 LANONASIS_API_KEY=lns_test_xxxxxxxxxxxxxxxx
 ```
 
+For production, replace `LANONASIS_API_URL` with `https://api.lanonasis.com/api/v1` and use a real user-scoped token or API key from the appropriate environment.
+
 ## 1. TypeScript SDK
 
-Use the universal memory client. In production, import from `@lanonasis/memory-client/core` for the smallest browser bundle, or from `@lanonasis/memory-client/node` for Node.js with CLI/MCP bridging.
+Use the browser-safe core client in frontends, and the Node entry point when you want CLI/MCP-aware behavior on the server.
 
 ```typescript
 import { createMemoryClient } from '@lanonasis/memory-client/core';
 
+const accessToken = await getAccessTokenFromYourBackend();
+
 const client = createMemoryClient({
-  apiUrl: process.env.LANONASIS_API_URL || 'https://api.lanonasis.com',
+  apiUrl: 'http://localhost:3000',
+  authToken: accessToken,
+});
+
+// In browsers, inject runtime config or a short-lived user token from your
+// backend/session layer. Do not embed long-lived server API keys in client code.
+```
+
+```typescript
+import { createNodeMemoryClient } from '@lanonasis/memory-client/node';
+
+const client = await createNodeMemoryClient({
+  apiUrl: process.env.LANONASIS_API_URL || 'http://localhost:3000',
   apiKey: process.env.LANONASIS_API_KEY,
 });
 
@@ -199,7 +217,7 @@ The LanOnasis MCP server exposes memory operations as tools. Use the tool names 
   "id": 1,
   "method": "tools/call",
   "params": {
-    "name": "memory_create",
+    "name": "create_memory",
     "arguments": {
       "title": "Q4 Planning Notes",
       "content": "We decided to prioritise the SDK matrix and the MCP tooling before the end of the quarter.",
@@ -235,7 +253,7 @@ The LanOnasis MCP server exposes memory operations as tools. Use the tool names 
   "id": 2,
   "method": "tools/call",
   "params": {
-    "name": "memory_search",
+    "name": "search_memories",
     "arguments": {
       "query": "SDK matrix priorities",
       "limit": 5,
@@ -270,10 +288,11 @@ The LanOnasis MCP server exposes memory operations as tools. Use the tool names 
   "id": 3,
   "method": "tools/call",
   "params": {
-    "name": "memory_update",
+    "name": "update_memory",
     "arguments": {
-      "memory_id": "mem_01j5m2xz3abcdef",
+      "id": "mem_01j5m2xz3abcdef",
       "title": "Q4 Planning Notes (updated)",
+      "content": "We decided to prioritise the SDK matrix and the MCP tooling before the end of the quarter.",
       "tags": ["planning", "q4", "sdk", "walkthrough"]
     }
   }
@@ -305,9 +324,9 @@ The LanOnasis MCP server exposes memory operations as tools. Use the tool names 
   "id": 4,
   "method": "tools/call",
   "params": {
-    "name": "memory_delete",
+    "name": "delete_memory",
     "arguments": {
-      "memory_id": "mem_01j5m2xz3abcdef"
+      "id": "mem_01j5m2xz3abcdef"
     }
   }
 }
