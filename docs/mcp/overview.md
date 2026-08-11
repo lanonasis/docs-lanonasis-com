@@ -1,9 +1,10 @@
 ---
 title: MCP Overview
 sidebar_label: Overview
+description: "Model Context Protocol overview: how LanOnasis exposes memory tools to agents and IDEs."
 ---
 
-# Model Context Protocol (MCP) Overview
+## Model Context Protocol (MCP) Overview
 
 LanOnasis provides a comprehensive Model Context Protocol (MCP) server for AI agent and IDE integrations, enabling real-time memory operations, API key management, and secure access control.
 

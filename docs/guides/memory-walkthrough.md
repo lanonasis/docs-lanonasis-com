@@ -1,9 +1,10 @@
 ---
 title: End-to-End Memory Walkthrough
 sidebar_label: Memory Walkthrough
+description: "Create, search, update, and delete a memory through the TypeScript SDK, REST API, MCP, and CLI."
 ---
 
-# End-to-End Memory Walkthrough
+## End-to-End Memory Walkthrough
 
 This walkthrough covers the full memory lifecycle — **create, search, update, and delete** — using the four LanOnasis surfaces that genuinely exist today:
 

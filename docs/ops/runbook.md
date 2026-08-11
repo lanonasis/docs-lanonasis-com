@@ -1,9 +1,10 @@
 ---
 title: Operations Runbook
 sidebar_label: Operations Runbook
+description: "First-response playbooks for API key rotation, MCP health degradation, and rate-limit handling."
 ---
 
-# Operations Runbook — First-Incident Playbooks
+## Operations Runbook — First-Incident Playbooks
 
 This runbook is the first-response reference for operators of the LanOnasis platform. It covers the three most common incident classes:
 

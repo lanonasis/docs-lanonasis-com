@@ -4,7 +4,7 @@ title: Go SDK
 description: Go SDK status and current recommended integration path
 ---
 
-# Go SDK
+## Go SDK
 
 The Go SDK documentation is being expanded.
 

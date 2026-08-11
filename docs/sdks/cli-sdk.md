@@ -9,7 +9,7 @@ tags:
   - automation
 ---
 
-# CLI SDK
+## CLI SDK
 
 :::warning Not published
 `@lanonasis/cli-sdk` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/cli-sdk` for production work today.

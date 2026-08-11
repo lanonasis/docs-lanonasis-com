@@ -1,8 +1,10 @@
 ---
 sidebar_position: 2
+title: TypeScript Examples
+description: Common usage examples for the LanOnasis TypeScript SDK.
 ---
 
-# TypeScript Examples
+## TypeScript Examples
 
 Common usage examples for the LanOnasis TypeScript SDK.
 

@@ -1,8 +1,10 @@
 ---
 sidebar_position: 4
+title: Migration Guide
+description: Migrate your existing data to LanOnasis with step-by-step export, transform, and import guidance.
 ---
 
-# Migration Guide
+## Migration Guide
 
 Migrate your existing data to LanOnasis seamlessly.
 

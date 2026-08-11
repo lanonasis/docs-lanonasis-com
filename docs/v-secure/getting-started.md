@@ -4,7 +4,7 @@ title: Getting Started
 description: Quick start guide for v-secure
 ---
 
-# Getting Started with v-secure
+## Getting Started with v-secure
 
 Get up and running with v-secure in just a few minutes. This guide will walk you through installation, authentication, and your first secret management operations.
 

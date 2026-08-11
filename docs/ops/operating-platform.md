@@ -1,6 +1,7 @@
 ---
 title: Operating the LanOnasis Platform
 sidebar_label: Operating the Platform
+description: "Operate the LanOnasis platform: monitoring, health checks, and production considerations."
 ---
 
 This page covers only the non‑obvious bits operators need to run and maintain the platform.

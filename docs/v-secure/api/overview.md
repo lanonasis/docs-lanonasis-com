@@ -4,7 +4,7 @@ title: API Overview
 description: Complete API reference for v-secure
 ---
 
-# API Overview
+## API Overview
 
 The v-secure API provides programmatic access to all security features including secret management, API key lifecycle, MCP integration, and audit logs.
 

@@ -10,7 +10,7 @@ tags:
   - http-client
 ---
 
-# API Client SDK
+## API Client SDK
 
 :::warning Not published
 `@lanonasis/api-client` is documented as a planned package but **does not exist as a source package yet** and is not published to npm. Do not run `npm install @lanonasis/api-client` for production work today.

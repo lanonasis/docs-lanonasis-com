@@ -1,9 +1,10 @@
 ---
 title: Python Examples
 sidebar_label: Examples
+description: Common usage examples for the LanOnasis Python SDK.
 ---
 
-# Python Examples
+## Python Examples
 
 The Python example set is being expanded. For now, use these stable references:
 

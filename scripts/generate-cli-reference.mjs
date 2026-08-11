@@ -210,12 +210,13 @@ function renderDoc({ globalOptions, topLevel }) {
   out += '---\n';
   out += 'title: CLI Reference\n';
   out += 'sidebar_label: CLI Reference\n';
+  out += 'description: "Complete reference for the LanOnasis CLI: commands, options, and examples."\n';
   out += '---\n\n';
   out += '<!-- DO NOT EDIT BY HAND. Generated from the built LanOnasis CLI by\n';
   out += '     scripts/generate-cli-reference.mjs. Run `node scripts/generate-cli-reference.mjs`\n';
   out += '     to regenerate. CI fails the build if the doc and the CLI disagree\n';
   out += '     (`bun run validate:cli-reference`). -->\n\n';
-  out += '# LanOnasis CLI Reference\n\n';
+  out += '## LanOnasis CLI Reference\n\n';
   out += `Complete reference for the \`@lanonasis/cli\` v<!-- AUTO:CLI_VERSION -->${version}<!-- /AUTO --> — Professional CLI for Memory as a Service (MaaS).\n\n`;
 
   out += '## Installation\n\n';

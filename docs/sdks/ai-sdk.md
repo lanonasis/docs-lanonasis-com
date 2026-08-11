@@ -9,7 +9,7 @@ tags:
   - embeddings
 ---
 
-# AI SDK
+## AI SDK
 
 The AI SDK provides a unified interface to build intelligent applications leveraging language models, embeddings, and advanced reasoning capabilities.
 

@@ -4,7 +4,7 @@ sidebar_position: 1
 description: Production endpoints, authentication, memory operations, and supported LanOnasis clients.
 ---
 
-# LanOnasis API Reference
+## LanOnasis API Reference
 
 The LanOnasis API provides authenticated memory storage and semantic retrieval for applications and AI agents.
 

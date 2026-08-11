@@ -1,9 +1,10 @@
 ---
 title: SDK Capability Matrix
 sidebar_label: Capability Matrix
+description: "Source-verified capability grid for every LanOnasis SDK, CLI, REST, and MCP surface."
 ---
 
-# SDK & Surface Capability Matrix
+## SDK & Surface Capability Matrix
 
 This matrix is derived from the current publishable package manifests and source exports in the monorepo. It labels every capability cell as **verified** (published and exported), **partial** (published with limitations), **planned** (manifest or roadmap only), or **absent** (no source package yet).
 

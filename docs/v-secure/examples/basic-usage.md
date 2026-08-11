@@ -4,7 +4,7 @@ title: Basic Usage
 description: Basic v-secure usage examples
 ---
 
-# Basic Usage Examples
+## Basic Usage Examples
 
 Common patterns and examples for using v-secure in your applications.
 

@@ -1,6 +1,7 @@
 ---
 title: Central Auth Gateway
 sidebar_label: Central Auth Gateway
+description: "Central auth gateway reference: OAuth flows, API key contexts, and service-to-service authentication."
 ---
 
 > **Deprecation notice (task #128/#129):** The Central Auth Gateway is the underlying

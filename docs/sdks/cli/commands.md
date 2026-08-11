@@ -1,4 +1,8 @@
-# CLI Commands Reference
+---
+title: CLI Commands Reference
+description: Complete reference for all LanOnasis CLI commands, options, and examples.
+---
+## CLI Commands Reference
 
 Complete reference for all LanOnasis CLI commands, options, and examples.
 

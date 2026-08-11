@@ -1,4 +1,8 @@
-# Python SDK Quickstart
+---
+title: Python SDK Quickstart
+description: "Get started with the LanOnasis Python SDK: installation, authentication, and first memory operations."
+---
+## Python SDK Quickstart
 
 Get started with the LanOnasis Python SDK in minutes. This guide will walk you through installation, authentication, and your first memory operations.
 

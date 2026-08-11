@@ -1,9 +1,10 @@
 ---
 title: PCI DSS
 sidebar_label: PCI DSS
+description: How the LanOnasis v-secure platform supports PCI DSS compliance requirements.
 ---
 
-# PCI DSS
+## PCI DSS
 
 This page tracks the PCI DSS compliance surface for `v-secure`.
 

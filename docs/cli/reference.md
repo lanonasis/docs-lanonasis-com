@@ -1,6 +1,7 @@
 ---
 title: CLI Reference
 sidebar_label: CLI Reference
+description: "Complete reference for the LanOnasis CLI: commands, options, and examples."
 ---
 
 <!-- DO NOT EDIT BY HAND. Generated from the built LanOnasis CLI by
@@ -8,7 +9,7 @@ sidebar_label: CLI Reference
      to regenerate. CI fails the build if the doc and the CLI disagree
      (`bun run validate:cli-reference`). -->
 
-# LanOnasis CLI Reference
+## LanOnasis CLI Reference
 
 Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO --> — Professional CLI for Memory as a Service (MaaS).
 

@@ -9,7 +9,7 @@ tags:
   - typescript
 ---
 
-# @lanonasis/memory-sdk
+## @lanonasis/memory-sdk
 
 :::warning Not published
 `@lanonasis/memory-sdk` has a source manifest at `1.0.0` but is **not published to npm** yet. Do not run `npm install @lanonasis/memory-sdk` for production work today. Use one of these instead:

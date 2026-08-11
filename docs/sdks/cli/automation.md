@@ -1,9 +1,10 @@
 ---
 title: CLI Automation
 sidebar_label: Automation
+description: Automate memory workflows with the LanOnasis CLI for CI/CD and scripting.
 ---
 
-# CLI Automation
+## CLI Automation
 
 Automate LanOnasis workflows by scripting the CLI in CI jobs, shell scripts, and local task runners.
 

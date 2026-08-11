@@ -4,7 +4,7 @@ title: Introduction to v-secure
 description: Enterprise-grade security infrastructure for managing secrets, API keys, and credentials
 ---
 
-# v-secure
+## v-secure
 
 Enterprise-grade security infrastructure for managing secrets, API keys, and credentials within the LanOnasis VortexCore ecosystem.
 

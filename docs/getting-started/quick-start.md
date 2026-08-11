@@ -1,9 +1,10 @@
 ---
 title: Quick Start
 sidebar_position: 1
+description: "Get up and running with LanOnasis in five minutes: install, authenticate, and create your first memory."
 ---
 
-# Quick Start Guide
+## Quick Start Guide
 
 Get up and running with LanOnasis in 5 minutes.
 

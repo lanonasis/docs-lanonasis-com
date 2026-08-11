@@ -1,9 +1,10 @@
 ---
 title: Authentication
 sidebar_position: 3
+description: How to authenticate with LanOnasis API keys, request headers, and key scopes.
 ---
 
-# Authentication
+## Authentication
 
 LanOnasis uses API keys for authentication. All API requests must include a valid API key in the request headers.
 

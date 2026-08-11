@@ -1,9 +1,10 @@
 ---
 title: SDKs & Libraries
 sidebar_position: 1
+description: "Overview of LanOnasis SDKs: TypeScript, Python, CLI, and REST API clients."
 ---
 
-# Official SDKs
+## Official SDKs
 
 LanOnasis provides official TypeScript/JavaScript SDKs, a professional CLI, and platform protocols (REST, MCP). Other language SDKs are on the roadmap. See the [SDK Capability Matrix](./matrix.md) for a per-surface, source-verified status of every capability.
 

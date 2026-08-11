@@ -1,9 +1,10 @@
 ---
 title: "Source-Contract Decision — Onasis-CORE #54 (prefer_cache gap)"
 sidebar_label: "Decision: Onasis-CORE #54 prefer_cache"
+description: "prefer_cache is implemented in intelligence-analyze-patterns but missing from the OpenAPI contract — tracked as an open source-contract gap."
 ---
 
-# Source-Contract Decision Record
+## Source-Contract Decision Record
 
 **ID:** `SCD-2026-08-08-onasis-core-54-prefer-cache`
 **Status:** Open (source-contract gap, not patched from docs)

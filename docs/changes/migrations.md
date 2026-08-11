@@ -1,6 +1,7 @@
 ---
 title: Migration Guides
 sidebar_label: Migration Guides
+description: Notable deprecations and recommended upgrade paths for LanOnasis integrations.
 ---
 
 This page consolidates notable deprecations and the recommended upgrade paths.

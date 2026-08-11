@@ -1,9 +1,10 @@
 ---
 title: Security Service
 sidebar_label: Service Overview
+description: Reference for the LanOnasis security service and its API surface.
 ---
 
-# LanOnasis Security Service
+## LanOnasis Security Service
 
 Enterprise-grade security service for managing secrets, API keys, credentials, and access control with comprehensive compliance features.
 

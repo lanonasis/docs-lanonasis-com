@@ -1,9 +1,10 @@
 ---
 title: Security SDK
 sidebar_label: SDK Reference
+description: Use the v-secure SDK to integrate security tooling into your application.
 ---
 
-# @lanonasis/security-sdk
+## @lanonasis/security-sdk
 
 Centralized Security and Encryption SDK for the LanOnasis ecosystem. Provides AES-256-GCM encryption, key derivation, secure hashing, and API key generation.
 

@@ -1,6 +1,7 @@
 ---
 title: Changelog
 sidebar_label: Changelog
+description: Key platform updates relevant to integrators and operators.
 ---
 
 This changelog highlights key platform updates relevant to integrators and operators.

@@ -4,7 +4,7 @@ sidebar_label: Memory Intelligence SDK
 description: Published TypeScript SDK for LanOnasis memory intelligence and behavior workflows
 ---
 
-# @lanonasis/mem-intel-sdk
+## @lanonasis/mem-intel-sdk
 
 Published SDK for memory intelligence, behavior recall, related-memory discovery, and analytics workflows.
 

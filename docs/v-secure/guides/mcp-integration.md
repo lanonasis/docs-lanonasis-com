@@ -4,7 +4,7 @@ title: MCP Integration
 description: Integrate v-secure with AI tools using Model Context Protocol
 ---
 
-# MCP Integration Guide
+## MCP Integration Guide
 
 Secure AI tool access using the Model Context Protocol (MCP) with v-secure.
 

@@ -5,7 +5,7 @@ sidebar_position: 3
 description: How the OAuth 2.0 Device Authorization Grant (RFC 8628) is implemented on auth.lanonasis.com for CLI and headless clients.
 ---
 
-# Device Authorization Flow
+## Device Authorization Flow
 
 > **Source of truth:** `apps/onasis-core/services/auth-gateway/src/routes/device.routes.ts`
 > (1,014 lines), mounted at `app.use('/oauth', deviceRoutes)` in
