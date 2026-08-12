@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "description": "Allowlist for validate:route-reachability \u2014 routes intentionally not built or known stubs. Empty by default; add a route URL with a reason when a sidebar entry is intentionally not-yet-built.",
+  "urls": []
+}

@@ -1,0 +1,104 @@
+name: docs-ci
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: docs-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validators & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      # Structural validators — ALWAYS block on failure (never gated).
+      - name: Structural validators (cli-docs, mcp-tools, sdk-packages)
+        run: |
+          bun run validate:cli-docs
+          bun run validate:mcp-tools
+          bun run validate:sdk-packages
+
+      # Fixture harness proving every validator's positive/negative behavior.
+      - name: Validator fixture harness
+        run: bun run test:validators
+
+      # Content validators (claims, external-urls, route-reachability) are
+      # gated behind the `ignore-docs-validator` label per audit §6.5 rollback:
+      # until flagged content is remediated they must not block the build, but
+      # they must NOT be deleted. When the label is absent they fail the build.
+      - name: Content validators (claims, external-urls, route-reachability)
+        id: content_validators
+        run: |
+          set +e
+          bun run validate:claims > /tmp/claims.log 2>&1; c_claims=$?
+          bun run validate:external-urls > /tmp/ext.log 2>&1; c_ext=$?
+          bun run validate:route-reachability > /tmp/routes.log 2>&1; c_routes=$?
+          set -e
+          echo "c_claims=$c_claims" >> "$GITHUB_OUTPUT"
+          echo "c_ext=$c_ext" >> "$GITHUB_OUTPUT"
+          echo "c_routes=$c_routes" >> "$GITHUB_OUTPUT"
+          echo "=== claims ==="; cat /tmp/claims.log
+          echo "=== external-urls ==="; cat /tmp/ext.log
+          echo "=== route-reachability ==="; cat /tmp/routes.log
+
+      - name: Check ignore-docs-validator label
+        id: label
+        if: github.event_name == 'pull_request'
+        run: |
+          labels=$(gh pr view "${{ github.event.pull_request.number }}" --json labels -q '.labels[].name' 2>/dev/null || echo "")
+          if echo "$labels" | grep -q ignore-docs-validator; then
+            echo "gated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "gated=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enforce content validators (unless gated)
+        if: steps.label.outputs.gated != 'true'
+        run: |
+          set -e
+          [ "${{ steps.content_validators.outputs.c_claims }}" = "0" ] || { echo "🔴 validate:claims failed (no ignore-docs-validator label)"; exit 1; }
+          [ "${{ steps.content_validators.outputs.c_ext }}" = "0" ] || { echo "🔴 validate:external-urls failed (no ignore-docs-validator label)"; exit 1; }
+          [ "${{ steps.content_validators.outputs.c_routes }}" = "0" ] || { echo "🔴 validate:route-reachability failed (no ignore-docs-validator label)"; exit 1; }
+          echo "✅ Content validators passed."
+
+      - name: Production build
+        run: bun run build
+
+  audit-schedule-reachability:
+    name: Sanity (reachability meta-check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - name: Install deps
+        run: bun install --frozen-lockfile
+      - name: Verify workflow files present
+        run: |
+          test -f .github/workflows/docs-ci.yml
+          test -f .github/workflows/quarterly-docs-audit.yml
+          echo "✅ CI + audit workflows present"
