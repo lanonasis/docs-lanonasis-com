@@ -100,9 +100,10 @@ try {
   ensureFile(docsSearchSpecYaml, docsSearchSpec.content, 'Docs Search OpenAPI YAML');
 
   const lastVerified = new Date().toISOString();
-  const memorySourceLabel = fs.existsSync(memorySpecSource)
-    ? 'monorepo:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml'
-    : 'committed:static/memory-api.yaml';
+  // Keep the manifest deterministic whether docs runs standalone or inside the
+  // monorepo. The artifact hash, not the checkout layout, is the drift signal.
+  const memorySourceLabel =
+    'canonical:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml';
   const docsSourceLabel = 'repo:apps/docs-lanonasis/openapi.yaml';
 
   // Drift-visibility envelope: `last_verified` + `synced_from` make
