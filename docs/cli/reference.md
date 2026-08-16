@@ -9,15 +9,9 @@ description: "Complete reference for the LanOnasis CLI: commands, options, and e
      to regenerate. CI fails the build if the doc and the CLI disagree
      (`bun run validate:cli-reference`). -->
 
-<<<<<<< HEAD
 ## LanOnasis CLI Reference
 
 Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO --> — Professional CLI for Memory as a Service (MaaS).
-||||||| 7252389
-Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.1<!-- /AUTO --> - Professional CLI for Memory as a Service (MaaS).
-=======
-Complete reference for the `@lanonasis/cli` v<!-- AUTO:CLI_VERSION -->3.11.2<!-- /AUTO --> - Professional CLI for Memory as a Service (MaaS).
->>>>>>> cdx/docs-version-sync-3.11.2-20260808
 
 ## Installation
 
