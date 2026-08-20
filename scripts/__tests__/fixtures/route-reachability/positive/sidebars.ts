@@ -1,6 +1,6 @@
 export default {
   docs: [
-    'intro',
-    'memory/overview',
+    "intro",
+    { type: 'doc', id: 'memory/overview' },
   ],
 };

@@ -18,12 +18,12 @@ Before you begin, ensure you have:
 
 ## Step 1: Installation
 
-### CLI Installation
+### CLI Installation (Coming Soon)
 
-Install the v-secure CLI globally:
+Install the v-secure CLI globally once the package is published:
 
 ```bash
-npm install -g @lanonasis/v-secure-cli
+npm install -g @lanonasis/v-secure-cli # Coming Soon
 ```
 
 Verify the installation:
@@ -32,19 +32,19 @@ Verify the installation:
 vsecure --version
 ```
 
-### SDK Installation
+### SDK Installation (Coming Soon)
 
-For programmatic access, install the SDK:
+For programmatic access, install the SDK after the packages are published:
 
 ```bash
 # For Node.js/TypeScript projects
-npm install @lanonasis/v-secure-sdk
+npm install @lanonasis/v-secure-sdk # Coming Soon
 
 # For Python projects
-pip install lanonasis-vsecure
+pip install lanonasis-vsecure # Coming Soon
 
 # For Go projects
-go get github.com/lanonasis/vsecure-go
+go get github.com/lanonasis/vsecure-go # Coming Soon
 ```
 
 ## Step 2: Authentication

@@ -115,26 +115,37 @@ function extractTargets(line) {
 let failures = 0;
 let checked = 0;
 const files = walk(TARGET);
+
+function parseHeading(line) {
+  const m = line.match(/^(#{1,6})\s+(.*)$/);
+  if (!m) return null;
+  return { level: m[1].length, text: m[2] };
+}
+
 for (const file of files) {
   const rel = file.replace(REPO_ROOT + '/', '');
   const content = readFileSync(file, 'utf8');
   const lines = content.split('\n');
-  let roadmapSection = false;
+  let roadmapSectionLevel = null;
   for (let ln = 0; ln < lines.length; ln++) {
     const line = lines[ln];
-    if (/^#{1,6}\s+.*(roadmap|upcoming|planned)/i.test(line)) roadmapSection = true;
+    const heading = parseHeading(line);
+    if (heading) {
+      if (roadmapSectionLevel !== null && heading.level <= roadmapSectionLevel) roadmapSectionLevel = null;
+      if (/(roadmap|upcoming|planned)/i.test(heading.text)) roadmapSectionLevel = heading.level;
+    }
     if (line.includes('://') || line.startsWith('git+') || line.trim().startsWith('```')) continue;
     const targets = extractTargets(line);
     if (targets.length === 0) continue;
-    const ctx = lines.slice(Math.max(0, ln - 1), Math.min(lines.length, ln + 2)).join(' ');
+    const ctx = lines.slice(Math.max(0, ln - 6), Math.min(lines.length, ln + 4)).join(' ');
     const comingSoon = COMING_SOON.test(line) || COMING_SOON.test(ctx);
     for (const { pkg } of targets) {
       if (pkg === 'install' || pkg === 'get' || pkg === 'i' || pkg === 'upgrade') continue;
       checked++;
       if (THIRD_PARTY_OK.has(pkg)) continue;
       const rec = packages[pkg];
-      if (rec) continue; // published OR deliberately-unshipped allowlist entry
-      if (comingSoon || roadmapSection) continue;
+      if (rec?.status === 'published') continue;
+      if ((rec?.status === 'planned' || !rec) && (comingSoon || roadmapSectionLevel !== null)) continue;
       failures++;
       console.log(`  ✗ ${rel}:${ln + 1} — unknown/unshipped package "${pkg}" (add to sdk-packages.json allowlist or mark Coming Soon). Line: ${line.trim().slice(0, 80)}`);
     }

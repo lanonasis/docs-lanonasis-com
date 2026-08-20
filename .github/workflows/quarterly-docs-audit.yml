@@ -64,7 +64,7 @@ jobs:
             }
             pass=0; fail=0; failed=""
             for v in validate:cli-docs validate:mcp-tools validate:sdk-packages validate:claims validate:external-urls validate:route-reachability; do
-              if run "$v" "bun run $v"; then pass=$((pass+1)); else fail=$((fail+1)); failed="$failed $v"; fi
+              if run "$v" bun run "$v"; then pass=$((pass+1)); else fail=$((fail+1)); failed="$failed $v"; fi
             done
             echo "## Summary"
             echo

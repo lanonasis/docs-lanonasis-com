@@ -254,11 +254,13 @@ Monitor and visualize your memory ecosystem with built-in UI components.
 - Node.js 18+ or Bun 1.1+
 - PostgreSQL 13+ (for distributed caching, optional)
 
-### Installation
+### Installation (Coming Soon)
+
+Package distribution for `@lanonasis/mcp-core` is planned and not yet published.
 
 ```bash
-# Install from npm
-npm install @lanonasis/mcp-core
+# Install from npm once published
+npm install @lanonasis/mcp-core # Coming Soon
 
 # Or using Bun
 bun add @lanonasis/mcp-core

@@ -40,10 +40,10 @@
     "validate:external-urls": "node scripts/validate-external-urls.mjs",
     "validate:route-reachability": "node scripts/validate-route-reachability.mjs",
     "validate:claims": "node scripts/validate-claims.mjs",
-    "validate:p4": "bun run validate:cli-docs && bun run validate:mcp-tools && bun run validate:sdk-packages && bun run validate:claims && bun run validate:external-urls && bun run validate:route-reachability",
+    "validate:p4": "bun run validate:cli-docs && bun run validate:mcp-tools && bun run validate:mcp-reference && bun run validate:sdk-packages && bun run validate:claims && bun run validate:external-urls && bun run validate:route-reachability",
     "test:validators": "node scripts/test-validators.mjs",
     "generate:mcp-tools": "node scripts/generate-mcp-tools-doc.mjs",
-    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:search-index && bun run validate:seo && bun run check:endpoints && bun run validate:cli-docs && bun run validate:cli-reference && bun run validate:mcp-tools && bun run validate:sdk-packages && bun run validate:claims && bun run validate:external-urls && bun run validate:route-reachability",
+    "check:all": "bun run check:docs-sync && bun run check:links && bun run check:search-index && bun run validate:seo && bun run check:endpoints && bun run validate:cli-docs && bun run validate:cli-reference && bun run validate:mcp-tools && bun run validate:mcp-reference && bun run validate:sdk-packages && bun run validate:claims && bun run validate:external-urls && bun run validate:route-reachability",
     "test:extract-registry-body": "node --test scripts/__tests__/extract-registry-body.test.mjs",
     "test:scripts": "bun run test:extract-registry-body && bun run test:validators"
   },

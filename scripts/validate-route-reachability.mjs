@@ -85,8 +85,12 @@ function sidebarDocIds() {
   if (!existsSync(SIDEBAR_FILE)) return new Set();
   const src = readFileSync(SIDEBAR_FILE, 'utf8');
   const ids = new Set();
-  // category items are single-quoted doc ids, e.g. 'mcp/overview'
-  for (const m of src.matchAll(/^\s*'([a-z][a-z0-9/_.-]*)',?\s*$/gm)) {
+  // Bare doc-id entries, e.g. 'mcp/overview' or "mcp/overview"
+  for (const m of src.matchAll(/^\s*['"]([a-z][a-z0-9/_.-]*)['"],?\s*$/gm)) {
+    ids.add(m[1]);
+  }
+  // Object-form doc refs, e.g. { type: 'doc', id: 'mcp/overview' }
+  for (const m of src.matchAll(/\{[\s\S]*?\btype\s*:\s*['"]doc['"][\s\S]*?\bid\s*:\s*['"]([a-z][a-z0-9/_.-]*)['"][\s\S]*?\}/gm)) {
     ids.add(m[1]);
   }
   return ids;

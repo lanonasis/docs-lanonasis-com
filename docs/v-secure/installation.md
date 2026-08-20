@@ -10,10 +10,12 @@ This guide covers detailed installation instructions for v-secure CLI, SDKs, and
 
 ## CLI Installation
 
-### Node.js/npm (Recommended)
+### Node.js/npm (Recommended, Coming Soon)
+
+The v-secure CLI package is planned and not yet published.
 
 ```bash
-npm install -g @lanonasis/v-secure-cli
+npm install -g @lanonasis/v-secure-cli # Coming Soon
 ```
 
 ### Yarn
@@ -40,10 +42,12 @@ vsecure --help
 
 ## SDK Installation
 
-### TypeScript/Node.js
+### TypeScript/Node.js (Coming Soon)
+
+The v-secure SDK packages below are planned and not yet published.
 
 ```bash
-npm install @lanonasis/v-secure-sdk
+npm install @lanonasis/v-secure-sdk # Coming Soon
 ```
 
 **TypeScript Example:**
@@ -55,10 +59,10 @@ const client = new VSecureClient({
 });
 ```
 
-### Python
+### Python (Coming Soon)
 
 ```bash
-pip install lanonasis-vsecure
+pip install lanonasis-vsecure # Coming Soon
 ```
 
 **Python Example:**
@@ -70,10 +74,10 @@ client = VSecureClient(
 )
 ```
 
-### Go
+### Go (Coming Soon)
 
 ```bash
-go get github.com/lanonasis/vsecure-go
+go get github.com/lanonasis/vsecure-go # Coming Soon
 ```
 
 **Go Example:**

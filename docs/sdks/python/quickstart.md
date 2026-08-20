@@ -8,10 +8,10 @@ Get started with the LanOnasis Python SDK in minutes. This guide will walk you t
 
 ## Installation
 
-Install the LanOnasis Python SDK using pip:
+Install the LanOnasis Python SDK using pip once the package is published:
 
 ```bash
-pip install lanonasis-python
+pip install lanonasis-python # Coming Soon
 ```
 
 For development or if you need the latest features:

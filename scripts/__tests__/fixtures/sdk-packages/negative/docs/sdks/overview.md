@@ -1,5 +1,5 @@
 # SDKs
-Install the brand new SDK:
+Install the unshipped SDK as if it already exists:
 ```bash
-npm install @lanonasis/definitely-not-a-real-package-xyz
+npm install @lanonasis/memory-sdk
 ```

@@ -1,6 +1,7 @@
 export default {
   docs: [
     'intro',
-    'memory/overview',
+    { type: "doc", id: "memory/overview" },
+    { type: 'doc', id: 'removed-page' },
   ],
 };

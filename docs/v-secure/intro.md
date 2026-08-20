@@ -64,9 +64,11 @@ v-secure seamlessly integrates with other LanOnasis services:
 
 Get started with v-secure in minutes:
 
+The v-secure CLI package below is planned and not yet published.
+
 ```bash
-# Install the v-secure CLI
-npm install -g @lanonasis/v-secure-cli
+# Install the v-secure CLI once published
+npm install -g @lanonasis/v-secure-cli # Coming Soon
 
 # Authenticate
 vsecure login

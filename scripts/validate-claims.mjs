@@ -77,17 +77,67 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-function isAllowed(term, relPath) {
+function parseFrontmatter(content) {
+  if (!content.startsWith('---\n')) return {};
+  const end = content.indexOf('\n---', 4);
+  if (end === -1) return {};
+  const frontmatter = {};
+  const lines = content.slice(4, end).split('\n');
+  for (const line of lines) {
+    const m = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (!m) continue;
+    const [, key, rawValue] = m;
+    const value = rawValue.trim();
+    if (value === 'true' || value === 'false') {
+      frontmatter[key] = value === 'true';
+      continue;
+    }
+    if (value.startsWith('[') && value.endsWith(']')) {
+      frontmatter[key] = value
+        .slice(1, -1)
+        .split(',')
+        .map((item) => item.trim().replace(/^['"]|['"]$/g, ''))
+        .filter(Boolean);
+      continue;
+    }
+    frontmatter[key] = value.replace(/^['"]|['"]$/g, '');
+  }
+  return frontmatter;
+}
+
+function isRoadmapFrontmatter(frontmatter) {
+  if (frontmatter.roadmap === true) return true;
+  const tags = Array.isArray(frontmatter.tags)
+    ? frontmatter.tags
+    : frontmatter.tags
+      ? [frontmatter.tags]
+      : [];
+  const haystack = [frontmatter.title, frontmatter.description, ...tags].filter(Boolean).join(' ');
+  return frontmatter.draft === true && /(roadmap|planned|upcoming)/i.test(haystack);
+}
+
+function hasGoalContext(context) {
+  return /\b(goal|target)\b/i.test(context);
+}
+
+function isAllowed(term, relPath, frontmatter, context) {
+  const pathIsRoadmap = /(^|\/)roadmap\//.test(relPath);
+  const frontmatterRoadmap = isRoadmapFrontmatter(frontmatter);
   for (const e of allowed) {
     if (e.term.toLowerCase() !== term) continue;
     if (String(e.evidence || '').toUpperCase() === 'PENDING') continue; // deny
     const where = e.where || '';
-    if (where === 'global') return true;
+    let matchesWhere = where === 'global';
     try {
-      if (new RegExp(where).test(relPath)) return true;
+      if (!matchesWhere && new RegExp(where).test(relPath)) matchesWhere = true;
     } catch {
       /* ignore malformed regex */
     }
+    if (!matchesWhere && e.requiresRoadmapContext && frontmatterRoadmap) matchesWhere = true;
+    if (!matchesWhere) continue;
+    if (e.requiresRoadmapContext && !(pathIsRoadmap || frontmatterRoadmap)) continue;
+    if (e.requiresGoalContext && !hasGoalContext(context)) continue;
+    return true;
   }
   return false;
 }
@@ -97,6 +147,7 @@ const files = walk(TARGET);
 for (const file of files) {
   const relPath = relative(REPO_ROOT, file);
   const content = readFileSync(file, 'utf8');
+  const frontmatter = parseFrontmatter(content);
   const lines = content.split('\n');
   // Mask fenced code blocks (``` … ```) so mocks/payloads don't false-positive.
   const masked = lines.map((l, i) => ({ line: l, num: i + 1, masked: false }));
@@ -111,7 +162,8 @@ for (const file of files) {
     for (let i = 0; i < prose.length; i++) {
       const low = prose[i].toLowerCase();
       if (low.includes(term)) {
-        if (isAllowed(term, relPath)) continue;
+        const context = prose.slice(Math.max(0, i - 1), Math.min(prose.length, i + 2)).join(' ');
+        if (isAllowed(term, relPath, frontmatter, context)) continue;
         failures++;
         console.log(`  ✗ ${relPath}:${i + 1} — term "${term}" not allowed here`);
       }

@@ -129,7 +129,7 @@ const docNames = extractDocToolNames(DOC);
 const valid = new Set([...registryNames, ...allowlistNames]);
 
 const missing = [...docNames].filter((n) => !valid.has(n));
-const unknownInRegistry = [...registryNames].filter((n) => !docNames.has(n) && !allowlistNames.has(n));
+const unknownInRegistry = [...registryNames].filter((n) => !docNames.has(n));
 
 let failures = 0;
 if (missing.length > 0) {

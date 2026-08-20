@@ -54,8 +54,8 @@ const CASES = [
 const EXT = {
   name: 'validate:external-urls',
   script: 'validate-external-urls.mjs',
-  positive: ['--dir', join(FIX, 'external-urls/positive/docs')],
-  negative: ['--dir', join(FIX, 'external-urls/negative/docs')],
+  positive: ['--dir', join(FIX, 'external-urls/positive/docs'), '--fixture-map', join(FIX, 'external-urls/fixture-map.json')],
+  negative: ['--dir', join(FIX, 'external-urls/negative/docs'), '--fixture-map', join(FIX, 'external-urls/fixture-map.json')],
 };
 if (!process.env.CI) {
   CASES.push(EXT);

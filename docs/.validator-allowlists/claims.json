@@ -25,42 +25,58 @@
     },
     {
       "term": "99.9%",
-      "where": "roadmap/.*|changelog",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; no SLA published (audit F17). support.md:181 must be rewritten as goal or removed."
     },
     {
       "term": "99.99%",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; no SLA published (audit F17). support.md:182 must be rewritten as goal or removed."
     },
     {
       "term": "10M+",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; no traffic evidence in tree."
     },
     {
       "term": "50+",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; no integration-count evidence in tree."
     },
     {
       "term": "<50ms",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; no benchmark evidence in tree."
     },
     {
       "term": "<100ms",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; support.md:192 must be rewritten as goal or removed."
     },
     {
       "term": "<200ms",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; support.md:193 must be rewritten as goal or removed."
     },
     {
       "term": "<500ms",
-      "where": "roadmap/.*",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
       "evidence": "documented-goal only; support.md:194 must be rewritten as goal or removed."
     },
     {

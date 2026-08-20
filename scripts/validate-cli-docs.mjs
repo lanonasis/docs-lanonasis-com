@@ -119,8 +119,12 @@ function extractDocCommandRefs(docContent) {
 
 /** Resolve the CLI package version: monorepo package.json if mounted, else snapshot. */
 function resolveCliVersion() {
-  const pkgPath = join(REPO_ROOT, 'apps/lanonasis-maas/cli/package.json');
-  if (existsSync(pkgPath)) {
+  const candidates = [
+    join(dirname(CLI_SRC), 'package.json'),
+    join(REPO_ROOT, 'apps/lanonasis-maas/cli/package.json'),
+  ];
+  for (const pkgPath of candidates) {
+    if (!existsSync(pkgPath)) continue;
     try {
       return JSON.parse(readFileSync(pkgPath, 'utf8')).version;
     } catch {

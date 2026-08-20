@@ -25,7 +25,9 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { lookup } from 'dns/promises';
 import { join, dirname, resolve } from 'path';
+import { isIP } from 'net';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -37,13 +39,33 @@ function arg(name) {
   const i = process.argv.indexOf(name);
   return i >= 0 ? process.argv[i + 1] : null;
 }
+
+function integerArg(name, fallback) {
+  const raw = arg(name);
+  if (raw === null) return fallback;
+  if (!/^\d+$/.test(raw)) {
+    console.error(`❌ validate:external-urls — invalid ${name} value: ${raw}`);
+    process.exit(2);
+  }
+  return Number(raw);
+}
+
 const TARGET = resolve(arg('--dir') || DEFAULT_DIR);
-const CONCURRENCY = Math.max(1, parseInt(arg('--concurrency') || '4', 10));
-const DELAY_MS = Math.max(0, parseInt(arg('--delay') || '150', 10));
+const FIXTURE_MAP_PATH = arg('--fixture-map');
+const CONCURRENCY = Math.max(1, integerArg('--concurrency', 4));
+const DELAY_MS = integerArg('--delay', 150);
 
 // Placeholder / non-public hosts that must never be HEAD-checked.
 const PLACEHOLDER_RE =
   /(localhost|127\.0\.0\.1|0\.0\.0\.0|::1|\.local|\.example\.(com|net|org)|example\.com|\.internal|\.lan$|ngrok\.io|\.invalid)/i;
+
+const fixtureMap = new Map();
+if (FIXTURE_MAP_PATH) {
+  const fixtureData = JSON.parse(readFileSync(resolve(FIXTURE_MAP_PATH), 'utf8'));
+  for (const [url, status] of Object.entries(fixtureData)) {
+    fixtureMap.set(url, Number(status));
+  }
+}
 
 let allowlist = { urls: [], reason: '' };
 if (existsSync(ALLOWLIST)) {
@@ -78,17 +100,85 @@ function extractUrls(content) {
   return [...urls];
 }
 
+function normalizeHostname(hostname) {
+  return hostname.replace(/\.$/, '').toLowerCase();
+}
+
+function isNonPublicIp(address) {
+  const family = isIP(address);
+  if (family === 4) {
+    const parts = address.split('.').map(Number);
+    const [a, b] = parts;
+    if (a === 0 || a === 10 || a === 127) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && (b === 0 || b === 168)) return true;
+    if (a === 198 && (b === 18 || b === 19)) return true;
+    if (a === 100 && b >= 64 && b <= 127) return true;
+    if (a >= 224) return true;
+    return false;
+  }
+  if (family === 6) {
+    const lower = address.toLowerCase();
+    if (lower === '::' || lower === '::1') return true;
+    if (lower.startsWith('fc') || lower.startsWith('fd')) return true;
+    if (lower.startsWith('fe8') || lower.startsWith('fe9') || lower.startsWith('fea') || lower.startsWith('feb')) return true;
+    if (lower.startsWith('::ffff:')) {
+      return isNonPublicIp(lower.slice('::ffff:'.length));
+    }
+    return false;
+  }
+  return false;
+}
+
+async function assertPublicHostname(hostname) {
+  const normalized = normalizeHostname(hostname);
+  if (PLACEHOLDER_RE.test(normalized)) {
+    throw new Error(`non-public hostname: ${normalized}`);
+  }
+  if (isIP(normalized)) {
+    if (isNonPublicIp(normalized)) throw new Error(`non-public IP: ${normalized}`);
+    return;
+  }
+  const resolved = await lookup(normalized, { all: true, verbatim: true });
+  if (resolved.length === 0) throw new Error(`unresolved hostname: ${normalized}`);
+  for (const { address } of resolved) {
+    if (isNonPublicIp(address)) throw new Error(`hostname resolves to non-public IP: ${normalized} -> ${address}`);
+  }
+}
+
+async function assertPublicUrl(url) {
+  const parsed = new URL(url);
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new Error(`unsupported protocol: ${parsed.protocol}`);
+  }
+  await assertPublicHostname(parsed.hostname);
+}
+
+async function fetchValidated(url, method, signal, redirectDepth = 0) {
+  if (fixtureMap.has(url)) return fixtureMap.get(url);
+  await assertPublicUrl(url);
+  const res = await fetch(url, { method, redirect: 'manual', signal });
+  if (res.status >= 300 && res.status < 400) {
+    if (redirectDepth >= 5) return 0;
+    const location = res.headers.get('location');
+    if (!location) return res.status;
+    const nextUrl = new URL(location, url).toString();
+    return fetchValidated(nextUrl, method, signal, redirectDepth + 1);
+  }
+  return res.status;
+}
+
 async function check(url, timeoutMs = 8000) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    let res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: controller.signal });
-    if (res.status >= 400) {
+    let status = await fetchValidated(url, 'HEAD', controller.signal);
+    if (status >= 400) {
       // Some servers reject HEAD; fall back to GET.
-      const g = await fetch(url, { method: 'GET', redirect: 'follow', signal: controller.signal });
-      return g.status;
+      status = await fetchValidated(url, 'GET', controller.signal);
     }
-    return res.status;
+    return status;
   } catch {
     return 0;
   } finally {

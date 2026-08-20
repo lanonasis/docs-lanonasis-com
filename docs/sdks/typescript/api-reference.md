@@ -8,10 +8,12 @@ description: Complete API reference for the LanOnasis TypeScript SDK.
 
 Complete API reference for the LanOnasis TypeScript SDK.
 
-## Installation
+## Installation (Coming Soon)
+
+The umbrella TypeScript package is planned and not yet published.
 
 ```bash
-npm install @lanonasis/sdk
+npm install @lanonasis/sdk # Coming Soon
 # or
 yarn add @lanonasis/sdk
 # or
