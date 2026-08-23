@@ -11,6 +11,6 @@
     "outputDirectory": "build",
     "rootDirectory": ".",
     "directoryListing": false,
-    "nodeVersion": "20.x"
+    "nodeVersion": "24.x"
   }
 }
