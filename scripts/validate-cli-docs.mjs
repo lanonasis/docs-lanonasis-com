@@ -3,16 +3,29 @@
  *
  * Docs contract test v2: validates CLI reference doc against actual CLI command registry.
  *
- * Scans both index.ts and all command files in apps/lanonasis-maas/cli/src/commands/
- * to build a complete command registry. Then validates the CLI reference doc at
- * apps/docs-lanonasis/docs/cli/reference.md.
+ * EXTENDED for P4 (t_72fc6d3c):
+ *   - Standalone-safe: reads the live CLI source registry when the monorepo is
+ *     mounted (LANONASIS_CLI_SRC env or default REPO_ROOT/apps/lanonasis-maas/cli/src),
+ *     and falls back to the committed snapshot docs/.validator-allowlists/cli-commands.json
+ *     when running in the standalone docs repo.
+ *   - Version contract: verifies the `@lanonasis/cli` version embedded in
+ *     docs/cli/reference.md (AUTO:CLI_VERSION marker) matches the package version
+ *     recorded in the CLI package.json (monorepo) or the committed snapshot — not
+ *     just the changelog. This closes the gap where the reference doc could drift
+ *     from the shipped CLI package.
  *
  * Fails CI when:
  *   - A documented command name doesn't exist in the CLI (unless in ALLOW_LIST)
  *   - A required command is missing from the docs
+ *   - The AUTO:CLI_VERSION in docs/cli/reference.md disagrees with the CLI package version
  *
  * Usage: node scripts/validate-cli-docs.mjs
- * From: apps/docs-lanonasis/
+ * From: apps/docs-lanonasis/ (standalone docs repo)
+ *
+ * ESCAPE HATCH (audit §6.5): do NOT delete this validator. If a command is
+ * documented but not in the registry, add it to ALLOW_LIST below with a comment,
+ * not by removing the check. As a last resort the docs CI gates it behind
+ * `ignore-docs-validator`.
  */
 
 import { readFileSync, existsSync, readdirSync } from 'fs';
@@ -20,10 +33,11 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, '..', '..', '..');
-const CLI_SRC = join(REPO_ROOT, 'apps/lanonasis-maas/cli/src');
+const REPO_ROOT = join(__dirname, '..');
+const SNAPSHOT = join(REPO_ROOT, 'docs/.validator-allowlists/cli-commands.json');
+const CLI_SRC = process.env.LANONASIS_CLI_SRC || join(REPO_ROOT, 'apps/lanonasis-maas/cli/src');
 const COMMANDS_DIR = join(CLI_SRC, 'commands');
-const CLI_REFERENCE = join(__dirname, '..', 'docs/cli/reference.md');
+const CLI_REFERENCE = join(REPO_ROOT, 'docs/cli/reference.md');
 
 // Commands that MUST appear in docs (as primary doc name)
 const REQUIRED_COMMANDS = ['init', 'auth', 'repl', 'topic', 'config',
@@ -33,6 +47,8 @@ const REQUIRED_COMMANDS = ['init', 'auth', 'repl', 'topic', 'config',
 // Commands documented in the reference but registered differently or
 // in a secondary entry point (guide is in index-simple.ts, not index.ts)
 const ALLOW_LIST = new Set(['guide']);
+
+const monorepoMounted = existsSync(join(CLI_SRC, 'index.ts')) || existsSync(COMMANDS_DIR);
 
 /**
  * Extract CLI command names from the full source tree (index.ts + all command files).
@@ -86,27 +102,39 @@ function scanFile(filePath, commands) {
 
 /**
  * Extract command references from the CLI reference doc.
- * Looks for: `onasis <command>`, `lanonasis <command>`, `memory <command>`,
- * and also checks bash code blocks for `onasis <command>` patterns.
  */
 function extractDocCommandRefs(docContent) {
   const refs = new Set();
-
-  // Match: `onasis <command>` or `lanonasis <command>` (inline code)
   const inlineRef = /`(?:onasis|lanonasis|memory|maas)\s+([a-z][\w-]*)(?:\s+[^`]*)?`/g;
   let match;
   while ((match = inlineRef.exec(docContent)) !== null) {
     refs.add(match[1]);
   }
-
-  // Also extract from fenced bash code blocks
-  // Match lines like "onasis <command>" inside ```bash blocks
   const bashBlockRef = /(?:^|\n)(?:onasis|lanonasis|memory|maas)\s+([a-z][\w-]*)/gm;
   while ((match = bashBlockRef.exec(docContent)) !== null) {
     refs.add(match[1]);
   }
-
   return refs;
+}
+
+/** Resolve the CLI package version: monorepo package.json if mounted, else snapshot. */
+function resolveCliVersion() {
+  const candidates = [
+    join(dirname(CLI_SRC), 'package.json'),
+    join(REPO_ROOT, 'apps/lanonasis-maas/cli/package.json'),
+  ];
+  for (const pkgPath of candidates) {
+    if (!existsSync(pkgPath)) continue;
+    try {
+      return JSON.parse(readFileSync(pkgPath, 'utf8')).version;
+    } catch {
+      /* fall through */
+    }
+  }
+  if (existsSync(SNAPSHOT)) {
+    return JSON.parse(readFileSync(SNAPSHOT, 'utf8')).version || null;
+  }
+  return null;
 }
 
 // ── Main ──
@@ -116,12 +144,23 @@ if (!existsSync(CLI_REFERENCE)) {
   process.exit(1);
 }
 
-const cliCommands = buildCLICommandRegistry();
+let exitCode = 0;
+const errors = [];
 const docContent = readFileSync(CLI_REFERENCE, 'utf8');
 const docRefs = extractDocCommandRefs(docContent);
 
-let exitCode = 0;
-const errors = [];
+// Registry: live source if monorepo mounted, else committed snapshot.
+let cliCommands;
+if (monorepoMounted) {
+  cliCommands = buildCLICommandRegistry();
+  console.log(`   (monorepo mounted — live CLI source registry)`);
+} else if (existsSync(SNAPSHOT)) {
+  cliCommands = new Set(JSON.parse(readFileSync(SNAPSHOT, 'utf8')).commands || []);
+  console.log(`   (standalone — using committed snapshot cli-commands.json)`);
+} else {
+  console.error('❌ validate:cli-docs — no CLI source registry found (set LANONASIS_CLI_SRC or commit cli-commands.json).');
+  process.exit(1);
+}
 
 // Check 1: Required commands must be documented
 for (const cmd of REQUIRED_COMMANDS) {
@@ -133,28 +172,38 @@ for (const cmd of REQUIRED_COMMANDS) {
 
 // Check 2: Documented commands should exist in CLI (or be in ALLOW_LIST)
 for (const docCmd of docRefs) {
-  // Skip memory subcommands — too granular
   if (['memory', 'mem', 'create', 'list', 'get', 'update', 'delete', 'search',
        'save-session', 'list-sessions', 'load-session', 'delete-session',
        'stats', 'intelligence', 'behavior', 'ls'].includes(docCmd)) {
     continue;
   }
-
-  // Skip options/flags captured by the regex
   if (docCmd.startsWith('--') || docCmd.startsWith('-')) continue;
-
   if (!cliCommands.has(docCmd) && !ALLOW_LIST.has(docCmd)) {
     errors.push(`❌ STALE: "${docCmd}" — documented but not found in CLI source (may need removal or ALLOW_LIST entry)`);
     exitCode = 1;
   }
 }
 
-// Output
+// Check 3 (P4): AUTO:CLI_VERSION in reference.md must match the CLI package version
+const version = resolveCliVersion();
+if (version) {
+  const markerMatch = docContent.match(/AUTO:CLI_VERSION\s*-->\s*([0-9][\w.+-]*)\s*<!--/);
+  if (!markerMatch) {
+    errors.push(`❌ VERSION: AUTO:CLI_VERSION marker missing in docs/cli/reference.md`);
+    exitCode = 1;
+  } else if (markerMatch[1].trim() !== String(version).trim()) {
+    errors.push(`❌ VERSION: docs/cli/reference.md pins @lanonasis/cli v${markerMatch[1].trim()} but package version is v${version}`);
+    exitCode = 1;
+  } else {
+    console.log(`   Version contract OK: reference.md ↔ @lanonasis/cli v${version}`);
+  }
+} else {
+  console.log('   (no CLI package version resolved — version contract skipped)');
+}
+
 if (errors.length > 0) {
   console.error(`\n🔴 CLI Docs Contract Test FAILED (${errors.length} errors):\n`);
-  for (const err of errors) {
-    console.error(`  ${err}`);
-  }
+  for (const err of errors) console.error(`  ${err}`);
   console.error(`\n   CLI commands: ${[...cliCommands].sort().join(', ')}`);
   console.error(`\n   Doc refs: ${[...docRefs].sort().join(', ')}`);
   process.exit(exitCode);

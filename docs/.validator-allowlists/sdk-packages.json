@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "description": "Allowlist + registry for validate:sdk-packages. Every package name appearing in a pip install / npm install / npm i -g / go get line must resolve here or be explicitly marked Coming Soon/Planned near the line. status: 'published' = real published package (verified via registry 2026-08-12); 'planned' = deliberately unshipped / Coming Soon (allowed only when the doc marks it so or it appears in a roadmap section).",
+  "verified": "2026-08-12",
+  "packages": {
+    "@lanonasis/cli": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/cli 200"
+    },
+    "@lanonasis/repl-cli": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/repl-cli 200"
+    },
+    "@lanonasis/memory-client": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/memory-client 200"
+    },
+    "@lanonasis/memory-sdk-standalone": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/memory-sdk-standalone 200"
+    },
+    "@lanonasis/ai-sdk": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/ai-sdk 200"
+    },
+    "@lanonasis/mem-intel-sdk": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/mem-intel-sdk 200"
+    },
+    "@lanonasis/security-sdk": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/security-sdk 200"
+    },
+    "@lanonasis/oauth-client": {
+      "status": "published",
+      "registry": "npm",
+      "evidence": "registry.npmjs.org/@lanonasis/oauth-client 200"
+    },
+    "@lanonasis/memory-sdk": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12; docs mark memory-sdk as not-for-production (use memory-client or memory-sdk-standalone)"
+    },
+    "@lanonasis/api-client": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12; docs mark api-client as not-for-production"
+    },
+    "@lanonasis/cli-sdk": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/sdk": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/mcp-lanonasis": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/mcp-core": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/v-secure-cli": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/v-secure-sdk": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "@lanonasis/mcp-server-vsecure": {
+      "status": "planned",
+      "registry": "npm",
+      "evidence": "registry 404 2026-08-12"
+    },
+    "lanonasis": {
+      "status": "planned",
+      "registry": "pypi",
+      "evidence": "pypi.org/pypi/lanonasis 404 2026-08-12; docs mark 'pip install lanonasis  # Coming soon'"
+    },
+    "lanonasis-python": {
+      "status": "planned",
+      "registry": "pypi",
+      "evidence": "pypi.org 404 2026-08-12; Python SDK Coming Soon"
+    },
+    "lanonasis-cli": {
+      "status": "planned",
+      "registry": "pypi",
+      "evidence": "pypi.org 404 2026-08-12"
+    },
+    "lanonasis-vsecure": {
+      "status": "planned",
+      "registry": "pypi",
+      "evidence": "pypi.org 404 2026-08-12"
+    },
+    "github.com/lanonasis/vsecure-go": {
+      "status": "planned",
+      "registry": "go",
+      "evidence": "proxy.golang.org 404 2026-08-12; Go SDK Coming Soon"
+    }
+  },
+  "notes": [
+    "The validator fails any install line whose package is not in this registry AND not marked Coming Soon/Planned near the line.",
+    "planned packages are ALLOWED when the line carries an inline 'Coming Soon'/'Planned' marker, or when the doc marks the SDK as not-yet-shipped. They FAIL when presented as a ready-to-install production package without a marker.",
+    "git+https installs: the git URL host is checked separately (must be a real host) and the repo name is NOT required to be a registry package."
+  ]
+}

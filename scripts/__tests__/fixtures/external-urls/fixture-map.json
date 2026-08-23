@@ -1,0 +1,6 @@
+{
+  "https://fixtures.lanonasis.test/success": { "status": 200 },
+  "https://fixtures.lanonasis.test/redirect-success": { "status": 302, "location": "https://fixtures.lanonasis.test/success-final" },
+  "https://fixtures.lanonasis.test/success-final": { "status": 200 },
+  "https://fixtures.lanonasis.test/failure": { "status": 503 }
+}

@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "policy": "docs/.validator-allowlists/CLAIMS-DECISION.md",
+  "verified": "2026-08-12",
+  "allowed": [
+    {
+      "term": "SOC 2",
+      "where": "v-secure/compliance/.*",
+      "evidence": "PENDING - no evidence pack in tree (MIRA audit F13); reopen only when soc2.md carries report URL + body + date. Currently deny everywhere."
+    },
+    {
+      "term": "ISO 27001",
+      "where": "v-secure/compliance/.*",
+      "evidence": "PENDING - no evidence pack in tree (MIRA audit F13); reopen only with evidence."
+    },
+    {
+      "term": "PCI DSS",
+      "where": "v-secure/compliance/.*",
+      "evidence": "PENDING - no evidence pack in tree (MIRA audit F13); reopen only with evidence."
+    },
+    {
+      "term": "GDPR",
+      "where": "v-secure/compliance/.*",
+      "evidence": "PENDING - no evidence pack in tree (MIRA audit F13); reopen only with evidence."
+    },
+    {
+      "term": "99.9%",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; no SLA published (audit F17). support.md:181 must be rewritten as goal or removed."
+    },
+    {
+      "term": "99.99%",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; no SLA published (audit F17). support.md:182 must be rewritten as goal or removed."
+    },
+    {
+      "term": "10M+",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; no traffic evidence in tree."
+    },
+    {
+      "term": "50+",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; no integration-count evidence in tree."
+    },
+    {
+      "term": "<50ms",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; no benchmark evidence in tree."
+    },
+    {
+      "term": "<100ms",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; support.md:192 must be rewritten as goal or removed."
+    },
+    {
+      "term": "<200ms",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; support.md:193 must be rewritten as goal or removed."
+    },
+    {
+      "term": "<500ms",
+      "where": "global",
+      "requiresRoadmapContext": true,
+      "requiresGoalContext": true,
+      "evidence": "documented-goal only; support.md:194 must be rewritten as goal or removed."
+    },
+    {
+      "term": "sandbox-api.lanonasis.com",
+      "where": "roadmap/.*",
+      "evidence": "FAIL-until-evidenced: DoH NXDOMAIN 2026-08-12. Remove from api/authentication.md:57,373,377,383."
+    },
+    {
+      "term": "status.lanonasis.com",
+      "where": "roadmap/.*",
+      "evidence": "FAIL-until-evidenced: DoH NXDOMAIN 2026-08-12. Remove from v-secure/getting-started.md:381, v-secure/api/overview.md:270, v-secure/intro.md:169, platform/lanonasis-index.md:273,485,551."
+    },
+    {
+      "term": "support.lanonasis.com",
+      "where": "roadmap/.*",
+      "evidence": "FAIL-until-evidenced: DoH NXDOMAIN 2026-08-12. Remove from v-secure/intro.md."
+    },
+    {
+      "term": "trust.lanonasis.com",
+      "where": "roadmap/.*",
+      "evidence": "FAIL-until-evidenced: DoH NXDOMAIN 2026-08-12. Remove from v-secure/compliance/overview.md."
+    },
+    {
+      "term": "wss://mcp.lanonasis.com",
+      "where": "roadmap/.*",
+      "evidence": "FAIL-until-evidenced: ws opt-in (ENABLE_WEBSOCKET) in mcp-core/src/index.ts:266; no live wss probe. Do not advertise until infra confirms."
+    },
+    {
+      "term": "WebSocket",
+      "where": "mcp/.*|roadmap/.*",
+      "evidence": "mcp-core has opt-in ws implementation (src/index.ts:113,266,3153) but production docs say 'SSE and HTTP' (production-server.md:12). Allow transport mention in mcp pages only as SSE+HTTP; deny WebSocket as live transport claim."
+    },
+    {
+      "term": "KYC",
+      "where": "unified-services/.*|roadmap/.*",
+      "evidence": "No /v1/kyc route in auth-gateway or mcp-core (MIRA F15). unified-services/* is draft:true quarantine."
+    },
+    {
+      "term": "wallets",
+      "where": "unified-services/.*|roadmap/.*",
+      "evidence": "No /v1/wallets route; only dashboard UI placeholder (WalletServices.tsx)."
+    },
+    {
+      "term": "payments",
+      "where": "unified-services/.*|roadmap/.*",
+      "evidence": "No /v1/payments route; DIRECT_API_ROUTES.md lists payment functions absent from supabase/functions/."
+    },
+    {
+      "term": "transfers",
+      "where": "unified-services/.*|roadmap/.*",
+      "evidence": "No /v1/transfers route; sayswitch-transfer function absent from source."
+    },
+    {
+      "term": "unified-services",
+      "where": "unified-services/.*|roadmap/.*",
+      "evidence": "Aspirational product line; must stay draft:true / roadmap-marked."
+    },
+    {
+      "term": "api.lanonasis.com",
+      "where": "global",
+      "evidence": "DNS A 63.176.8.218/35.157.26.135; live GET https://api.lanonasis.com/health -> 200 Onasis-CORE API Gateway v1.0.0 (2026-08-12)."
+    },
+    {
+      "term": "mcp.lanonasis.com",
+      "where": "global",
+      "evidence": "DNS A 168.231.74.29; live GET https://mcp.lanonasis.com/health -> 200 healthy (2026-08-12)."
+    },
+    {
+      "term": "auth.lanonasis.com",
+      "where": "global",
+      "evidence": "DNS A 168.231.74.29; gateway healthy at /v1 per MIRA audit 2.4."
+    },
+    {
+      "term": "dashboard.lanonasis.com",
+      "where": "global",
+      "evidence": "DNS A 18.208.88.157/98.84.224.111; live 200 per MIRA audit 2.4."
+    },
+    {
+      "term": "docs.lanonasis.com",
+      "where": "global",
+      "evidence": "DNS A 216.198.79.65/64.29.17.65 (Vercel); live 200 (2026-08-12)."
+    },
+    {
+      "term": "SSE",
+      "where": "global",
+      "evidence": "apps/mcp-core/src/index.ts:2876-2975 implements GET /sse + POST /message; live mcp.lanonasis.com healthy."
+    },
+    {
+      "term": "mcp.lanonasis.com/sse",
+      "where": "global",
+      "evidence": "apps/mcp-core/src/index.ts:2876; documented in docs/mcp/tools.md:22."
+    }
+  ],
+  "denied": [
+    "SOC 2",
+    "ISO 27001",
+    "PCI DSS",
+    "GDPR compliant",
+    "HIPAA",
+    "FERPA",
+    "SOX",
+    "FISMA",
+    "NIS Directive",
+    "eIDAS",
+    "APPI",
+    "PDPA",
+    "PIPA",
+    "99.9% uptime",
+    "99.99% uptime",
+    "10M+",
+    "50+",
+    "<50ms",
+    "sandbox-api.lanonasis.com",
+    "status.lanonasis.com",
+    "support.lanonasis.com",
+    "trust.lanonasis.com",
+    "status.LanOnasis.local",
+    "blog.lanonasis.local",
+    "api.LanOnasis.local",
+    "wss://mcp.lanonasis.com/ws",
+    "WebSocket transport",
+    "SOC 2 Type II certification",
+    "v1/wallets",
+    "v1/payments",
+    "v1/kyc",
+    "v1/transfers"
+  ],
+  "notes": [
+    "Allowed terms with a PENDING evidence marker are NOT currently allowed - they document the reopen condition. The validator must treat 'PENDING' evidence as deny.",
+    "Terms listed in denied[] always fail, even in roadmap pages, when they assert certification or a dead endpoint.",
+    "Validator must skip fenced code blocks so dashboard-mock ASCII and sample payloads do not false-positive.",
+    "changelog.md:404-406 historical claims (Sub-100ms, 99.9% SLA, GDPR compliant) are not roadmap and must be corrected.",
+    "Where 'roadmap/.*' pages do not yet exist, those terms effectively fail everywhere - this is intentional fail-until-evidenced."
+  ]
+}
