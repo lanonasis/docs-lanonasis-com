@@ -11,13 +11,10 @@ topology-of-record. It answers the recurring operational question — *which
 database is authoritative for which data* — without exposing the connection
 details that live in the private backend repository.
 
-The canonical topology documentation is maintained in the private backend
-engine repo at
-`apps/onasis-core/docs/supabase-api/NEON-EXTRACTION-AND-DB-TOPOLOGY-2026-07-18.md`
-and its companion routing inventory
-`apps/onasis-core/docs/supabase-api/ROUTING_ARCHITECTURE.md`. This page stays in
-sync with those documents; if a statement here disagrees with one of them, the
-private doc wins.
+The canonical topology documentation is maintained in internal operator
+documentation. This page stays in sync with it and contains only the approved
+public summary; if a statement here disagrees with the internal documentation,
+the internal documentation wins.
 
 ## Source-of-truth map
 
@@ -51,6 +48,6 @@ downstream-only. Do not point live writers at the replica.
   and production considerations
 
 > **Operators:** for the full topology-of-record, network attribution notes,
-> migration record, and routing inventory, read the private documents listed at
-> the top of this page. Do not republish their contents (project references,
+> migration record, and routing inventory, read the internal operator
+> documentation. Do not republish its contents (project references,
 > credentials, or internal topology detail) in public-facing material.
