@@ -144,6 +144,7 @@ const sidebars: SidebarsConfig = {
       label: 'Platform Architecture',
       items: [
         'platform/architecture',
+        'platform/topology',
         'platform/onasis-core',
         'platform/mcp-core',
         'platform/mcp-lanonasis',
