@@ -1,0 +1,41 @@
+# CODEOWNERS — lanonasis/docs-lanonasis-com
+#
+# Ownership for review of documentation paths. GitHub uses the last matching
+# rule for each file, so the most specific paths come last.
+#
+# VERIFICATION (2026-08-12, `gh api`):
+#   - `gh api orgs/lanonasis/members`            -> exactly one member: thefixer3x
+#   - `gh api orgs/lanonasis/teams`              -> no teams exist in the org
+#   - `gh api repos/lanonasis/docs-lanonasis-com/collaborators` -> thefixer3x (admin)
+#
+# Single-owner reality: the lanonasis org has ONE member and NO teams, so every
+# path maps to @thefixer3x. No @lanonasis/* team handles are fabricated here
+# because no such teams exist. When the org grows, split each path to its real
+# team/user handles — the mapping below is the intended owner for each subtree.
+#
+# RELEASE-DOC PAIRING INTENT (P4): the enforceable release gate lives in the
+# root monorepo workflows (releases are cut there). On the docs side, this
+# CODEOWNERS is the release-doc pairing mechanism: contract-changing PRs to
+# docs/api/**, docs/mcp/**, docs/v-secure/**, and docs/sdks/** require review
+# by the owners of those surfaces, so a doc change cannot ship without the
+# platform-surface owner signing off. Do not add a duplicate release workflow
+# here — the root CI owns the release gate.
+
+# Default owner for the whole repo (catches anything not matched below).
+* @thefixer3x
+
+# Docs site meta — docs maintainers (single owner today: thefixer3x).
+/sidebars.ts @thefixer3x
+/docusaurus.config.ts @thefixer3x
+
+# API reference & authentication — API surface owners.
+/docs/api/ @thefixer3x
+
+# MCP server docs — mcp-core owners.
+/docs/mcp/ @thefixer3x
+
+# v-secure docs — v-secure owners.
+/docs/v-secure/ @thefixer3x
+
+# SDK / library docs — lanonasis-maas SDK owners.
+/docs/sdks/ @thefixer3x

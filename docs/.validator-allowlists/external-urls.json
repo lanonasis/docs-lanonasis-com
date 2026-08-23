@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "description": "Allowlist for validate:external-urls \u2014 known-flaky or temporarily-down URLs. 403 from www.npmjs.com is a bot-block (the package IS published; registry API returns 200); these are flaky, not dead. Localhost/*.local/example.com placeholders are skipped by the validator's placeholder filter.",
+  "urls": [
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/memory-sdk-standalone",
+      "reason": "npmjs 403 bot-block; package published (registry API 200)"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/ai-sdk",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/security-sdk",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/oauth-client",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/cli",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/mem-intel-sdk",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/memory-client",
+      "reason": "npmjs 403 bot-block; package published"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@lanonasis/repl-cli",
+      "reason": "npmjs 403 bot-block; package published"
+    }
+  ]
+}

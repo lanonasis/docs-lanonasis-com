@@ -31,8 +31,10 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, '..', '..', '..');
-const MCP_SRC = join(REPO_ROOT, 'apps/mcp-core/src/index.ts');
+const REPO_ROOT = join(__dirname, '..');
+const MONOREPO_ROOT = join(__dirname, '..', '..', '..');
+const MCP_SRC = process.env.MCP_REGISTRY_PATH || join(MONOREPO_ROOT, 'apps/mcp-core/src/index.ts');
+const SNAPSHOT = join(REPO_ROOT, 'docs/.validator-allowlists/mcp-tools-registry.json');
 const TOOLS_DOC = join(__dirname, '..', 'docs/mcp/tools.md');
 const CHECK_MODE = process.argv.includes('--check');
 
@@ -233,6 +235,15 @@ function extractInputProperties(entry) {
   return result;
 }
 
+function extractDocToolNames(docPath) {
+  const content = readFileSync(docPath, 'utf8');
+  const names = [];
+  for (const match of content.matchAll(/^###\s+([a-z][a-z0-9_]*)\s*$/gm)) {
+    names.push(match[1]);
+  }
+  return names.sort();
+}
+
 const GROUP_ORDER = [
   {
     label: 'Memory Tools',
@@ -360,6 +371,21 @@ function renderDoc(tools) {
 
 function main() {
   if (!existsSync(MCP_SRC)) {
+    if (CHECK_MODE && existsSync(SNAPSHOT)) {
+      if (!existsSync(TOOLS_DOC)) {
+        console.error(`❌ ${TOOLS_DOC} missing — run without --check to generate.`);
+        process.exit(1);
+      }
+      const snapshotTools = [...JSON.parse(readFileSync(SNAPSHOT, 'utf8')).tools].sort();
+      const docTools = extractDocToolNames(TOOLS_DOC);
+      if (JSON.stringify(snapshotTools) !== JSON.stringify(docTools)) {
+        console.error(`❌ MCP tools doc headings are out of sync with snapshot (${snapshotTools.length} tools).`);
+        console.error('   Regenerate from a mounted monorepo source or refresh docs/.validator-allowlists/mcp-tools-registry.json.');
+        process.exit(1);
+      }
+      console.log(`✅ MCP tools doc headings verified against snapshot (${snapshotTools.length} tools).`);
+      return;
+    }
     console.error(`❌ MCP source not found at ${MCP_SRC}`);
     process.exit(1);
   }

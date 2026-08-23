@@ -11,6 +11,33 @@ The docs site has automated quality checks that run:
 
 ## Available Checks
 
+### P4 deterministic validators and escape hatch
+
+The docs repo now has six deterministic governance validators:
+
+- `bun run validate:cli-docs` — CLI reference command + package-version contract.
+- `bun run validate:mcp-tools` — MCP tools doc names match the registry snapshot/live registry.
+- `bun run validate:sdk-packages` — every `pip install` / `npm install` / `go get` line resolves to a real package or an explicit planned allowlist entry (planned packages still require a Coming Soon marker or roadmap section).
+- `bun run validate:claims` — unsupported compliance / SLA / endpoint / transport claims fail against `docs/.validator-allowlists/claims.json` (NORA decision card t_9274c201).
+- `bun run validate:external-urls` — external absolute URLs must respond 2xx/3xx (with an allowlist for flaky domains like npmjs bot-blocked package pages).
+- `bun run validate:route-reachability` — every sidebar route must resolve in the built site.
+
+Each validator also has positive + negative fixtures and is exercised by:
+
+```bash
+bun run test:validators
+```
+
+False-positive escape hatch (audit §6.5 rollback):
+
+- Do **not** delete a noisy validator.
+- Add the documented exception to its allowlist under `docs/.validator-allowlists/` when the exception is real and durable.
+- If a validator is temporarily noisy and blocks a legitimate docs PR, apply the PR label `ignore-docs-validator`.
+- The CI workflow keeps running the content validators, but while that label is present it reports their output without failing the PR. Structural validators (`validate:cli-docs`, `validate:mcp-tools`, `validate:mcp-reference`) and the fixture harness are never label-gated.
+- `validate:sdk-packages` is content-dependent: on `main` the planned packages it guards (v-secure-cli, memory-sdk, mcp-core, …) are still presented without Coming Soon markers, so it fails the full tree. It is therefore label-gated together with the content validators until the "planned vs published" content PR lands those markers; it then returns to the always-blocking structural set. Its positive/negative fixtures always run via `bun run test:validators`.
+
+This label gate is a rollback valve, not the normal path. Remove the label once the doc content or allowlist is fixed.
+
 ### 1. Link Checker (`check:links`)
 
 Validates all relative markdown links in the docs directory.

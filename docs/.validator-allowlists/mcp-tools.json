@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "description": "Allowlist for MCP tools intentionally documented in docs/mcp/tools.md that the mcp-core registry does not export. Kept separate from the registry snapshot so the snapshot can be machine-regenerated while this documents human-introduced exceptions.",
+  "tools": []
+}
