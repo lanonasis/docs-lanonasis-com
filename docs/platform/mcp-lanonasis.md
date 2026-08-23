@@ -358,9 +358,11 @@ Examples:
 
 ### For Claude (via Cline or Direct Integration)
 
+The `@lanonasis/mcp-lanonasis` package is planned and not yet published.
+
 ```bash
-# Install MCP Lanonasis
-npm install @lanonasis/mcp-lanonasis
+# Install MCP Lanonasis once published
+npm install @lanonasis/mcp-lanonasis # Coming Soon
 
 # Configure Claude settings
 # In .cline/config.json or similar:

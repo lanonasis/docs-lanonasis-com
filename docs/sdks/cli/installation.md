@@ -14,10 +14,12 @@ Install and configure the LanOnasis CLI tool for command-line memory management 
 npm install -g @lanonasis/cli
 ```
 
-### Using pip
+### Using pip (Coming Soon)
+
+The PyPI package is planned and not yet published.
 
 ```bash
-pip install lanonasis-cli
+pip install lanonasis-cli # Coming Soon
 ```
 
 ### Using Homebrew (macOS)

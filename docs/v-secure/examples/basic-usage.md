@@ -8,10 +8,12 @@ description: Basic v-secure usage examples
 
 Common patterns and examples for using v-secure in your applications.
 
-## Installation
+## Installation (Coming Soon)
+
+The `@lanonasis/v-secure-sdk` package is planned and not yet published.
 
 ```bash
-npm install @lanonasis/v-secure-sdk
+npm install @lanonasis/v-secure-sdk # Coming Soon
 ```
 
 ## Initialization

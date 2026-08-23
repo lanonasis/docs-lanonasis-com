@@ -4,16 +4,16 @@ sidebar_label: SDK
 description: Use the LanOnasis SDKs to build memory-powered applications.
 ---
 
-The official TypeScript SDK `@lanonasis/memory-sdk` offers a typed interface to the Memory as a Service (MaaS) REST API.
+The planned TypeScript SDK `@lanonasis/memory-sdk` will offer a typed interface to the Memory as a Service (MaaS) REST API once it is published. Until then, use `@lanonasis/memory-client` or `@lanonasis/memory-sdk-standalone`.
 
-## Install
+## Install (Coming Soon)
 
-Use your workspace's package manager (Bun recommended).
+Use your workspace's package manager (Bun recommended) after the package is published.
 
 ```bash
 bun add @lanonasis/memory-sdk
 # or
-npm install @lanonasis/memory-sdk
+npm install @lanonasis/memory-sdk # Coming Soon
 # or
 yarn add @lanonasis/memory-sdk
 ```

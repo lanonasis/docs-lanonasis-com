@@ -19,10 +19,12 @@ The Model Context Protocol (MCP) enables AI tools like Claude to securely access
 
 ## Setup
 
-### Install MCP Server
+### Install MCP Server (Coming Soon)
+
+The `@lanonasis/mcp-server-vsecure` package is planned and not yet published.
 
 ```bash
-npm install -g @lanonasis/mcp-server-vsecure
+npm install -g @lanonasis/mcp-server-vsecure # Coming Soon
 ```
 
 ### Configure Claude Desktop
