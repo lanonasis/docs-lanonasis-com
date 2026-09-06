@@ -1,5 +1,5 @@
 {
-  "last_verified": "2026-08-11T19:38:33.324Z",
+  "last_verified": "2026-08-20T09:42:39.984Z",
   "synced_from": {
     "generator": "scripts/sync-docs-specs.js",
     "memory": "committed:static/memory-api.yaml",
@@ -14,7 +14,7 @@
       "badge": "MCP v2.0 - 31 Tools",
       "version": "1.1.0",
       "hash": "556e97016b996967c02f0fbd20fc54854a22f58c95465baa5bee6251d4efc2c4",
-      "last_verified": "2026-08-11T19:38:33.324Z",
+      "last_verified": "2026-08-20T09:42:39.984Z",
       "synced_from": "committed:static/memory-api.yaml",
       "paths": [
         "/memory-api.json",
@@ -29,7 +29,7 @@
       "badge": "Docs Search API",
       "version": "1.0.0",
       "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
-      "last_verified": "2026-08-11T19:38:33.324Z",
+      "last_verified": "2026-08-20T09:42:39.984Z",
       "synced_from": "repo:apps/docs-lanonasis/openapi.yaml",
       "paths": [
         "/openapi.json",
