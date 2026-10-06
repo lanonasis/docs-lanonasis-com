@@ -10,12 +10,44 @@ Complete API reference for the LanOnasis TypeScript SDK.
 
 ## Installation
 
+> **Status:** `@lanonasis/sdk` is in active development and has **not been published** to npm yet.
+> The published MaaS client is `@lanonasis/memory-client` ([v2.2.1](https://www.npmjs.com/package/@lanonasis/memory-client)).
+
+### From npm (once published)
+
 ```bash
 npm install @lanonasis/sdk
 # or
 yarn add @lanonasis/sdk
 # or
 pnpm add @lanonasis/sdk
+```
+
+### Alpha / pre-release (current)
+
+Install directly from the monorepo:
+
+```bash
+npm install github:lanonasis/lanonasis-maas#packages/lanonasis-sdk
+```
+
+Or pin the workspace dependency in your project's `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@lanonasis/sdk": "github:lanonasis/lanonasis-maas#packages/lanonasis-sdk"
+  }
+}
+```
+
+### Using the published MaaS client instead
+
+If you only need memory operations (no API key management or MCP primitives),
+use the published package:
+
+```bash
+npm install @lanonasis/memory-client
 ```
 
 ## Client Configuration
