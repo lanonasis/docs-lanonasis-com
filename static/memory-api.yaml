@@ -216,6 +216,8 @@ paths:
                 $ref: '#/components/schemas/MemoryListResponse'
         '304':
           description: Not modified (If-None-Match matched). No body.
+        '400':
+          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '429':
