@@ -201,7 +201,7 @@ curl -X POST https://api.lanonasis.com/api/v1/memories/update \
 
 ## Delete Memory
 
-Permanently delete a memory. This action cannot be undone.
+Soft-delete a memory. The row is kept with `deleted_at` set, drops out of normal lists, search and reads, and can be restored. Deleting an already-deleted memory succeeds again without changing it.
 
 ### Request
 
@@ -233,13 +233,16 @@ curl -X POST "https://api.lanonasis.com/api/v1/memories/delete?id=4a4a675f-2e35-
 ```json
 {
   "success": true,
-  "message": "Memory deleted successfully",
-  "data": {
-    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
-    "deleted_at": "2024-01-16T15:30:00Z"
-  }
+  "message": "Memory 4a4a675f-2e35-4598-ae7a-1c1f35730226 deleted successfully",
+  "deleted_id": "4a4a675f-2e35-4598-ae7a-1c1f35730226"
 }
 ```
+
+### Finding, restoring and purging deleted memories
+
+- **Find**: `GET /api/v1/memories/list?include_deleted=true` returns soft-deleted rows alongside live ones, and `GET /api/v1/memories/{id}?include_deleted=true` reads one. The MCP tool `list_deleted_memories` lists only the deleted ones.
+- **Restore**: use the MCP tool `restore_memory`. There is no REST restore route.
+- **Remove for good**: the admin-only MCP tool `purge_deleted_memories` physically deletes soft-deleted rows, after a `dry_run` and a confirmation token.
 
 ## List Memories
 

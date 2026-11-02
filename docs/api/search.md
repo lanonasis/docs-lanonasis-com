@@ -158,8 +158,8 @@ POST /api/v1/embeddings
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `input` | string or string[] | Yes | Text or list of texts to generate embeddings for |
-| `model` | string | No | Embedding model (default: voyage-4) |
+| `input` | string or string[] | Yes | Text or list of texts to generate embeddings for (up to 128) |
+| `model` | string | No | Embedding model (default: `voyage-4-large`; unknown models fall back to it) |
 
 ### Example Request
 

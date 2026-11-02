@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
-  "description": "Snapshot of the MCP tool registry from apps/mcp-core/src/index.ts (monorepo), captured 2026-08-12. Used by validate:mcp-tools when the monorepo is NOT mounted (standalone docs CI). When the monorepo IS mounted, the validator reads the live registry via MCP_REGISTRY_PATH (default REPO_ROOT/apps/mcp-core/src/index.ts).",
+  "description": "Snapshot of the MCP tool registry from apps/mcp-core/src/index.ts (monorepo), captured 2026-11-02 from mcp-core main a30ccce. Used by validate:mcp-tools when the monorepo is NOT mounted (standalone docs CI). When the monorepo IS mounted, the validator reads the live registry via MCP_REGISTRY_PATH (default REPO_ROOT/apps/mcp-core/src/index.ts).",
   "source": "apps/mcp-core/src/index.ts (const tools = [ ... ])",
-  "captured_2026_08_12": true,
   "tools": [
     "behavior_recall",
     "behavior_record",
@@ -28,6 +27,7 @@
     "intelligence_list_conclusions",
     "intelligence_suggest_tags",
     "list_api_keys",
+    "list_deleted_memories",
     "list_memories",
     "list_projects",
     "memory_ask_profile",
@@ -35,11 +35,15 @@
     "memory_get_profile",
     "memory_get_profile_history",
     "memory_stats",
+    "purge_deleted_memories",
+    "restore_memory",
     "revoke_api_key",
     "rotate_api_key",
     "search_lanonasis_docs",
     "search_memories",
     "set_config",
     "update_memory"
-  ]
+  ],
+  "captured_at": "2026-11-02",
+  "source_revision": "lanonasis/mcp-core@a30ccce"
 }

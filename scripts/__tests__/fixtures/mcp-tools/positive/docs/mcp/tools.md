@@ -74,3 +74,9 @@
 ### set_config
 
 ### update_memory
+
+### list_deleted_memories
+
+### purge_deleted_memories
+
+### restore_memory

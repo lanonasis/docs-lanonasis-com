@@ -63,7 +63,7 @@ Create chunked memories for very large content while preserving ownership and me
 
 ### delete_memory
 
-Soft-delete a memory by ID. Deleted memories can be restored by an authorized caller..
+Soft-delete a memory by ID. Deleted memories can be restored by an authorized caller.
 
 **Annotations**: `toolAnnotations.delete_memory` (read/write/destructive hints from the source registry).
 
@@ -101,6 +101,7 @@ List memories with pagination and filters.
 | `tags` | string |
 | `search` | string |
 | `include_deleted` | boolean |
+| `include_preview` | boolean |
 
 ### memory_ask_profile
 
@@ -474,7 +475,7 @@ List projects.
 
 ### purge_deleted_memories
 
-Admin-only physical purge. Run dry_run first; confirm with the returned token within ten minutes..
+Admin-only physical purge. Run dry_run first; confirm with the returned token within ten minutes.
 
 **Parameters**:
 

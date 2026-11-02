@@ -287,6 +287,12 @@ function groupTools(tools) {
   return groups.filter((g) => g.items.length > 0 || g.label === 'Platform Tools');
 }
 
+// Registry descriptions are mixed: some end in a period, some do not.
+function withTerminalPunctuation(text) {
+  const trimmed = String(text).trimEnd();
+  return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+}
+
 function escapePipe(s) {
   return String(s).replace(/\|/g, '\\|');
 }
@@ -319,7 +325,7 @@ function renderDoc(tools) {
     out += `## ${group.label}\n\n`;
     for (const t of group.items) {
       out += `### ${t.name}\n\n`;
-      if (t.description) out += `${t.description}.\n\n`;
+      if (t.description) out += `${withTerminalPunctuation(t.description)}\n\n`;
       if (t.annotations) {
         out += `**Annotations**: \`toolAnnotations.${t.annotations}\` (read/write/destructive hints from the source registry).\n\n`;
       }
