@@ -4,6 +4,10 @@ slug: /api/analytics
 description: Retrieve analytics and insights about memory usage, performance metrics, and system health.
 ---
 
+:::danger Not available
+The analytics API (`/api/v1/analytics/*`) is **not served** by `api.lanonasis.com` today: no route exists, and requests fail. This page describes a planned API and is kept for reference only. Do not build against it.
+:::
+
 Retrieve comprehensive analytics and insights about your memory usage, performance metrics, and system health.
 
 ## Endpoint

@@ -11,7 +11,7 @@ description: Complete reference for all MCP tools registered in the LanOnasis MC
 
 ## MCP Tools Reference
 
-Complete reference for all 37 MCP tools registered in the
+Complete reference for all 40 MCP tools registered in the
 LanOnasis MCP server. Tool names, descriptions, and parameter shapes are
 extracted directly from the source registry at build time.
 
@@ -63,7 +63,7 @@ Create chunked memories for very large content while preserving ownership and me
 
 ### delete_memory
 
-Delete a memory by ID.
+Soft-delete a memory by ID. Deleted memories can be restored by an authorized caller.
 
 **Annotations**: `toolAnnotations.delete_memory` (read/write/destructive hints from the source registry).
 
@@ -101,6 +101,7 @@ List memories with pagination and filters.
 | `tags` | string |
 | `search` | string |
 | `include_deleted` | boolean |
+| `include_preview` | boolean |
 
 ### memory_ask_profile
 
@@ -115,7 +116,7 @@ Ask a natural-language question about a subject and get an AI-synthesised answer
 
 ### memory_bulk_delete
 
-Delete multiple memories in a single operation.
+Soft-delete multiple active memories in a single idempotent operation.
 
 **Parameters**:
 
@@ -342,6 +343,8 @@ Create a new API key.
 | `name` | string |
 | `description` | string |
 | `access_level` | string |
+| `key_context` | string |
+| `scopes` | string |
 | `expires_in_days` | number |
 | `project_id` | string |
 
@@ -446,6 +449,18 @@ Get organization information.
 
 **Parameters**: none.
 
+### list_deleted_memories
+
+List soft-deleted memories in the authenticated memory boundary.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `limit` | number |
+| `offset` | number |
+| `type` | string |
+
 ### list_projects
 
 List projects.
@@ -457,6 +472,29 @@ List projects.
 | Name | Type |
 |------|------|
 | `organization_id` | string |
+
+### purge_deleted_memories
+
+Admin-only physical purge. Run dry_run first; confirm with the returned token within ten minutes.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `cutoff` | string |
+| `batch_size` | number |
+| `dry_run` | boolean |
+| `confirmation_token` | string |
+
+### restore_memory
+
+Restore a soft-deleted memory within the authenticated memory boundary.
+
+**Parameters**:
+
+| Name | Type |
+|------|------|
+| `id` | string |
 
 ### search_lanonasis_docs
 
@@ -516,4 +554,4 @@ Set configuration setting.
 - [IDE Integration](./ide-integration.md) - Connect IDEs to MCP
 - [Production Server](./production-server.md) - Production deployment
 
-<!-- Generated 2026-08-11 from 37 registered tools. -->
+<!-- Generated 2026-11-02 from 40 registered tools. -->

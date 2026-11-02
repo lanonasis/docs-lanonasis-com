@@ -158,8 +158,8 @@ POST /api/v1/embeddings
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `input` | string or string[] | Yes | Text or list of texts to generate embeddings for |
-| `model` | string | No | Embedding model (default: voyage-4) |
+| `input` | string or string[] | Yes | Text or list of texts to generate embeddings for (up to 128) |
+| `model` | string | No | Embedding model (default: `voyage-4-large`; unknown models fall back to it) |
 
 ### Example Request
 
@@ -229,6 +229,11 @@ curl -X POST "https://api.lanonasis.com/api/v1/memories/search" \
 ## Search Analytics
 
 Track search performance and user behavior.
+
+:::danger Not available
+`GET /api/v1/analytics/search` is **not served** by `api.lanonasis.com` today: no route exists, and requests fail. This page describes a planned API and is kept for reference only. Do not build against it.
+:::
+
 
 ### Request
 

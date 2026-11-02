@@ -137,13 +137,18 @@ Update an existing memory's content, tags, or metadata.
 ### Request
 
 ```http
-PUT /api/v1/memories/{id}
+POST /api/v1/memories/update
 ```
+
+:::warning Use `/update`, not `PUT /memories/{id}`
+Every method on `/api/v1/memories/{id}` is routed to the read endpoint, so `PUT /api/v1/memories/{id}` returns the memory **unchanged** and still answers 200. Send updates to `/api/v1/memories/update` with the id in the body.
+:::
 
 ### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `id` | string | Yes | ID of the memory to update |
 | `title` | string | No | Updated memory title |
 | `content` | string | No | Updated memory content |
 | `tags` | array | No | Updated tags array |
@@ -152,10 +157,11 @@ PUT /api/v1/memories/{id}
 ### Example Request
 
 ```bash
-curl -X PUT https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
+curl -X POST https://api.lanonasis.com/api/v1/memories/update \
   -H "X-API-Key: lano_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
+    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
     "tags": ["project", "requirements", "high-priority", "reviewed"],
     "metadata": {
       "project_id": "proj_123",
@@ -195,24 +201,30 @@ curl -X PUT https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c
 
 ## Delete Memory
 
-Permanently delete a memory. This action cannot be undone.
+Soft-delete a memory. The row is kept with `deleted_at` set, drops out of normal lists, search and reads, and can be restored. Deleting an already-deleted memory succeeds again without changing it.
 
 ### Request
 
 ```http
-DELETE /api/v1/memories/{id}
+POST /api/v1/memories/delete?id={id}
 ```
 
-### Path Parameters
+`DELETE` with the same query string also works, as does `{"id": "..."}` in a POST body.
+
+:::warning Use `/delete`, not `DELETE /memories/{id}`
+`DELETE /api/v1/memories/{id}` reaches the read endpoint: it returns the memory and deletes nothing.
+:::
+
+### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | Memory ID to delete |
+| `id` | string | Yes | Memory ID to delete (query string or JSON body) |
 
 ### Example Request
 
 ```bash
-curl -X DELETE https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
+curl -X POST "https://api.lanonasis.com/api/v1/memories/delete?id=4a4a675f-2e35-4598-ae7a-1c1f35730226" \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 
@@ -221,39 +233,47 @@ curl -X DELETE https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a
 ```json
 {
   "success": true,
-  "message": "Memory deleted successfully",
-  "data": {
-    "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
-    "deleted_at": "2024-01-16T15:30:00Z"
-  }
+  "message": "Memory 4a4a675f-2e35-4598-ae7a-1c1f35730226 deleted successfully",
+  "deleted_id": "4a4a675f-2e35-4598-ae7a-1c1f35730226"
 }
 ```
 
+### Finding, restoring and purging deleted memories
+
+- **Find**: `GET /api/v1/memories/list?include_deleted=true` returns soft-deleted rows alongside live ones, and `GET /api/v1/memories/{id}?include_deleted=true` reads one. The MCP tool `list_deleted_memories` lists only the deleted ones.
+- **Restore**: use the MCP tool `restore_memory`. There is no REST restore route.
+- **Remove for good**: the admin-only MCP tool `purge_deleted_memories` physically deletes soft-deleted rows, after a `dry_run` and a confirmation token.
+
 ## List Memories
 
-Retrieve a paginated list of memories with optional filtering.
+Retrieve a page of memory **summaries** with optional filtering. List rows do not include `content` or `metadata`; fetch one memory with `GET /api/v1/memories/{id}` for the full record, or pass `include_preview=true` to get a short `content_preview` on each row.
 
 ### Request
 
 ```http
-GET /api/v1/memories
+GET /api/v1/memories/list
 ```
+
+`POST /api/v1/memories/list` with the same fields in a JSON body is also accepted. A bare `GET /api/v1/memories` is the create endpoint and answers `405`.
 
 ### Query Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `limit` | integer | No | Results per page (1-100, default: 20) |
-| `offset` | integer | No | Results offset (default: 0) |
+| `offset` | integer | No | Results offset (default: 0). Ignored in cursor mode |
 | `type` | string | No | Filter by memory type |
 | `tags` | string | No | Comma-separated tags to filter by |
 | `sortBy` | string | No | Sort field (`created_at`, `updated_at`, `title`) |
 | `sortOrder` | string | No | Sort order (`asc`, `desc`) |
+| `include_preview` | boolean | No | Add `content_preview` (first 200 characters) to each row |
+| `pagination` | string | No | `cursor` to switch to keyset pagination for the first page |
+| `cursor` | string | No | The `next_cursor` from the previous page. Must be sent with the same `sortBy`/`sortOrder`, or the request is rejected with 400 |
 
 ### Example Request
 
 ```bash
-curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=10&offset=0&tags=project,requirements&sortBy=updated_at&sortOrder=desc" \
+curl -X GET "https://api.lanonasis.com/api/v1/memories/list?limit=10&tags=project,requirements&sortBy=updated_at&sortOrder=desc&include_preview=true" \
   -H "X-API-Key: lano_your_api_key_here"
 ```
 
@@ -261,34 +281,58 @@ curl -X GET "https://api.lanonasis.com/api/v1/memories?limit=10&offset=0&tags=pr
 
 ```json
 {
-  "success": true,
   "data": [
     {
       "id": "4a4a675f-2e35-4598-ae7a-1c1f35730226",
       "title": "Project Requirements",
-      "content": "The new feature should include user authentication...",
       "memory_type": "project",
       "tags": ["project", "requirements", "high-priority"],
-      "created_at": "2024-01-15T10:30:00Z",
-      "updated_at": "2024-01-16T14:22:00Z"
-    },
-    {
-      "id": "7b7c1a6d-58d0-4c3d-b679-2e1ac0a4ef10",
-      "title": "Technical Specifications",
-      "content": "Database schema and API design for the new feature...",
-      "memory_type": "project",
-      "tags": ["project", "technical", "specifications"],
-      "created_at": "2024-01-14T16:45:00Z",
-      "updated_at": "2024-01-15T11:30:00Z"
+      "content_preview": "The new feature should include user authentication, data visualization, and real-time updates…",
+      "created_at": "2026-10-15T10:30:00Z",
+      "updated_at": "2026-10-16T14:22:00Z",
+      "access_count": 3
     }
   ],
   "pagination": {
     "total": 25,
-    "page": 1,
     "limit": 10,
-    "hasMore": true
+    "offset": 0,
+    "page": 1,
+    "total_pages": 3,
+    "has_next": true,
+    "has_prev": false
+  },
+  "filters": {
+    "type": null,
+    "tags": ["project", "requirements"],
+    "search": null,
+    "include_deleted": false,
+    "sort_by": "updated_at",
+    "sort_order": "desc"
   }
 }
+```
+
+Rows also carry ownership fields (`user_id`, `organization_id`, `scope`, `owner_type`, `owner_id`, …). They are omitted above for brevity.
+
+### Cursor pagination
+
+For large or frequently changing lists, send `pagination=cursor` on the first request. The response then has no `total` and looks like this:
+
+```json
+{ "pagination": { "mode": "cursor", "limit": 10, "has_next": true, "next_cursor": "eyJmIjoidXBkYXRlZF9hdCIs…" } }
+```
+
+Pass `cursor=<next_cursor>` to get the next page. Stop when `has_next` is `false`.
+
+### Caching with ETag
+
+Every list response carries an `ETag`. Send it back as `If-None-Match`; if nothing changed you get `304 Not Modified` with an empty body.
+
+```bash
+curl -i "https://api.lanonasis.com/api/v1/memories/list?limit=10" \
+  -H "X-API-Key: lano_your_api_key_here" \
+  -H 'If-None-Match: W/"…etag from the previous response…"'
 ```
 
 ## Error Codes

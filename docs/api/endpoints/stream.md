@@ -2,6 +2,11 @@
 title: Real-time Stream API
 description: Subscribe to real-time memory operations and system notifications over Server-Sent Events (SSE).
 ---
+
+:::danger Not available
+The streaming API (`/api/v1/stream`) is **not served** by `api.lanonasis.com` today: no route exists, and requests fail. This page describes a planned API and is kept for reference only. Do not build against it.
+:::
+
 ## Real-time Stream API
 
 Subscribe to real-time updates and events using Server-Sent Events (SSE) for live memory operations and system notifications.
