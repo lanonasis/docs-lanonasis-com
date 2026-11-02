@@ -24,9 +24,9 @@ const API_SPECS = [
     name: "MCP Memory API",
     icon: "🧠",
     description:
-      "Complete MCP REST API with 31 tools - Memory, API Keys, Intelligence, Behavior, System",
+      "MCP REST API (40 MCP tools) - Memory, API Keys, Intelligence, Behavior, System",
     paths: ["/memory-api.json", "/memory-api.yaml"],
-    badge: "MCP v2.0 - 31 Tools",
+    badge: "MCP v2.0 - 40 Tools",
   },
   {
     id: "docs",
