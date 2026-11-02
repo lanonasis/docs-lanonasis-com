@@ -3,7 +3,7 @@
   "info": {
     "title": "Lanonasis MCP REST API",
     "version": "1.1.0",
-    "description": "Complete REST API for Lanonasis Memory as a Service (MaaS) platform.\nProvides access to 28 MCP tools through a consistent `/api/v1/**` interface,\nincluding the AI-powered Memory Intelligence suite.\n\n## Architecture\n\nThe platform operates with two parallel routes:\n- **REST API (Supabase Edge Functions)**: This specification documents the edge function endpoints\n- **MCP Server (Direct Supabase)**: The MCP protocol server connects directly to Supabase\n\nBoth routes share the same database schema and are designed to work in parallel.\nThe REST API is a more recent development under active monitoring, replacing older\nNetlify functions.\n\n### Field Naming Compatibility\n\nFor memory operations, both `type` and `memory_type` field names are accepted:\n- `type`: Used by MCP tools for compatibility with the MCP protocol\n- `memory_type`: Preferred REST API field name, matches database column\n\n### Route Compatibility\n\nThe canonical public memory REST routes use the plural `/memories/*`\nfamily. The production redirect layer still accepts singular\n`/memory/*` aliases for compatibility, but new clients should target the\nplural form documented in this specification.\n\n## Authentication\n\nThis API supports three authentication methods:\n\n1. **OAuth2 PKCE** (Primary)\n   - Authorization URL: `https://auth.lanonasis.com/oauth/authorize`\n   - Token URL: `https://auth.lanonasis.com/oauth/token`\n   - Scopes: `mcp:full`, `memories:read`, `memories:write`, `profile`\n\n2. **API Key** (Fallback)\n   - Header: `X-API-Key: lano_*`\n   - Compatibility note: the live edge auth layer still accepts several\n     legacy/internal prefixes (`lms_`, `lns_`, `vibe_`, `sk_`, `pk_`,\n     `master_`), but public clients should treat `lano_*` as the canonical\n     platform key format.\n\n3. **JWT Token** (Legacy)\n   - Header: `Authorization: Bearer <jwt_token>`\n",
+    "description": "Complete REST API for Lanonasis Memory as a Service (MaaS) platform.\nProvides access to the MCP tool surface (40 tools in the mcp-core registry as of 2026-11-02) through a consistent `/api/v1/**` interface,\nincluding the AI-powered Memory Intelligence suite.\n\n## Architecture\n\nThe platform operates with two parallel routes:\n- **REST API (Supabase Edge Functions)**: This specification documents the edge function endpoints\n- **MCP Server (Direct Supabase)**: The MCP protocol server connects directly to Supabase\n\nBoth routes share the same database schema and are designed to work in parallel.\nThe REST API is a more recent development under active monitoring, replacing older\nNetlify functions.\n\n### Field Naming Compatibility\n\nFor memory operations, both `type` and `memory_type` field names are accepted:\n- `type`: Used by MCP tools for compatibility with the MCP protocol\n- `memory_type`: Preferred REST API field name, matches database column\n\n### Route Compatibility\n\nThe canonical public memory REST routes use the plural `/memories/*`\nfamily. The production redirect layer still accepts singular\n`/memory/*` aliases for compatibility, but new clients should target the\nplural form documented in this specification.\n\n## Authentication\n\nThis API supports three authentication methods:\n\n1. **OAuth2 PKCE** (Primary)\n   - Authorization URL: `https://auth.lanonasis.com/oauth/authorize`\n   - Token URL: `https://auth.lanonasis.com/oauth/token`\n   - Scopes: `mcp:full`, `memories:read`, `memories:write`, `profile`\n\n2. **API Key** (Fallback)\n   - Header: `X-API-Key: lano_*`\n   - Compatibility note: the live edge auth layer still accepts several\n     legacy/internal prefixes (`lms_`, `lns_`, `vibe_`, `sk_`, `pk_`,\n     `master_`), but public clients should treat `lano_*` as the canonical\n     platform key format.\n\n3. **JWT Token** (Legacy)\n   - Header: `Authorization: Bearer <jwt_token>`\n",
     "contact": {
       "name": "Lanonasis Support",
       "email": "support@lanonasis.com",
@@ -17,7 +17,7 @@
   "servers": [
     {
       "url": "https://api.lanonasis.com/api/v1",
-      "description": "Production server (MXT Edge Functions / Netlify)"
+      "description": "Production server (VPS nginx → MXT Edge Functions; /api/v1/auth/* and api-keys → auth-gateway)"
     },
     {
       "url": "https://auth.lanonasis.com/api/v1",
@@ -69,14 +69,92 @@
   ],
   "paths": {
     "/memories": {
+      "post": {
+        "tags": [
+          "Memories"
+        ],
+        "summary": "Create Memory",
+        "description": "Create a new memory with vector embedding (MCP tool `create_memory`)",
+        "operationId": "createMemory",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Memory created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimitError"
+          }
+        }
+      }
+    },
+    "/memories/list": {
       "get": {
         "tags": [
           "Memories"
         ],
         "summary": "List Memories",
-        "description": "List memories with pagination and filters (MCP tool `list_memories`)",
+        "description": "List memories with pagination and filters (MCP tool `list_memories`). Returns SUMMARY rows only: `content` and `metadata` are not included (issue #66, egress reduction). Fetch the full body and metadata with `GET /memories/{id}`. Pass `include_preview=true` for a bounded `content_preview` snippet (max 200 chars). Responses carry a weak `ETag`; send it back as `If-None-Match` to receive `304 Not Modified` with no body. Pagination is offset-based by default. For keyset pagination send `pagination=cursor` (first page) and then `cursor=<next_cursor>`; cursor mode skips the exact `total` count.",
         "operationId": "listMemories",
+        "x-route-note": "Served by the memory-list edge function. Bare `GET /memories` is routed to memory-create by nginx and answers 405; `POST /memories/list` with the same fields in a JSON body is also accepted.",
         "parameters": [
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "description": "ETag from a previous list response; yields 304 when unchanged.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_preview",
+            "in": "query",
+            "description": "Attach a `content_preview` (max 200 chars) to each row.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "pagination",
+            "in": "query",
+            "description": "Set to `cursor` to opt in to keyset pagination.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "cursor"
+              ]
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Opaque `next_cursor` from the previous page. Must be used with the same `sortBy`/`sortOrder`; otherwise 400. Implies cursor pagination.",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "limit",
             "in": "query",
@@ -141,7 +219,15 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Successful response (summary rows, no content/metadata)",
+            "headers": {
+              "ETag": {
+                "description": "Weak validator for this exact response body.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -150,44 +236,8 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "429": {
-            "$ref": "#/components/responses/RateLimitError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Memories"
-        ],
-        "summary": "Create Memory",
-        "description": "Create a new memory with vector embedding (MCP tool `create_memory`)",
-        "operationId": "createMemory",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMemoryRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Memory created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MemoryResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
+          "304": {
+            "description": "Not modified (If-None-Match matched). No body."
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
@@ -236,31 +286,38 @@
             "$ref": "#/components/responses/NotFoundError"
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/memories/update": {
+      "post": {
         "tags": [
           "Memories"
         ],
         "summary": "Update Memory",
-        "description": "Update an existing memory (MCP tool `update_memory`)",
+        "description": "Update an existing memory (MCP tool `update_memory`). The memory id goes in the body. `PUT /memories/{id}` is not routed: nginx sends every method on `/memories/{id}` to memory-get, so a PUT returns the unchanged memory.",
         "operationId": "updateMemory",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMemoryRequest"
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "id"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/UpdateMemoryRequest"
+                  }
+                ]
               }
             }
           }
@@ -283,19 +340,21 @@
             "$ref": "#/components/responses/NotFoundError"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/memories/delete": {
+      "post": {
         "tags": [
           "Memories"
         ],
         "summary": "Delete Memory",
-        "description": "Delete a memory by ID (MCP tool `delete_memory`)",
+        "description": "Delete a memory (MCP tool `delete_memory`). Pass the id as `?id=` or as `{\"id\": \"...\"}` in the body; `DELETE` with the same inputs is also accepted. `DELETE /memories/{id}` is not routed: nginx sends it to memory-get.",
         "operationId": "deleteMemory",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -521,7 +580,7 @@
           "Memories"
         ],
         "summary": "Bulk Delete Memories",
-        "description": "Delete multiple memories at once (MCP tool `memory_bulk_delete`). Maximum 100 memories per request.",
+        "description": "Delete multiple memories at once (MCP tool `memory_bulk_delete`). Maximum 100 memories per request. nginx also accepts `/memory/bulk/delete` and the singular `/memory/` prefix.",
         "operationId": "bulkDeleteMemories",
         "requestBody": {
           "required": true,
@@ -1498,6 +1557,127 @@
         }
       }
     },
+    "/embeddings": {
+      "post": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Create Embeddings",
+        "description": "Voyage AI embeddings proxy (edge function `embeddings`). Up to 128 inputs per request. Unknown models fall back to `voyage-4-large`; default output dimension is 1024.",
+        "operationId": "createEmbeddings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "input"
+                ],
+                "properties": {
+                  "input": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "maxItems": 128,
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ]
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "voyage-4",
+                      "voyage-4-large",
+                      "voyage-4-lite",
+                      "voyage-4-nano",
+                      "voyage-3",
+                      "voyage-3-lite",
+                      "voyage-code-3",
+                      "voyage-finance-2",
+                      "voyage-law-2",
+                      "voyage-large-2-instruct"
+                    ],
+                    "default": "voyage-4-large"
+                  },
+                  "encoding_format": {
+                    "type": "string",
+                    "enum": [
+                      "float",
+                      "base64"
+                    ]
+                  },
+                  "dimensions": {
+                    "type": "integer",
+                    "default": 1024
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OpenAI-compatible embeddings list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "object": {
+                            "type": "string"
+                          },
+                          "embedding": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "index": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "usage": {
+                      "type": "object",
+                      "properties": {
+                        "total_tokens": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid input, or more than 128 inputs"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
     "/projects": {
       "get": {
         "tags": [
@@ -1608,13 +1788,13 @@
         }
       }
     },
-    "/health": {
+    "/memories/health": {
       "get": {
         "tags": [
           "System"
         ],
         "summary": "Get Health Status",
-        "description": "Get system health status (MCP tool `get_health_status`)",
+        "description": "Get system health status (MCP tool `get_health_status`). Served by system-health; `/api/v1/health` is not routed (404).",
         "operationId": "getHealthStatus",
         "security": [],
         "responses": {
@@ -2028,24 +2208,58 @@
           },
           "data": {
             "type": "array",
+            "description": "Summary rows. `content` and `metadata` are omitted; use GET /memories/{id}. `content_preview` present only with include_preview=true.",
             "items": {
-              "$ref": "#/components/schemas/Memory"
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Memory"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "content_preview": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              ]
             }
           },
           "pagination": {
             "type": "object",
+            "description": "Offset mode returns total/offset/page/total_pages/has_prev; cursor mode returns mode/next_cursor and no total.",
             "properties": {
               "total": {
+                "type": "integer"
+              },
+              "offset": {
                 "type": "integer"
               },
               "page": {
                 "type": "integer"
               },
+              "total_pages": {
+                "type": "integer"
+              },
               "limit": {
                 "type": "integer"
               },
-              "hasMore": {
+              "has_next": {
                 "type": "boolean"
+              },
+              "has_prev": {
+                "type": "boolean"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "cursor"
+                ]
+              },
+              "next_cursor": {
+                "type": "string",
+                "nullable": true
               }
             }
           }

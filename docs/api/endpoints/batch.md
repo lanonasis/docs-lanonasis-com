@@ -2,6 +2,11 @@
 title: Batch Operations API
 description: Perform multiple memory operations in a single request for improved efficiency and reduced latency.
 ---
+
+:::danger Not available
+`POST /api/v1/batch` is **not served** by `api.lanonasis.com` today: no route exists, and requests fail. This page describes a planned API and is kept for reference only. Do not build against it.
+:::
+
 ## Batch Operations API
 
 Perform multiple memory operations in a single request for improved efficiency and reduced latency.

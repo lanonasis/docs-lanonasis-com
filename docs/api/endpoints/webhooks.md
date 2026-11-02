@@ -2,6 +2,11 @@
 title: Webhooks API
 description: Configure and manage webhooks to receive real-time notifications about memory operations and system events.
 ---
+
+:::danger Not available
+The webhooks API (`/api/v1/webhooks`) is **not served** by `api.lanonasis.com` today: no route exists, and requests fail. This page describes a planned API and is kept for reference only. Do not build against it.
+:::
+
 ## Webhooks API
 
 Configure and manage webhooks to receive real-time notifications about memory operations and system events.
