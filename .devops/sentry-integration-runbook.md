@@ -8,6 +8,50 @@
 
 ---
 
+## ⚠️ Corrections — 2026-11-03 (read this first)
+
+The integration below was written but **never worked**. The Sentry project
+received zero events until 2026-11-03. Four defects, all now fixed and verified:
+
+| # | Defect | Why it was silent |
+|---|--------|-------------------|
+| 1 | `src/sentry.client.ts` read `process.env['SENTRY_DSN']` through a **computed** accessor | Docusaurus/webpack substitutes only `process.env.NODE_ENV`. A computed `process.env[key]` can never be substituted, so it survived into the browser as `undefined`; `if (dsn)` was false and `Sentry.init()` never ran. The SDK was bundled, so it *looked* wired up. |
+| 2 | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_DSN` were stored with a **trailing newline** | `echo "x" \| vercel env add …` stores the `\n`. Dashboards render it as correct; org/project become unresolvable and a DSN is rejected at runtime. |
+| 3 | The three value vars were **Production-only** | Every preview build logged `SENTRY_DSN not set`. |
+| 4 | The build emitted **no `.map` files** | The upload attached bare JS, so stacks stayed minified. |
+
+**The corrected pattern is Phase 2A below — not the original Phase 2.** The
+original Phase 2/3 snippets are kept for history but are marked superseded.
+
+### The substitution rule
+
+Bundlers replace only *statically analysable* member expressions on a known env
+object, for keys they were configured to define. Docusaurus defines only
+`process.env.NODE_ENV` (via webpack `mode`) and
+`process.env.HYDRATE_CLIENT_ENTRY`. Therefore:
+
+- `process.env.SENTRY_DSN` → survives verbatim, `undefined` in the browser
+- `const env = k => process.env[k]` → **never** substituted
+
+**The defensive guard helper was the bug.** It converted a replaceable static
+reference into an unreplaceable dynamic one. With correct injection there is no
+runtime env access left to guard.
+
+### Verification rule
+
+Never infer "the browser has the value" from "I set the env var". Assert on the
+**shipped artifact**:
+
+```bash
+grep -rl '<the literal value>' build/ | wc -l      # must be non-zero
+grep -rl 'process\.env\.SENTRY' build/ | wc -l     # must be 0
+```
+
+Compare **counts** — a `grep … | head` pipeline reports `head`'s status, so a
+missing match reads as success.
+
+---
+
 ## Context & Lessons Learned
 
 A previous Sentry integration attempt on `lanonasis-index` caused a build collapse. Root cause was almost certainly `@sentry/vite-plugin` interfering with the Vite pipeline. This is **not** a Docusaurus/webpack concern — but we are taking a minimal-footprint approach regardless.
@@ -83,9 +127,11 @@ SENTRY_DSN=https://7c1b930cf10d7e92e9b9c7b79146a604@o4509338886209536.ingest.us.
 
 - [x] Sentry project created: `docs-lanonasis` under `lan-onasis` org
 - [x] DSN retrieved
-- [ ] **exMGT: Add env vars to Vercel dashboard**
-- [ ] **exMGT: Create `SENTRY_AUTH_TOKEN` with correct scopes**
-- [ ] **exMGT: Confirm alert routing** (Slack channel or email?)
+- [x] Env vars set in Vercel for **production, preview and development** (2026-11-03)
+      — set with `printf '%s'`, never `echo`, or a trailing newline is stored
+- [x] `SENTRY_AUTH_TOKEN` set (verified working: uploads report targets)
+- [x] Source maps emitted + uploaded + deleted post-upload
+- [ ] **Confirm alert routing** (Slack channel or email) — still open
 
 ---
 
@@ -125,44 +171,75 @@ grep "@sentry/react" apps/docs-lanonasis/package.json
 ```typescript
 /**
  * Sentry browser initialization for docs-lanonasis.
- * Loaded via Docusaurus clientModules — runs browser-side only, never during SSG.
+ * Loaded via Docusaurus clientModules — browser-side only, never during SSG.
  *
- * IMPORTANT: This file must never throw. All Sentry errors are swallowed
- * to prevent monitoring from taking down the docs site.
+ * Values are injected at build time by headTags in docusaurus.config.ts and
+ * read from the DOM. They are NOT read from process.env — see Phase 2A.
  */
 import * as Sentry from '@sentry/react';
 
-const dsn = process.env.SENTRY_DSN || '';
+type SentryBuildConfig = { dsn?: string; release?: string; environment?: string };
 
-// Do nothing if DSN is not configured (local dev without .env.local, CI, etc.)
+function readBuildConfig(): SentryBuildConfig {
+  try {
+    if (typeof document === 'undefined') return {};
+    const el = document.getElementById('sentry-build-config');
+    if (!el || !el.textContent) return {};
+    return JSON.parse(el.textContent) as SentryBuildConfig;
+  } catch {
+    return {}; // malformed config must never break the site
+  }
+}
+
+const buildConfig = readBuildConfig();
+const dsn = (buildConfig.dsn ?? '').trim();
+const environment = (buildConfig.environment ?? 'production').trim();
+
 if (dsn) {
   try {
     Sentry.init({
       dsn,
-      environment: process.env.NODE_ENV || 'production',
-      // Low sample rate for docs — not a transactional app
+      environment,
       tracesSampleRate: 0.1,
-      // Only capture errors from our domain, not third-party scripts
-      allowUrls: [/docs\.lanonasis\.com/],
-      // Do not send in development unless explicitly requested
-      enabled: process.env.NODE_ENV === 'production',
-      // Release tag — set by CI via SENTRY_RELEASE env var
-      release: process.env.SENTRY_RELEASE,
-      // Reduce noise: ignore benign browser errors
+      allowUrls: [/docs\.lanonasis\.com/, /\.vercel\.app/],
+      enabled: environment !== 'development',
+      release: (buildConfig.release ?? '').trim() || undefined,
       ignoreErrors: [
         'ResizeObserver loop limit exceeded',
         'ResizeObserver loop completed with undelivered notifications',
         'Non-Error promise rejection captured',
       ],
     });
-  } catch (_) {
+  } catch {
     // Sentry init must never break the docs site
   }
 }
 
-// Export nothing — clientModules are side-effect-only
 export {};
 ```
+
+### 2A — the injection half (in `docusaurus.config.ts`)
+
+`docusaurus.config.ts` runs in **Node at build time**, so `process.env` is real
+there. Serialise into the HTML and read it back client-side:
+
+```ts
+headTags: [
+  {
+    tagName: 'script',
+    attributes: { type: 'application/json', id: 'sentry-build-config' },
+    innerHTML: JSON.stringify({
+      dsn: (process.env.SENTRY_DSN ?? '').trim(),
+      release: (process.env.SENTRY_RELEASE ?? process.env.VERCEL_GIT_COMMIT_SHA ?? '').trim(),
+      environment: (process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? 'production').trim(),
+    }),
+  },
+],
+```
+
+Use a `<script type="application/json">` **body**, not an HTML attribute —
+attribute escaping is where this normally breaks. `headTags` renders on every
+page; confirm with `grep -rl sentry-build-config build/ --include='*.html' | wc -l`.
 
 ### 2.2 Register in docusaurus.config.ts
 
@@ -189,44 +266,95 @@ We upload source maps AFTER the build, not during. This keeps webpack untouched.
 
 ```bash
 #!/bin/bash
-# Sentry source map upload — runs after docusaurus build
-# Only runs in CI/Vercel (SENTRY_AUTH_TOKEN must be set)
-# Safe to skip locally.
+# Sentry source map upload - runs after the docusaurus build.
+# Only runs where SENTRY_AUTH_TOKEN is set (Vercel/CI). Safe to skip locally.
 
 set -e
 
-if [ -z "$SENTRY_AUTH_TOKEN" ]; then
-  echo "SENTRY_AUTH_TOKEN not set — skipping source map upload"
+# Values are pasted/echoed into env stores by hand, so strip surrounding
+# whitespace and any stray CR/LF. A trailing newline in SENTRY_ORG,
+# SENTRY_PROJECT or SENTRY_DSN makes sentry-cli fail confusingly and silently
+# breaks the release.
+trim() {
+  printf '%s' "${1:-}" | tr -d '
+' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
+AUTH_TOKEN="$(trim "${SENTRY_AUTH_TOKEN:-}")"
+DSN_VALUE="$(trim "${SENTRY_DSN:-}")"
+ORG="$(trim "${SENTRY_ORG:-lan-onasis}")"
+PROJECT="$(trim "${SENTRY_PROJECT:-docs-lanonasis}")"
+
+# Maps must never reach the deployed bundle: the build emits them so
+# sentry-cli can read them, and this removes them on EVERY exit path
+# (including the skips below and a failed upload).
+cleanup_maps() {
+  local n
+  n=$(find build -name '*.map' 2>/dev/null | wc -l | tr -d ' ')
+  find build -name '*.map' -delete 2>/dev/null || true
+  echo "Removed $n source map file(s) from build/ (never deployed)."
+}
+trap cleanup_maps EXIT
+
+[ -n "$AUTH_TOKEN" ] || { echo "SENTRY_AUTH_TOKEN not set - skipping source map upload"; exit 0; }
+[ -n "$DSN_VALUE" ]  || { echo "SENTRY_DSN not set - skipping source map upload"; exit 0; }
+
+# Same fallback chain as docusaurus.config.ts headTags, so the release the
+# browser reports matches the release the maps are uploaded to.
+RELEASE="$(trim "${SENTRY_RELEASE:-${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD 2>/dev/null || echo 'unknown')}}")"
+
+if [ -z "$PROJECT" ] || [ "$PROJECT" = "invalid" ] || [ -z "$ORG" ] || [ "$ORG" = "invalid" ]; then
+  echo "SENTRY_PROJECT/SENTRY_ORG resolve to an invalid value; source-map upload skipped." >&2
   exit 0
 fi
+[ "$RELEASE" != "unknown" ] || { echo "Release undetermined; skipping." >&2; exit 0; }
 
-if [ -z "$SENTRY_DSN" ]; then
-  echo "SENTRY_DSN not set — skipping source map upload"
-  exit 0
-fi
-
-RELEASE="${SENTRY_RELEASE:-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')}"
-ORG="${SENTRY_ORG:-lanonasis}"
-PROJECT="${SENTRY_PROJECT:-docs-lanonasis}"
+export SENTRY_AUTH_TOKEN="$AUTH_TOKEN" SENTRY_ORG="$ORG" SENTRY_PROJECT="$PROJECT"
 
 echo "Uploading source maps for release: $RELEASE"
-
-# Create the release
-sentry-cli releases new --org "$ORG" --project "$PROJECT" "$RELEASE"
-
-# Upload source maps for all locale builds
-# Docusaurus outputs to build/ with locale subdirs for non-default locales
-sentry-cli sourcemaps upload \
-  --org "$ORG" \
-  --project "$PROJECT" \
-  --release "$RELEASE" \
-  build/
-
-# Finalize the release
-sentry-cli releases finalize --org "$ORG" --project "$PROJECT" "$RELEASE"
-
+sentry-cli releases new "$RELEASE"
+sentry-cli sourcemaps upload --release "$RELEASE" build/
+sentry-cli releases finalize "$RELEASE"
 echo "Source maps uploaded for $RELEASE"
 ```
+
+### 3.1b — emitting the maps (mandatory; without this the upload attaches bare JS)
+
+Docusaurus leaves `devtool` **undefined** for production builds
+(`webpack/base.js`), so **no `.map` files are produced at all**. Confirm first:
+
+```bash
+find build -name '*.map' | wc -l    # 0 = nothing to upload
+```
+
+Set it from the existing `configureWebpack` lifecycle in `docusaurus.config.ts`:
+
+```ts
+configureWebpack() {
+  // Compute `devtool` BEFORE requiring webpack - see the trap below.
+  const devtool =
+    process.env.NODE_ENV === 'production' ? 'hidden-source-map' : false;
+  try {
+    const webpack = require('webpack');
+    return { devtool, resolve: { /* … */ }, plugins: [ /* … */ ] };
+  } catch (e) {
+    // webpack is NOT resolvable from this config file in this repo, so the
+    // alias/ProvidePlugin above are inert. Still return devtool.
+    return { devtool };
+  }
+},
+```
+
+> **Trap that hid this for months:** `require('webpack')` **throws** from
+> `docusaurus.config.ts` (`Cannot find module 'webpack'` — it is not resolvable
+> from the config's location). The original `catch { return {} }` therefore
+> discarded the `devtool`, the `path-to-regexp` alias **and** the Buffer
+> `ProvidePlugin` on every build, silently. Anything that must survive belongs
+> outside that `try`, or in the `catch` return.
+>
+> **Probe a lifecycle before debugging it.** Put a side effect *outside* any
+> `try` (and write it with an ESM import, not `require`) — a hook that never
+> fires looks identical to one that fired and did nothing:
 
 Make executable: `chmod +x apps/docs-lanonasis/scripts/sentry-sourcemaps.sh`
 
