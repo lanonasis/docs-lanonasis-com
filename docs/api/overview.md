@@ -73,11 +73,17 @@ curl -X POST 'https://api.lanonasis.com/api/v1/memories/search' \
 | Operation | Method and route | Guide |
 | --- | --- | --- |
 | Create memory | `POST /api/v1/memories` | [Memory endpoints](./endpoints/memory.md) |
-| List memories | `GET /api/v1/memories` | [Memory endpoints](./endpoints/memory.md) |
+| List memories | `GET /api/v1/memories/list` | [Memory endpoints](./endpoints/memory.md) |
 | Get memory | `GET /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
-| Update memory | `PUT /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
-| Delete memory | `DELETE /api/v1/memories/{id}` | [Memory endpoints](./endpoints/memory.md) |
+| Update memory | `POST /api/v1/memories/update` (id in the body) | [Memory endpoints](./endpoints/memory.md) |
+| Delete memory | `POST /api/v1/memories/delete?id={id}` | [Memory endpoints](./endpoints/memory.md) |
 | Search memories | `POST /api/v1/memories/search` | [Search](./endpoints/search.md) |
+
+`PUT /api/v1/memories/{id}` and `DELETE /api/v1/memories/{id}` are **not** write
+routes: nginx sends every method on that path to the read endpoint, so both
+return the memory unchanged while answering `200`. Use the `POST /update` and
+`POST /delete` forms above. See [Memory endpoints](./endpoints/memory.md) for the
+full route list.
 
 The canonical OpenAPI assets used by the [API playground](/api/playground) are generated from the repository's memory API specification.
 
