@@ -125,6 +125,35 @@ const config: Config = {
   clientModules: [
     require.resolve('./src/sentry.client.ts'),
   ],
+
+  // Sentry build-time configuration.
+  //
+  // Docusaurus/webpack substitutes only `process.env.NODE_ENV`; any other
+  // `process.env.X` reference survives into the bundle verbatim, and a computed
+  // access such as `process.env[key]` can never be substituted at all. In the
+  // browser `process` does not exist, so the old lookup yielded `undefined`,
+  // `if (dsn)` was false, and the SDK silently never initialised - which is why
+  // the Sentry project received nothing. Bake the values into the HTML here and
+  // read them at runtime in src/sentry.client.ts.
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: { type: 'application/json', id: 'sentry-build-config' },
+      innerHTML: JSON.stringify({
+        dsn: (process.env.SENTRY_DSN ?? '').trim(),
+        release: (
+          process.env.SENTRY_RELEASE ??
+          process.env.VERCEL_GIT_COMMIT_SHA ??
+          ''
+        ).trim(),
+        environment: (
+          process.env.VERCEL_ENV ??
+          process.env.NODE_ENV ??
+          'production'
+        ).trim(),
+      }),
+    },
+  ],
   plugins: plugins,
 
   themeConfig: {
