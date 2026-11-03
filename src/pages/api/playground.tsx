@@ -3,6 +3,12 @@ import Layout from "@theme/Layout";
 import CodeBlock from "@theme/CodeBlock";
 import clsx from "clsx";
 import styles from "./ApiPlayground.module.css";
+import {
+  extractOperations,
+  operationKey,
+  type Operation,
+  type Parameter,
+} from "../../utils/playground-operations";
 
 /**
  * Enhanced API Playground for LanOnasis Documentation
@@ -51,27 +57,6 @@ const LANGUAGES = [
 ] as const;
 
 type LanguageId = (typeof LANGUAGES)[number]["id"];
-
-interface Operation {
-  path: string;
-  method: string;
-  summary?: string;
-  params: Parameter[];
-  hasBody: boolean;
-  defaultBody: string;
-}
-
-interface Parameter {
-  name: string;
-  in: "query" | "path" | "header";
-  required: boolean;
-  description: string;
-  schema: {
-    type?: string;
-    enum?: string[];
-    default?: any;
-  };
-}
 
 interface ResponseMeta {
   status: number;
@@ -221,56 +206,7 @@ export default function ApiPlayground() {
   }, [history]);
 
   // Extract operations from OpenAPI spec
-  function extractOperations(spec: any): Operation[] {
-    const ops: Operation[] = [];
-    if (!spec?.paths) return ops;
-
-    Object.entries(spec.paths).forEach(([path, methods]) => {
-      Object.entries(methods as any).forEach(([method, detailsRaw]) => {
-        const details = detailsRaw as any;
-        if (typeof details !== "object" || !details) return;
-
-        const params: Parameter[] = [];
-        (details?.parameters || []).forEach((p: any) => {
-          params.push({
-            name: p.name,
-            in: p.in,
-            required: Boolean(p.required),
-            description: p.description || "",
-            schema: p.schema || {},
-          });
-        });
-
-        const hasBody = Boolean(details?.requestBody);
-        let defaultBody = "";
-        if (hasBody) {
-          try {
-            const content = details?.requestBody?.content || {};
-            const jsonContent = content["application/json"];
-            if (jsonContent?.example) {
-              defaultBody = JSON.stringify(jsonContent.example, null, 2);
-            } else if (jsonContent?.examples) {
-              const first = Object.values(jsonContent.examples)[0] as any;
-              defaultBody = JSON.stringify(first?.value, null, 2);
-            }
-          } catch {
-            // Ignore
-          }
-        }
-
-        ops.push({
-          path,
-          method,
-          summary: details?.summary,
-          params,
-          hasBody,
-          defaultBody,
-        });
-      });
-    });
-
-    return ops;
-  }
+  // (implemented in ../../utils/playground-operations so it is unit-testable)
 
   // Handle parameter changes
   const updateParam = useCallback((name: string, value: string) => {
@@ -655,8 +591,11 @@ export default function ApiPlayground() {
                     >
                       <option value="">Select an endpoint...</option>
                       {operations.map((op, idx) => (
-                        <option key={idx} value={idx}>
-                          {op.path}
+                        <option
+                          key={operationKey(op.method, op.path)}
+                          value={idx}
+                        >
+                          {op.method.toUpperCase()} {op.path}
                         </option>
                       ))}
                     </select>
