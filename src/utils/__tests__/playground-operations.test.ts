@@ -7,14 +7,8 @@ import {
   operationKey,
 } from "../playground-operations";
 
-const SPEC_PATH = path.join(
-  import.meta.dir,
-  "..",
-  "..",
-  "..",
-  "static",
-  "memory-api.json",
-);
+// Resolved from the repo root: `bun test` runs with the project root as cwd.
+const SPEC_PATH = path.join(process.cwd(), "static", "memory-api.json");
 
 function loadSpec(): any {
   return JSON.parse(readFileSync(SPEC_PATH, "utf8"));
