@@ -1,5 +1,5 @@
 {
-  "last_verified": "2026-11-02T13:08:16.119Z",
+  "last_verified": "2026-11-03T07:05:14.970Z",
   "synced_from": {
     "generator": "scripts/sync-docs-specs.js",
     "memory": "canonical:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
@@ -14,7 +14,7 @@
       "badge": "MCP v2.0 - 40 Tools",
       "version": "1.1.0",
       "hash": "2bc586b0c79f9da36da4cb0ebfa55a4703f3c4de5c28377a4094a933dc0aa4e3",
-      "last_verified": "2026-11-02T13:08:16.119Z",
+      "last_verified": "2026-11-03T07:05:14.970Z",
       "synced_from": "canonical:apps/onasis-core/docs/supabase-api/SUPABASE_REST_API_OPENAPI.yaml",
       "paths": [
         "/memory-api.json",
@@ -29,7 +29,7 @@
       "badge": "Docs Search API",
       "version": "1.0.0",
       "hash": "ab9e5e986129af6927121eaef768665c86fcc8090976044371f5d1fa9b2b9306",
-      "last_verified": "2026-11-02T13:08:16.119Z",
+      "last_verified": "2026-11-03T07:05:14.970Z",
       "synced_from": "repo:apps/docs-lanonasis/openapi.yaml",
       "paths": [
         "/openapi.json",
