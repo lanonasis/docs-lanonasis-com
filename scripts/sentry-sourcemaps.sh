@@ -40,7 +40,23 @@ fi
 
 # Same fallback chain as docusaurus.config.ts headTags, so the release tag the
 # browser reports matches the release the source maps are uploaded to.
-RELEASE="$(trim "${SENTRY_RELEASE:-${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD 2>/dev/null || echo 'unknown')}}")"
+# Trim BEFORE falling back, mirroring firstNonEmptyEnv() in
+# docusaurus.config.ts. `${X:-default}` only tests emptiness *before* trimming,
+# so a whitespace-only SENTRY_RELEASE would otherwise suppress the fallback and
+# then trim to an empty release.
+release_candidate() {
+  for candidate in "${SENTRY_RELEASE:-}" "${VERCEL_GIT_COMMIT_SHA:-}"; do
+    candidate="$(trim "$candidate")"
+    if [ -n "$candidate" ]; then
+      printf '%s' "$candidate"
+      return 0
+    fi
+  done
+  # Last resort for local runs where neither is exported. On Vercel,
+  # VERCEL_GIT_COMMIT_SHA is always present, so this does not diverge there.
+  trim "$(git rev-parse HEAD 2>/dev/null || true)"
+}
+RELEASE="$(release_candidate)"
 
 # Guard: an invalid/missing project or org makes the upload fail with a
 # confusing sentry-cli error and burns build time. Surface an operator action

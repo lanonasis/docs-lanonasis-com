@@ -30,7 +30,20 @@ function readBuildConfig(): SentryBuildConfig {
     if (typeof document === 'undefined') return {};
     const el = document.getElementById(CONFIG_ELEMENT_ID);
     if (!el || !el.textContent) return {};
-    return JSON.parse(el.textContent) as SentryBuildConfig;
+    // JSON.parse can return null, a number, or an object with non-string
+    // fields, and the `as` cast checks nothing. The reads below happen at
+    // module scope, outside this try, so a bad shape would throw there and
+    // break the client bundle - this file must never throw.
+    const parsed: unknown = JSON.parse(el.textContent);
+    if (typeof parsed !== 'object' || parsed === null) return {};
+    const raw = parsed as Record<string, unknown>;
+    const asString = (v: unknown): string | undefined =>
+      typeof v === 'string' ? v : undefined;
+    return {
+      dsn: asString(raw.dsn),
+      release: asString(raw.release),
+      environment: asString(raw.environment),
+    };
   } catch (_) {
     // Malformed config must never break the docs site.
     return {};
@@ -39,7 +52,8 @@ function readBuildConfig(): SentryBuildConfig {
 
 const buildConfig = readBuildConfig();
 const dsn = (buildConfig.dsn ?? '').trim();
-const environment = (buildConfig.environment ?? 'production').trim();
+// `||` not `??`: an empty environment should fall back to production.
+const environment = (buildConfig.environment ?? '').trim() || 'production';
 
 // Do nothing if DSN is not configured (local dev without an env file, CI, etc.)
 if (dsn) {

@@ -12,6 +12,21 @@ import path from 'path';
 // Self-hosted configuration - No external dependencies
 
 // Guard webpack config for Nx compatibility
+// Read the first env var that is set to a NON-EMPTY (post-trim) value.
+//
+// `??` does not fall back on an empty string, so `A ?? B` yields '' when A is
+// set-but-empty. That would pin the browser's release to '' while
+// scripts/sentry-sourcemaps.sh (using `:-`) fell back to the commit SHA - the
+// two would disagree, so uploaded source maps would attach to a release the
+// browser never reports.
+const firstNonEmptyEnv = (...names: string[]): string => {
+  for (const name of names) {
+    const value = (process.env[name] ?? '').trim();
+    if (value) return value;
+  }
+  return '';
+};
+
 const isNxBuild = process.env.NX_BUILD === 'true' || process.env.NX_WORKSPACE_ROOT !== undefined;
 const enableGitLastUpdate = !process.env.VERCEL;
 
@@ -188,16 +203,12 @@ const config: Config = {
       attributes: { type: 'application/json', id: 'sentry-build-config' },
       innerHTML: JSON.stringify({
         dsn: (process.env.SENTRY_DSN ?? '').trim(),
-        release: (
-          process.env.SENTRY_RELEASE ??
-          process.env.VERCEL_GIT_COMMIT_SHA ??
-          ''
-        ).trim(),
-        environment: (
-          process.env.VERCEL_ENV ??
-          process.env.NODE_ENV ??
-          'production'
-        ).trim(),
+        release: firstNonEmptyEnv(
+          'SENTRY_RELEASE',
+          'VERCEL_GIT_COMMIT_SHA',
+        ),
+        environment:
+          firstNonEmptyEnv('VERCEL_ENV', 'NODE_ENV') || 'production',
       }),
     },
   ],
