@@ -68,7 +68,7 @@ Credentials cached: ~/.lanonasis/credentials.json
 
 - Credentials stored securely (AES-256-GCM encryption)
 - Access token refreshed automatically before expiry
-- Refresh token rotated per [Golden Contract v0.1](https://docs.lanonasis.com/security/golden-contract) standards
+- Refresh token rotated per Golden Contract v0.1 standards
 
 ### Browser Flow (Programmatic / CI Systems)
 
@@ -525,7 +525,7 @@ lanonasis memory search --query "test"
 
 ## Golden Contract v0.1 Compliance
 
-All CLI operations comply with [Golden Contract v0.1](https://docs.lanonasis.com/security/golden-contract) standards:
+All CLI operations comply with Golden Contract v0.1 standards:
 
 - **Encryption**: Credentials encrypted with AES-256-GCM before storage
 - **Token Rotation**: Refresh tokens rotated automatically

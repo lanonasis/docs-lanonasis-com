@@ -329,7 +329,7 @@ const results = await Promise.all([
 - ✅ **SOX**: Audit logging for financial controls
 - ✅ **HIPAA**: For health information (PHI)
 
-**Golden Contract v0.1**: All operations follow [Golden Contract v0.1](https://docs.lanonasis.com/security/golden-contract) standards for credential rotation, token freshness, and audit compliance.
+**Golden Contract v0.1**: All operations follow the Golden Contract v0.1 standards for credential rotation, token freshness, and audit compliance.
 
 ---
 
