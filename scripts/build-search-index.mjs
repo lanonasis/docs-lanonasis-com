@@ -139,6 +139,22 @@ function buildIndex() {
     });
   }
 
+  // Hand-authored entries for client-rendered routes that live under
+  // src/pages/ (walk() only sees docs/). These keep search-index.json in
+  // lock-step with pages that have no corresponding markdown source.
+  const EXTRA_ENTRIES = [
+    {
+      title: 'API Playground',
+      description:
+        'Interactive playground for exploring the LanOnasis MCP REST API and docs search.',
+      url: '/api/playground',
+      section: 'api',
+      content:
+        'API Playground\n\nInteractive playground for exploring the LanOnasis MCP REST API (40 tools) and the documentation search endpoint. Features split-pane request/response layout, multi-language code generation, response metadata, and request history with replay capability. Visit the playground to try endpoints directly from your browser.',
+    },
+  ];
+
+  entries.push(...EXTRA_ENTRIES);
   entries.sort((a, b) => a.url.localeCompare(b.url));
   return entries;
 }
