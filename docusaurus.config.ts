@@ -81,6 +81,32 @@ if (!isNxBuild) {
   );
 }
 
+// Sentry source maps must NOT be gated on `isNxBuild`.
+//
+// The check above treats `NX_WORKSPACE_ROOT !== undefined` as "an Nx build",
+// but Vercel's build image injects NX_*/TURBO_* variables, so that gate can be
+// true there while the build is an ordinary `docusaurus build`. That silently
+// skipped the webpack plugin - which is why production emitted no .map files
+// even once devtool was added to it.
+// NOTE: a Docusaurus plugin must be a string, array or *function*. A plain
+// object is rejected: "Bad Docusaurus plugin value plugins[1]". Hence the
+// factory form below.
+plugins.push(() => ({
+  name: 'sentry-sourcemaps-devtool',
+  configureWebpack(config: any) {
+    // Diagnostic: visible in the Vercel build log, and proves which path ran.
+    console.log(
+      `[sentry] sourcemaps hook: NODE_ENV=${process.env.NODE_ENV} ` +
+        `isNxBuild=${isNxBuild} NX_WORKSPACE_ROOT=${JSON.stringify(process.env.NX_WORKSPACE_ROOT)}`,
+    );
+    if (process.env.NODE_ENV !== 'production') return {};
+    // Return a PARTIAL config only. The result is deep-merged into the final
+    // webpack config by applyConfigureWebpack(), and webpack-merge concatenates
+    // arrays - returning `{...config}` would duplicate config.plugins.
+    return { devtool: 'hidden-source-map' };
+  },
+}));
+
 const config: Config = {
   title: 'LanOnasis Documentation',
   tagline: 'Memory as a Service Platform',
