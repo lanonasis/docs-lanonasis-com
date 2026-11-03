@@ -12,6 +12,21 @@ import path from 'path';
 // Self-hosted configuration - No external dependencies
 
 // Guard webpack config for Nx compatibility
+// Read the first env var that is set to a NON-EMPTY (post-trim) value.
+//
+// `??` does not fall back on an empty string, so `A ?? B` yields '' when A is
+// set-but-empty. That would pin the browser's release to '' while
+// scripts/sentry-sourcemaps.sh (using `:-`) fell back to the commit SHA - the
+// two would disagree, so uploaded source maps would attach to a release the
+// browser never reports.
+const firstNonEmptyEnv = (...names: string[]): string => {
+  for (const name of names) {
+    const value = (process.env[name] ?? '').trim();
+    if (value) return value;
+  }
+  return '';
+};
+
 const isNxBuild = process.env.NX_BUILD === 'true' || process.env.NX_WORKSPACE_ROOT !== undefined;
 const enableGitLastUpdate = !process.env.VERCEL;
 
@@ -27,8 +42,27 @@ if (!isNxBuild) {
         // Webpack is only available in Bun/Docusaurus build context
         // Nx provides webpack through its own build system
         try {
+          // Emit hidden source maps so sentry-cli can attach them to the
+          // release. `hidden-` writes the .map files but leaves the
+          // //# sourceMappingURL comment out of the served JS. Docusaurus
+          // leaves `devtool` undefined for production builds (webpack/base.js)
+          // and merges this returned object into the final config via
+          // applyConfigureWebpack().
+          // scripts/sentry-sourcemaps.sh deletes the maps after upload.
+          //
+          // NOTE: `devtool` is computed BEFORE the `require` below on purpose.
+          // `require('webpack')` throws from this config file (webpack is not
+          // resolvable here), and the catch would otherwise silently discard it
+          // - which is how this plugin has been returning {} all along, leaving
+          // the alias and ProvidePlugin inert as well.
+          const devtool =
+            process.env.NODE_ENV === 'production'
+              ? 'hidden-source-map'
+              : false;
+
           const webpack = require('webpack');
           return {
+            devtool,
             resolve: {
               alias: {
                 'path-to-regexp$': path.resolve(
@@ -47,13 +81,41 @@ if (!isNxBuild) {
             ]
           };
         } catch (e) {
-          // Webpack not available, return empty config
-          return {};
+          // `webpack` is not resolvable from this config in this repo, so the
+          // alias/ProvidePlugin above are inert. Return the part that does not
+          // need it (see the devtool note above).
+          return {
+            devtool:
+              process.env.NODE_ENV === 'production'
+                ? 'hidden-source-map'
+                : false,
+          };
         }
       },
     })
   );
 }
+
+// Sentry source maps must NOT be gated on `isNxBuild`.
+//
+// The check above treats `NX_WORKSPACE_ROOT !== undefined` as "an Nx build",
+// but Vercel's build image injects NX_*/TURBO_* variables, so that gate can be
+// true there while the build is an ordinary `docusaurus build`. That silently
+// skipped the webpack plugin - which is why production emitted no .map files
+// even once devtool was added to it.
+// NOTE: a Docusaurus plugin must be a string, array or *function*. A plain
+// object is rejected: "Bad Docusaurus plugin value plugins[1]". Hence the
+// factory form below.
+plugins.push(() => ({
+  name: 'sentry-sourcemaps-devtool',
+  configureWebpack(config: any) {
+    if (process.env.NODE_ENV !== 'production') return {};
+    // Return a PARTIAL config only. The result is deep-merged into the final
+    // webpack config by applyConfigureWebpack(), and webpack-merge concatenates
+    // arrays - returning `{...config}` would duplicate config.plugins.
+    return { devtool: 'hidden-source-map' };
+  },
+}));
 
 const config: Config = {
   title: 'LanOnasis Documentation',
@@ -124,6 +186,31 @@ const config: Config = {
   ],
   clientModules: [
     require.resolve('./src/sentry.client.ts'),
+  ],
+
+  // Sentry build-time configuration.
+  //
+  // Docusaurus/webpack substitutes only `process.env.NODE_ENV`; any other
+  // `process.env.X` reference survives into the bundle verbatim, and a computed
+  // access such as `process.env[key]` can never be substituted at all. In the
+  // browser `process` does not exist, so the old lookup yielded `undefined`,
+  // `if (dsn)` was false, and the SDK silently never initialised - which is why
+  // the Sentry project received nothing. Bake the values into the HTML here and
+  // read them at runtime in src/sentry.client.ts.
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: { type: 'application/json', id: 'sentry-build-config' },
+      innerHTML: JSON.stringify({
+        dsn: (process.env.SENTRY_DSN ?? '').trim(),
+        release: firstNonEmptyEnv(
+          'SENTRY_RELEASE',
+          'VERCEL_GIT_COMMIT_SHA',
+        ),
+        environment:
+          firstNonEmptyEnv('VERCEL_ENV', 'NODE_ENV') || 'production',
+      }),
+    },
   ],
   plugins: plugins,
 
