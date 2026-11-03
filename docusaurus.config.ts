@@ -94,11 +94,6 @@ if (!isNxBuild) {
 plugins.push(() => ({
   name: 'sentry-sourcemaps-devtool',
   configureWebpack(config: any) {
-    // Diagnostic: visible in the Vercel build log, and proves which path ran.
-    console.log(
-      `[sentry] sourcemaps hook: NODE_ENV=${process.env.NODE_ENV} ` +
-        `isNxBuild=${isNxBuild} NX_WORKSPACE_ROOT=${JSON.stringify(process.env.NX_WORKSPACE_ROOT)}`,
-    );
     if (process.env.NODE_ENV !== 'production') return {};
     // Return a PARTIAL config only. The result is deep-merged into the final
     // webpack config by applyConfigureWebpack(), and webpack-merge concatenates

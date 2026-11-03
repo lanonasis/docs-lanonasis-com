@@ -352,6 +352,29 @@ configureWebpack() {
 > `ProvidePlugin` on every build, silently. Anything that must survive belongs
 > outside that `try`, or in the `catch` return.
 >
+> **A Docusaurus plugin must be a string, array or *function*.** Pushing a
+> plain object is rejected outright: `Bad Docusaurus plugin value plugins[1]`.
+> Use the factory form — `plugins.push(() => ({ name, configureWebpack() {} }))`.
+>
+> **`configureWebpack`'s return value is deep-merged into the final config,
+> and webpack-merge CONCATENATES arrays.** Returning `{ ...config, devtool }`
+> therefore duplicates `config.plugins` and breaks the build. Return a
+> **partial** — `{ devtool: 'hidden-source-map' }` — and let the merge apply it.
+>
+> **Do not gate a webpack plugin on an env heuristic.** The original plugin was
+> pushed only when `!isNxBuild` (`NX_BUILD === 'true' || NX_WORKSPACE_ROOT !==
+> undefined`). Vercel's build image injects `NX_*`/`TURBO_*` variables, so a
+> gate like that can be true during an ordinary `docusaurus build`. Push it
+> unconditionally.
+>
+> **Read upload reports in full, and count.** `sentry-cli` prints
+> `(no sourcemap found)` for every JS chunk that legitimately has no map — with
+> `hidden-source-map` that is *expected*, because the JS deliberately carries no
+> `sourceMappingURL`. Grepping the first few lines makes a working upload look
+> broken. Count instead:
+> `vercel inspect <url> --logs | grep -c '\.js\.map'` — the pre-fix build
+> scored `0`, the fixed build `126`.
+>
 > **Probe a lifecycle before debugging it.** Put a side effect *outside* any
 > `try` (and write it with an ESM import, not `require`) — a hook that never
 > fires looks identical to one that fired and did nothing:
