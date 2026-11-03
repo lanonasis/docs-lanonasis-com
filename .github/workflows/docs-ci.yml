@@ -49,6 +49,9 @@ jobs:
       - name: Validator fixture harness
         run: bun run test:validators
 
+      - name: Playground operation extraction
+        run: bun run test:playground
+
       - name: Production build
         run: bun run build
 
