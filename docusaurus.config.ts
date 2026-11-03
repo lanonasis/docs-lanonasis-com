@@ -27,8 +27,27 @@ if (!isNxBuild) {
         // Webpack is only available in Bun/Docusaurus build context
         // Nx provides webpack through its own build system
         try {
+          // Emit hidden source maps so sentry-cli can attach them to the
+          // release. `hidden-` writes the .map files but leaves the
+          // //# sourceMappingURL comment out of the served JS. Docusaurus
+          // leaves `devtool` undefined for production builds (webpack/base.js)
+          // and merges this returned object into the final config via
+          // applyConfigureWebpack().
+          // scripts/sentry-sourcemaps.sh deletes the maps after upload.
+          //
+          // NOTE: `devtool` is computed BEFORE the `require` below on purpose.
+          // `require('webpack')` throws from this config file (webpack is not
+          // resolvable here), and the catch would otherwise silently discard it
+          // - which is how this plugin has been returning {} all along, leaving
+          // the alias and ProvidePlugin inert as well.
+          const devtool =
+            process.env.NODE_ENV === 'production'
+              ? 'hidden-source-map'
+              : false;
+
           const webpack = require('webpack');
           return {
+            devtool,
             resolve: {
               alias: {
                 'path-to-regexp$': path.resolve(
@@ -47,8 +66,15 @@ if (!isNxBuild) {
             ]
           };
         } catch (e) {
-          // Webpack not available, return empty config
-          return {};
+          // `webpack` is not resolvable from this config in this repo, so the
+          // alias/ProvidePlugin above are inert. Return the part that does not
+          // need it (see the devtool note above).
+          return {
+            devtool:
+              process.env.NODE_ENV === 'production'
+                ? 'hidden-source-map'
+                : false,
+          };
         }
       },
     })
