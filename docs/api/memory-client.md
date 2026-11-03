@@ -712,7 +712,7 @@ describe('MemoryClient', () => {
 - [Memory REST API](./memories.md)
 - [Authentication](./authentication.md)
 - [MCP Integration](./mcp-integration.md)
-- [Search API](./search.md)
+- [Search API](./endpoints/search.md)
 - [Memory SDK Overview](../memory/sdk.md)
 
 ## 🆘 Troubleshooting
