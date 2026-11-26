@@ -289,6 +289,143 @@
             "$ref": "#/components/responses/NotFoundError"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Memories"
+        ],
+        "summary": "Update Memory by id",
+        "description": "Update a memory by id (MCP tool `update_memory`). nginx routes PUT and PATCH on `/memories/{id}` (and `/memory/{id}`) to memory-update, which reads the id from the URL. A body `id` that differs from the path id is rejected with 400. Same body and response as `POST /memories/update`.",
+        "operationId": "updateMemoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memory updated (or saved versions deleted, for a `forget_history`-only request)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMemoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Memories"
+        ],
+        "summary": "Update Memory by id (PATCH)",
+        "description": "Same as `PUT /memories/{id}`: routed to memory-update with the id from the URL.",
+        "operationId": "patchMemoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memory updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMemoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Memories"
+        ],
+        "summary": "Delete Memory by id",
+        "description": "Delete a memory by id (MCP tool `delete_memory`). nginx routes DELETE on `/memories/{id}` (and `/memory/{id}`) to memory-delete. This is a soft delete: the memory is marked deleted, `GET /memories/{id}` then returns 404, and it can be restored. OPTIONS on this path returns 204; a request with no key returns 401.",
+        "operationId": "deleteMemoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Memory soft-deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
       }
     },
     "/memories/update": {
@@ -297,7 +434,7 @@
           "Memories"
         ],
         "summary": "Update Memory",
-        "description": "Update an existing memory (MCP tool `update_memory`). The memory id goes in the body. `PUT /memories/{id}` is not routed: nginx sends every method on `/memories/{id}` to memory-get, so a PUT returns the unchanged memory.",
+        "description": "Update an existing memory (MCP tool `update_memory`). The memory id goes in the body. `PUT`/`PATCH /memories/{id}` reach the same handler with the id in the URL. Set `mode: append` to add text under the existing content, or `forget_history: true` to delete the memory's saved versions.",
         "operationId": "updateMemory",
         "requestBody": {
           "required": true,
@@ -331,10 +468,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MemoryResponse"
+                  "$ref": "#/components/schemas/UpdateMemoryResponse"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
@@ -351,7 +491,7 @@
           "Memories"
         ],
         "summary": "Delete Memory",
-        "description": "Delete a memory (MCP tool `delete_memory`). Pass the id as `?id=` or as `{\"id\": \"...\"}` in the body; `DELETE` with the same inputs is also accepted. `DELETE /memories/{id}` is not routed: nginx sends it to memory-get.",
+        "description": "Delete a memory (MCP tool `delete_memory`). Pass the id as `?id=` or as `{\"id\": \"...\"}` in the body; `DELETE` with the same inputs is also accepted. `DELETE /memories/{id}` reaches the same handler. Deletes are soft: the memory stops appearing in reads and can be restored.",
         "operationId": "deleteMemory",
         "parameters": [
           {
@@ -2119,8 +2259,21 @@
       },
       "UpdateMemoryRequest": {
         "type": "object",
-        "description": "Update an existing memory. All fields are optional.\nBoth `type` and `memory_type` field names are accepted for compatibility.\n",
+        "description": "Update an existing memory. All fields are optional.\nBoth `type` and `memory_type` field names are accepted for compatibility.\n\nSaved versions: every replace-style edit (from the API, MCP or the dashboard)\nsaves the previous title, content, tags and metadata as a saved version.\nAppends save nothing, because the old text is still there. Credential-shaped\nstrings in saved versions are stored as `[REDACTED]`. Each memory keeps its\nnewest 3 saved versions, and versions older than 30 days are dropped on the\nnext edit (versions saved before 2026-11-23 are never pruned). Only the\nmemory's owner can read or delete its saved versions; nobody can edit them.\n",
         "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "replace",
+              "append"
+            ],
+            "default": "replace",
+            "description": "`replace` (default) overwrites the fields you send. `append` requires `content` and adds it under the existing content as `trimEnd(existing) + \"\\n\\n\" + trim(new)`; title, tags and metadata stay unchanged unless you also send them."
+          },
+          "forget_history": {
+            "type": "boolean",
+            "description": "Delete this memory's saved versions after the update. Can be sent on its own to purge history without changing the memory (response message \"Saved versions deleted\"). Cannot be combined with `mode: append` (400)."
+          },
           "title": {
             "type": "string",
             "minLength": 1,
@@ -2200,6 +2353,52 @@
           },
           "data": {
             "$ref": "#/components/schemas/Memory"
+          }
+        }
+      },
+      "UpdateMemoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Memory"
+          },
+          "message": {
+            "type": "string",
+            "description": "\"Memory updated successfully\", or \"Saved versions deleted\" for a `forget_history`-only request."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "replace",
+              "append"
+            ]
+          },
+          "revision_created": {
+            "type": "boolean",
+            "description": "Whether a saved version of the previous state was made"
+          },
+          "revision_number": {
+            "type": "integer",
+            "nullable": true
+          },
+          "history_purged": {
+            "type": "boolean",
+            "description": "Whether saved versions were deleted (`forget_history`)"
+          },
+          "history_purge_failed": {
+            "type": "boolean",
+            "description": "Present and true when the update succeeded but saved versions could not be deleted; retry with `forget_history` only"
+          },
+          "embedding_regenerated": {
+            "type": "boolean"
+          },
+          "routed_by": {
+            "type": "string",
+            "enum": [
+              "update",
+              "idempotency",
+              "continuity"
+            ]
           }
         }
       },

@@ -30,16 +30,23 @@ Authorization: Bearer $LANONASIS_ACCESS_TOKEN
 | 2 | List memories | `GET /api/v1/memories/list` | Summary rows only |
 | 3 | Get memory | `GET /api/v1/memories/{id}` | Full record |
 | 4 | Update memory | `POST /api/v1/memories/update` | `id` in the body |
+| 4a | Update memory | `PUT` or `PATCH /api/v1/memories/{id}` | `id` in the URL |
 | 5 | Delete memory | `POST /api/v1/memories/delete?id={id}` | Soft delete |
+| 5a | Delete memory | `DELETE /api/v1/memories/{id}` | Soft delete |
 | 6 | Search memories | `GET /api/v1/memories/search` | Query parameters |
 | 7 | Search memories | `POST /api/v1/memories/search` | JSON body |
 | 8 | Memory statistics | `GET /api/v1/memories/stats` | |
 | 9 | Bulk delete | `POST /api/v1/memories/bulk-delete` | Up to 100 ids |
-| — | `PUT /api/v1/memories/{id}` | Not a working write | Routed to the read endpoint |
-| — | `DELETE /api/v1/memories/{id}` | Not a working write | Routed to the read endpoint |
+`/api/v1/memories/{id}` is routed by method: `GET` reads, `PUT` and `PATCH`
+update, and `DELETE` soft-deletes. `OPTIONS` answers `204`, and a request with
+no key answers `401`. The singular alias `/api/v1/memory/{id}` behaves the same
+way.
 
-The last two rows are documented at the end of this page because clients still
-reach for them. They answer `200` and change nothing.
+:::note Changed on 2026-11-26
+Before this date every method on `/api/v1/memories/{id}` reached the read
+endpoint, so `PUT` and `DELETE` there answered `200` and changed nothing. If a
+client relied on that, re-check what it sends.
+:::
 
 ---
 
@@ -300,7 +307,10 @@ Errors: `404 MEMORY_NOT_FOUND`, `401 UNAUTHORIZED`.
 ## POST /api/v1/memories/update
 
 Update an existing memory's title, content, tags, or metadata (MCP tool
-`update_memory`). The id goes in the body.
+`update_memory`). The id goes in the body. `PUT` or `PATCH
+/api/v1/memories/{id}` reaches the same handler with the id in the URL and
+accepts the same body; a body `id` that differs from the URL id is rejected
+with `400`.
 
 ### Request
 
@@ -308,19 +318,49 @@ Update an existing memory's title, content, tags, or metadata (MCP tool
 POST /api/v1/memories/update
 ```
 
-:::warning Use `/update`, not `PUT /memories/{id}`
-Every method on `/api/v1/memories/{id}` is routed to the read endpoint, so `PUT /api/v1/memories/{id}` returns the memory **unchanged** and still answers 200. Send updates to `/api/v1/memories/update` with the id in the body.
-:::
-
 ### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | ID of the memory to update |
+| `id` | string | Yes (body) | ID of the memory to update. Omit it when the id is in the URL |
 | `title` | string | No | Updated title |
 | `content` | string | No | Updated content |
 | `tags` | array | No | Replacement tags array |
-| `metadata` | object | No | Replacement metadata object |
+| `metadata` | object | No | Metadata keys to merge into the existing metadata |
+| `mode` | string | No | `replace` (default) or `append`. See below |
+| `forget_history` | boolean | No | Delete this memory's saved versions after the update. Can be sent on its own |
+
+### Appending instead of replacing
+
+With `"mode": "append"`, `content` is required and is added under the existing
+content, separated by a blank line (`trimEnd(existing) + "\n\n" + trim(new)`).
+Title, tags and metadata stay unchanged unless you also send them.
+
+```bash
+curl -X PUT https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
+  -H "X-API-Key: $LANONASIS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"mode": "append", "content": "2026-11-26: requirements signed off."}'
+```
+
+### Saved versions
+
+Every replace-style edit saves the previous title, content, tags and metadata
+as a saved version, whichever client made the edit (API, MCP or dashboard).
+An append saves nothing, because the old text is still there. The response
+field `revision_created` tells you whether a version was saved.
+
+- Credential-shaped strings in saved versions are stored as `[REDACTED]`.
+- Each memory keeps its newest 3 saved versions, and versions older than 30
+  days are dropped on the next edit. Versions saved before 2026-11-23 are never
+  pruned.
+- Only the memory's owner can read or delete its saved versions, and nobody can
+  edit them. Other members of the organization do not see them.
+
+To delete a memory's saved versions, send `"forget_history": true`. On its own
+it changes nothing else and the response message is `Saved versions deleted`.
+It cannot be combined with `"mode": "append"`; that request is rejected with
+`400`.
 
 ### Example request
 
@@ -346,11 +386,14 @@ curl -X POST https://api.lanonasis.com/api/v1/memories/update \
     "tags": ["project", "requirements", "reviewed"],
     "metadata": { "status": "approved" },
     "updated_at": "2026-10-16T14:22:00Z"
-  }
+  },
+  "message": "Memory updated successfully",
+  "mode": "replace",
+  "revision_created": true
 }
 ```
 
-Errors: `404 MEMORY_NOT_FOUND`, `401 UNAUTHORIZED`.
+Errors: `400 VALIDATION_ERROR`, `404 MEMORY_NOT_FOUND`, `401 UNAUTHORIZED`.
 
 ---
 
@@ -367,11 +410,8 @@ POST /api/v1/memories/delete?id={id}
 ```
 
 `DELETE` with the same query string also works, as does `{"id": "..."}` in a
-POST body.
-
-:::warning Use `/delete`, not `DELETE /memories/{id}`
-`DELETE /api/v1/memories/{id}` reaches the read endpoint: it returns the memory and deletes nothing.
-:::
+POST body, and so does `DELETE /api/v1/memories/{id}`. After a delete,
+`GET /api/v1/memories/{id}` answers `404`.
 
 ### Parameters
 
@@ -573,50 +613,28 @@ UNAUTHORIZED`.
 
 ---
 
-## PUT /api/v1/memories/&#123;id&#125; — not a write
+## PUT, PATCH and DELETE /api/v1/memories/&#123;id&#125;
 
-:::warning Use `/update`, not `PUT /memories/{id}`
-Every method on `/api/v1/memories/{id}` is routed to the read endpoint, so `PUT /api/v1/memories/{id}` returns the memory **unchanged** and still answers 200. Send updates to `/api/v1/memories/update` with the id in the body.
-:::
-
-`PUT` on this path reaches the read function, not an update function. The
-response body is the current memory, `updated_at` does not move, and no write
-occurs. Any request body you send is ignored.
-
-Use `POST /api/v1/memories/update` with `id` in the body instead:
+These are routed by method. `PUT` and `PATCH` go to the update handler, which
+reads the id from the URL and takes the same body as
+[`POST /api/v1/memories/update`](#post-apiv1memoriesupdate). `DELETE` goes to
+the delete handler and soft-deletes the memory, the same as
+`POST /api/v1/memories/delete`.
 
 ```bash
-curl -X POST https://api.lanonasis.com/api/v1/memories/update \
+curl -X PATCH https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
   -H "X-API-Key: $LANONASIS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"id": "4a4a675f-2e35-4598-ae7a-1c1f35730226", "title": "Updated title"}'
-```
+  -d '{"title": "Updated title"}'
 
-The singular legacy alias `/api/v1/memory/{id}` behaves the same way.
-
----
-
-## DELETE /api/v1/memories/&#123;id&#125; — not a delete
-
-:::warning Use `/delete`, not `DELETE /memories/{id}`
-`DELETE /api/v1/memories/{id}` reaches the read endpoint: it returns the memory and deletes nothing.
-:::
-
-`DELETE` on this path also reaches the read function. It answers `200` with the
-memory body, `deleted_at` is never set, and the record stays visible in lists
-and search. This is the failure mode worth knowing about: the call looks
-successful, so a client that trusts the status code will report a delete that
-never happened.
-
-Use `POST /api/v1/memories/delete?id={id}` instead:
-
-```bash
-curl -X POST "https://api.lanonasis.com/api/v1/memories/delete?id=4a4a675f-2e35-4598-ae7a-1c1f35730226" \
+curl -X DELETE https://api.lanonasis.com/api/v1/memories/4a4a675f-2e35-4598-ae7a-1c1f35730226 \
   -H "X-API-Key: $LANONASIS_API_KEY"
 ```
 
 Verify a delete by re-reading with `GET /api/v1/memories/{id}` and expecting a
 `404`, or by checking `deleted_at` with `include_deleted=true`.
+
+The singular legacy alias `/api/v1/memory/{id}` behaves the same way.
 
 ---
 

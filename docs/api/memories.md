@@ -138,21 +138,32 @@ Update an existing memory's content, tags, or metadata.
 
 ```http
 POST /api/v1/memories/update
+PUT /api/v1/memories/{id}
+PATCH /api/v1/memories/{id}
 ```
 
-:::warning Use `/update`, not `PUT /memories/{id}`
-Every method on `/api/v1/memories/{id}` is routed to the read endpoint, so `PUT /api/v1/memories/{id}` returns the memory **unchanged** and still answers 200. Send updates to `/api/v1/memories/update` with the id in the body.
-:::
+All three reach the same update handler. With `PUT` or `PATCH` the id comes from the URL; a body `id` that differs from it is rejected with `400`.
 
 ### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | ID of the memory to update |
+| `id` | string | Yes (body) | ID of the memory to update. Omit it when the id is in the URL |
 | `title` | string | No | Updated memory title |
 | `content` | string | No | Updated memory content |
-| `tags` | array | No | Updated tags array |
-| `metadata` | object | No | Updated metadata object |
+| `tags` | array | No | Updated tags array (replaces the list) |
+| `metadata` | object | No | Metadata keys to merge into the existing metadata |
+| `mode` | string | No | `replace` (default) or `append`. `append` requires `content` and adds it under the existing content after a blank line; title, tags and metadata stay unchanged unless you also send them |
+| `forget_history` | boolean | No | Delete this memory's saved versions after the update. Can be sent on its own. Cannot be combined with `mode: append` |
+
+### Saved versions
+
+Every replace-style edit, from any client (API, MCP or dashboard), saves the previous title, content, tags and metadata as a saved version. Appends save nothing. The response field `revision_created` says whether a version was saved.
+
+- Credential-shaped strings in saved versions are stored as `[REDACTED]`.
+- Each memory keeps its newest 3 saved versions; versions older than 30 days are dropped on the next edit. Versions saved before 2026-11-23 are never pruned.
+- Only the memory's owner can read or delete its saved versions, and nobody can edit them.
+- `{"forget_history": true}` on its own deletes the saved versions and answers with the message `Saved versions deleted`.
 
 ### Example Request
 
@@ -209,11 +220,7 @@ Soft-delete a memory. The row is kept with `deleted_at` set, drops out of normal
 POST /api/v1/memories/delete?id={id}
 ```
 
-`DELETE` with the same query string also works, as does `{"id": "..."}` in a POST body.
-
-:::warning Use `/delete`, not `DELETE /memories/{id}`
-`DELETE /api/v1/memories/{id}` reaches the read endpoint: it returns the memory and deletes nothing.
-:::
+`DELETE` with the same query string also works, as does `{"id": "..."}` in a POST body, and so does `DELETE /api/v1/memories/{id}`. After a delete, `GET /api/v1/memories/{id}` answers `404`.
 
 ### Parameters
 
