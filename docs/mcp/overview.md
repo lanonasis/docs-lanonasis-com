@@ -105,11 +105,19 @@ const result = await client.callTool('create_memory', {
 |------|-------------|------------|
 | `create_memory` | Create a new memory with vector embedding | `title`, `content`, `type`, `tags`, `metadata` |
 | `get_memory` | Retrieve a memory by ID | `id` |
-| `update_memory` | Update an existing memory | `id`, `title?`, `content?`, `type?`, `tags?` |
+| `update_memory` | Update an existing memory | `id`, `title?`, `content?`, `type?`, `tags?`, `metadata?`, `mode?`, `forget_history?` |
 | `delete_memory` | Delete a memory | `id` |
 | `list_memories` | List memories with filters | `limit?`, `offset?`, `type?`, `tags?`, `search?`, `include_deleted?` (MCP-only) |
 | `search_memories` | Semantic search across memories | `query`, `limit?`, `threshold?`, `type?` |
 | `bulk_delete_memories` | Delete multiple memories | `memory_ids[]` |
+
+:::note `mode` and `forget_history` on mcp.lanonasis.com are pending deploy
+`update_memory` accepts `mode` (`replace` or `append`) and `forget_history`, the
+same options as the [REST update endpoint](../api/endpoints/memory.md). Both are
+merged in mcp-core but not yet deployed to mcp.lanonasis.com, so an append sent
+there fails today. Until the deploy, use `POST /api/v1/memories/update` or
+`PUT /api/v1/memories/{id}` on api.lanonasis.com for appends.
+:::
 
 ### Memory Intelligence (NEW!)
 

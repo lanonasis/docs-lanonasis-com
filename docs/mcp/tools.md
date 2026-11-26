@@ -182,6 +182,8 @@ Update an existing memory.
 | `type` | string |
 | `tags` | string |
 | `metadata` | object |
+| `mode` | string |
+| `forget_history` | boolean |
 
 ## Intelligence Tools
 
@@ -554,4 +556,4 @@ Set configuration setting.
 - [IDE Integration](./ide-integration.md) - Connect IDEs to MCP
 - [Production Server](./production-server.md) - Production deployment
 
-<!-- Generated 2026-11-02 from 40 registered tools. -->
+<!-- Generated 2026-11-26 from 40 registered tools. -->
